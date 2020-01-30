@@ -120,6 +120,8 @@ sim_population <- function(
     # and integer from 1 to the number of outcrossers.
     pop[[g]][cross01] <- paste(pop[[g]][cross01],"_", g, ".", 1:sum(cross01), sep="")
   }
+  # Each population is currently a vector. Coerce to a grid.
+  pop <- lapply(pop, function(x) matrix(x, nrow=grid_size))
 
   t1 <- proc.time()[3]
   if(verbose) cat("\nSimulation complete after", round(t1-t0, 2), "seconds.\n")

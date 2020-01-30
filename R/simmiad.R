@@ -26,6 +26,7 @@
 #'@author Tom Ellis
 #'@seealso `sim_population`, `transect_cluster`
 #'@export
+#'
 simmiad <- function(
   grid_size,
   mean_dispersal_distance,
@@ -36,18 +37,21 @@ simmiad <- function(
   nsims){
 
   t0 <- proc.time()[3] # record the starting time.
-  # Print some messages about simulation properties.
+  # Filenames to save output and logs
   logfile <- paste(filename, "log", sep=".")
+  outfile = paste(filename, "simmiad", sep=".")
+  # Print message about sims
+  cat("Simulations of wild Emmer wheat begun on", format(Sys.time(), "%a %b %d %X %Y"), "\n")
+  cat("Output will be save to",outfile,"and progress recorded in",logfile,"\n")
+  # Write some messages about simulation properties to a log file.
   cat("Log file for simulations of wild Emmer wheat begun on", format(Sys.time(), "%a %b %d %X %Y"), ".\n", file = logfile)
   cat("See ", filename,".csv for simulation output.\n", sep="", file = logfile, append = TRUE)
   cat("\nSimulating a grid of",grid_size,"by",grid_size,"individuals of", n_starting_genotypes,"intial genotypes for",n_generations,"generations.\n", file = logfile, append = TRUE)
   cat("Seed diserpsal distances are exponentially distributed with mean =", mean_dispersal_distance,"metres.\n", file = logfile, append = TRUE)
   cat("Plants outcross with probability ",outcrossing_rate,".\n", sep = "", file = logfile, append=TRUE)
 
-
   cat("\nBeginning",nsims,"simulations...\n", file = logfile, append=TRUE)
   # Empty file to store output
-  outfile = paste(filename, "simmiad", sep=".")
   write.table(matrix(c("i", "identical", "different"), nrow=1),
               file = outfile,
               sep =",",
@@ -69,7 +73,7 @@ simmiad <- function(
     # Pick a row to use as a transect.
     transect_row <- sample(1:grid_size, 1)
     # Pull out that transect.
-    transect_geno <- matrix(sm, ncol = grid_size)[transect_row,]
+    transect_geno <- sm[transect_row,]
 
     # Get the mean distances between identical and non-identical genotypes.
     output <- matrix(c(i=i, transect_clustering(transect_geno, 1:grid_size)), nrow = 1)

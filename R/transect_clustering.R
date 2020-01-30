@@ -26,7 +26,7 @@ transect_clustering <- function(genotypes, positions){
   geno_ix <- geno_pairs[1,] == geno_pairs[2,]
 
   # Distances between all unqiue pairs of sampling points.
-  dist_pairs <- combn(1:grid_size, 2)
+  dist_pairs <- combn(positions, 2)
   dist_pairs <- abs(dist_pairs[1,] - dist_pairs[2,])
 
   # Return the distances between identical and non-identical genotypes
