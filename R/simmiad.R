@@ -41,7 +41,7 @@ simmiad <- function(
   logfile <- paste(filename, "log", sep=".")
   outfile = paste(filename, "simmiad", sep=".")
   # Print message about sims
-  cat("Simulations of wild Emmer wheat begun on", format(Sys.time(), "%a %b %d %X %Y"), "\n")
+  cat("\nSimulations of wild Emmer wheat begun on", format(Sys.time(), "%a %b %d %X %Y"), "\n")
   cat("Output will be save to",outfile,"and progress recorded in",logfile,"\n")
   # Write some messages about simulation properties to a log file.
   cat("Log file for simulations of wild Emmer wheat begun on", format(Sys.time(), "%a %b %d %X %Y"), ".\n", file = logfile)
@@ -94,7 +94,7 @@ simmiad <- function(
   t1 <- proc.time()[3] # record the starting time.
   cat("\nSimulations completed", format(Sys.time(), "%a %b %d %X %Y"), "after", round((t1-t0)/60, 2), "minutes\n",
       file = logfile, append=T)
-  cat("\nSimulations completed", format(Sys.time(), "%a %b %d %X %Y"), "after", round((t1-t0)/60, 2), "minutes\n\n")
+  cat("\nSimulations completed", format(Sys.time(), "%a %b %d %X %Y"), "after", round((t1-t0)/60, 2), "minutes.\n\n\n")
 }
 
 

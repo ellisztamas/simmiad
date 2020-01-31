@@ -7,9 +7,9 @@ R package to simulate populations of wild Emmer wheat from the Kibbutz Ammiad
 2. [Installation](#installation)
 3. [Dependencies](#dependencies)
 4. [Usage](#usage)
-    1. [Aims and input data](#aims-and-input-data)
-    2. [Basic function](#basic-function)
-    3. [Incorporating uncertainty](#incorporating-uncertainty)
+    1. [Simulate a single population](#simulate-a-single-population)
+    2. [Describing spatial structure](#describing-spatial-structure)
+    3. [Replicate simulations](#replicate-simulations)
 5. [Author and license information](#author-and-license-information)
 
 ## Introduction
