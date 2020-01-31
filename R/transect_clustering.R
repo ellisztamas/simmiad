@@ -31,7 +31,7 @@ transect_clustering <- function(genotypes, positions){
 
   # Return the distances between identical and non-identical genotypes
   c(
-    identical = mean(dist_pairs[ geno_ix]),
-    different = mean(dist_pairs[!geno_ix])
+    identical = mean(dist_pairs[ geno_ix], na.rm = T),
+    different = mean(dist_pairs[!geno_ix], na.rm = T)
   )
 }
