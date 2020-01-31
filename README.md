@@ -105,7 +105,7 @@ transect_clustering(
 ```
 
 ### Replicate simulations
-Most of the time you will want to simulate multiple replicate populations with a set of input parameters. This can be done with the function `simmiad`:
+Most of the time you will want to simulate multiple replicate populations with a set of input parameters. This can be done with the function `simmiad` using the same input parameters as [before](#Simulate-a-single-population), plus a file path to output the results and a value for the number of simulations to run:
 
 ```
 simmiad(
@@ -118,13 +118,14 @@ simmiad(
   nsims = 3
   )
 ```
+This function simulates individual populations through time, then takes a single horizontal transect through the final generation. It then estimates [spatial clustering](#describing-spatial-structure) through that transect.
 
 This will not create an object in R, but will output the results directly to a CSV file called 'test_run.csv', and also save a log file called 'test_run.log'. You can change the path and file names by changing the `filename` argument. Open the results with
 ```
-read.csv('test_run.csv')
+sm <- read.csv('test_run.csv')
 ```
 
-There are three columns
+Ther are three columns: the first column gives the simulation number; the second and third give the output of `transect_clustering`.
 
 ## Author and license information
 

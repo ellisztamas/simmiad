@@ -58,7 +58,9 @@ simmiad <- function(
               col.names = FALSE,
               row.names = FALSE)
 
+  pb <- txtProgressBar(min = 0, max = nsims, style = 3)
   for(i in 1:nsims){
+    setTxtProgressBar(pb, i)
     # Simulate a single population.
     sm <- sim_population(
       grid_size = grid_size,
@@ -87,10 +89,12 @@ simmiad <- function(
               col.names = FALSE,
               row.names = FALSE)
   }
+  close(pb)
 
   t1 <- proc.time()[3] # record the starting time.
   cat("\nSimulations completed", format(Sys.time(), "%a %b %d %X %Y"), "after", round((t1-t0)/60, 2), "minutes\n",
       file = logfile, append=T)
+  cat("\nSimulations completed", format(Sys.time(), "%a %b %d %X %Y"), "after", round((t1-t0)/60, 2), "minutes\n\n")
 }
 
 
