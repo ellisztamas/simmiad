@@ -3,3 +3,4 @@
 export(sim_population)
 export(simmiad)
 export(transect_clustering)
+export(transect_stability)

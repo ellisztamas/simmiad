@@ -17,11 +17,15 @@
 #'
 #'@inheritParams sim_population
 #'@param nsims Int >0. Number of replicate populations to simulate.
+#'@param transect_length Int between 0 and grid_size. Number of sampling points
+#'to draw a transect for.
 #'@param filename Str. Directory where output and log file should be saved.
 #'
-#'@return Nothing will be printed on screeen, but two files are saved to disk:
-#'A CSV file giving genotype distances between identical and
-#'non-identical plants, and a log file giving simulation details.
+#'@return Nothing will be printed on screeen, but two files are saved to disk:\n
+#'1. A CSV file giving genotype distances between identical and
+#'non-identical plants, and the output of transect_stability for each pair of
+#'sampling years.\n
+#'2. A log file giving simulation details.
 #'
 #'@author Tom Ellis
 #'@seealso `sim_population`, `transect_cluster`
@@ -33,6 +37,7 @@ simmiad <- function(
   outcrossing_rate,
   n_generations,
   n_starting_genotypes = 124,
+  transect_length = NULL,
   filename='simmiad',
   nsims){
 
@@ -52,7 +57,8 @@ simmiad <- function(
 
   cat("\nBeginning",nsims,"simulations...\n", file = logfile, append=TRUE)
   # Empty file to store output
-  write.table(matrix(c("i", "identical", "different"), nrow=1),
+  cnames <- c("i", "identical", "different", "84-88", "88-92", "92-96", "96-02", "02-14","14-16","16-18")
+  write.table(matrix(cnames, nrow=1),
               file = outfile,
               sep =",",
               col.names = FALSE,
@@ -69,16 +75,41 @@ simmiad <- function(
       mean_dispersal_distance = mean_dispersal_distance,
       outcrossing_rate = outcrossing_rate,
       verbose = F,
-      return_all = F
+      return_all = T
     )
 
-    # Pick a row to use as a transect.
-    transect_row <- sample(1:grid_size, 1)
-    # Pull out that transect.
-    transect_geno <- sm[transect_row,]
+    # Get positions for a random transect.
+    if(is.null(transect_length)) transect_length <- grid_size
+    if(transect_length > grid_size){
+      stop("Transect length must be smaller than grid size.")
+    }
+    # Choose a row.
+    tx <- sample(1:grid_size, 1)
+    # Choose a transect of length `transect_length` along that row.
+    transect_start <- sample(1:(grid_size - transect_length + 1),1)
+    ty <- transect_start : (-1 + transect_start + transect_length)
 
+    # Spatial clustering
+    # Pull out that transect in the final generation.
+    transect_geno <- sm[[nsims]][tx, ty]
     # Get the mean distances between identical and non-identical genotypes.
-    output <- matrix(c(i=i, transect_clustering(transect_geno, 1:grid_size)), nrow = 1)
+    spatial <- transect_clustering(transect_geno, 1:transect_length)
+
+    # Temporal stability
+    # Positions in generations corresponding to 1984 to 2018 (zero is 2018).
+    gx <- length(sm)- c(34, 30, 26,22,16, 4,2,0)
+    # Run transect_stability on each pair of sampling years.
+    temporal <- sapply(2:8,
+           function(g){
+             transect_stability(
+               sm[[gx[g-1]]],
+               sm[[gx[g  ]]]
+             )
+           }
+    )
+
+    # Create a row of output data.
+    output <- matrix(c(i=i, spatial, temporal), nrow = 1)
     output <- round(output, 3)
 
     # Write to disk.

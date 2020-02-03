@@ -10,6 +10,7 @@ simmiad(
   outcrossing_rate,
   n_generations,
   n_starting_genotypes = 124,
+  transect_length = NULL,
   filename = "simmiad",
   nsims
 )
@@ -25,19 +26,24 @@ to that.}
 \item{outcrossing_rate}{Float between 0 and 1. Probability that an individual
 is outcrossed.}
 
-\item{n_generations}{Int >0. Number of generations to run the simulations.}
+\item{n_generations}{Int >34. Number of generations to run the simulations.}
 
 \item{n_starting_genotypes}{Int >0. Number of initial genotypes to start with.
 Defaults to 124.}
+
+\item{transect_length}{Int between 0 and grid_size. Number of sampling points
+to draw a transect for.}
 
 \item{filename}{Str. Directory where output and log file should be saved.}
 
 \item{nsims}{Int >0. Number of replicate populations to simulate.}
 }
 \value{
-Nothing will be printed on screeen, but two files are saved to disk:
-A CSV file giving genotype distances between identical and
-non-identical plants, and a log file giving simulation details.
+Nothing will be printed on screeen, but two files are saved to disk:\n
+1. A CSV file giving genotype distances between identical and
+non-identical plants, and the output of transect_stability for each pair of
+sampling years.\n
+2. A log file giving simulation details.
 }
 \description{
 `simmiad` Simulates multiple replicate populations under a set of input

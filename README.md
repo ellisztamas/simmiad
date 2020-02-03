@@ -25,6 +25,7 @@ This simulates a population on an evenly-spaced grid of sampling points through 
 This makes certain assumptions that it is good to be explicit about:
 
 * There are no differences in fitness between genotypes, or genotype-by-environment interactions for fitness with a heterogeneous landscape.
+* Population density is even across the landscape.
 * Seed dispersal distances are exponentially distributed. I am hoping dispersal is primarily through gravity and is fairly short scale. If there is something more complicated happening, for example additional longer-distance dispersal by rodents, this could be modelled with some kind of mixture of distributions, This would complicate things.
 * Outcrossing is random. In reality there will be some kind of pollen dispersal kernel shape, but I have no idea how that should look here.
 * Seed dispersal and outcrossing rates/distances do not change through time.

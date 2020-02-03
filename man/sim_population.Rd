@@ -25,7 +25,7 @@ to that.}
 \item{outcrossing_rate}{Float between 0 and 1. Probability that an individual
 is outcrossed.}
 
-\item{n_generations}{Int >0. Number of generations to run the simulations.}
+\item{n_generations}{Int >34. Number of generations to run the simulations.}
 
 \item{n_starting_genotypes}{Int >0. Number of initial genotypes to start with.
 Defaults to 124.}

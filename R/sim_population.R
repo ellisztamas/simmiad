@@ -30,7 +30,7 @@
 #' to that.
 #' @param outcrossing_rate Float between 0 and 1. Probability that an individual
 #' is outcrossed.
-#' @param n_generations Int >0. Number of generations to run the simulations.
+#' @param n_generations Int >34. Number of generations to run the simulations.
 #' @param n_starting_genotypes Int >0. Number of initial genotypes to start with.
 #' Defaults to 124.
 #' @param verbose Logical. If TRUE, messages about simulation progress will be
@@ -54,6 +54,11 @@ sim_population <- function(
   verbose = TRUE,
   return_all = FALSE
   ){
+
+  if(n_generations < 35){
+    stop("Simulations must run for at least 35 generations.")
+  }
+
   t0 <- proc.time()[3] # Record the time when the simulation started.
   if(verbose) cat("Initialising population.\n")
 
