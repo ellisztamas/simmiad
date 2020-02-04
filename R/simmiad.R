@@ -7,28 +7,31 @@
 #'estimate the degree of clustering in each, and save results to disk. See the
 #'help file `?sim_population` for details of individual population simulations.
 #'
-#'In the final generation of each population, a single transect is taken through
+#'For each simulation, `simmiad` draws a random horizontal transect and saves
+#'two kinds of summary information about this transect to disk. First,
+#'in the final generation of each population, a single transect is taken through
 #'a random row of the grid, and the degree of clustering estimated using
 #'`transect_cluster`. This summarises the mean distance between pairs of
-#'identical genotypes and between pairs of non-identical genotypes. Summary data
-#'are saved to disk in a CSV file.
-#'
-#'Need to add sth about parallelising.
+#'identical genotypes and between pairs of non-identical genotypes.
+#'Second, it estimates the spatial stability of the populations by calculating
+#'how often a sampling point is occupied by idnetical genotypes at different
+#'time points. This is done for the equivalent of pairs of successive real
+#'sampling years (1984 to 1988, 1988 to 1992 etc).
 #'
 #'@inheritParams sim_population
 #'@param nsims Int >0. Number of replicate populations to simulate.
 #'@param transect_length Int between 0 and grid_size. Number of sampling points
-#'to draw a transect for.
+#'to draw a transect for. Defaults to `grid_size`.
 #'@param filename Str. Directory where output and log file should be saved.
 #'
-#'@return Nothing will be printed on screeen, but two files are saved to disk:\n
+#'@return Nothing will be printed on screeen, but two files are saved to disk:
 #'1. A CSV file giving genotype distances between identical and
 #'non-identical plants, and the output of transect_stability for each pair of
-#'sampling years.\n
+#'sampling years.
 #'2. A log file giving simulation details.
 #'
 #'@author Tom Ellis
-#'@seealso `sim_population`, `transect_cluster`
+#'@seealso `sim_population`, `transect_cluster`, `transect_stability`
 #'@export
 #'
 simmiad <- function(
