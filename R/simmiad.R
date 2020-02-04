@@ -94,7 +94,7 @@ simmiad <- function(
 
     # Spatial clustering
     # Pull out that transect in the final generation.
-    transect_geno <- sm[[nsims]][tx, ty]
+    transect_geno <- sm[[n_generations]][tx, ty]
     # Get the mean distances between identical and non-identical genotypes.
     spatial <- transect_clustering(transect_geno, 1:transect_length)
 
