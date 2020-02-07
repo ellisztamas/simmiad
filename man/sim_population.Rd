@@ -48,7 +48,7 @@ Simulate a single population through time.
 \details{
 This sets up a population with \eqn{N} squared sampling points arranged at 1m
 intervals on a grid.
-Sampling points are then population by randomly assigning one of a set of
+Sampling points are then populated by randomly assigning one of a set of
 starting genotypes to each starting point (i.e. there is no initial spatial
 structure).
 In the next generation, the genotype at each sampling point is filled by seed

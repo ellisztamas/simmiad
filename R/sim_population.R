@@ -2,18 +2,22 @@
 #'
 #' Simulate a single population through time.
 #'
-#' This sets up a population with \eqn{N} squared sampling points arranged at 1m
-#' intervals on a grid.
-#' Sampling points are then population by randomly assigning one of a set of
-#' starting genotypes to each starting point (i.e. there is no initial spatial
-#' structure).
-#' In the next generation, the genotype at each sampling point is filled by seed
-#' dispersal, assuming dispersal distances are exponentially distributed.
-#' A single donor plant is chosen from the previous generation in proportion to
-#' the probability of seeds travelling that distance under the exponential.
-#' To account for outcrossing, each establishing seed is randomly assigned to be
-#' outcrossed seed or not in proportion to a given outcrossing rate.
-#' Outcrossed seeds are given a new unique genotype.
+#'`sim_population` simulates a population on an evenly-spaced grid of sampling
+#'points through time:
+#'
+#'\enumerate{
+#'    \item{Sampling points are populated at random with a set of unique
+#'    starting genotypes.}
+#'    \item{In the next generation, each sampling point is filled by one seed
+#'    from the same or a different sampling point from a previous generation.
+#'    Whichever genotype was at the donor sampling point now occupies the focal
+#'    sampling point. I assume seed dispersal distances are exponentially
+#'    distributed with some mean value that is used as an input parameter.}
+#'    \item{To allow for a seed bank, each seed can be drawn from any previous
+#'    generation. The generation is drawn from a poisson distribution.}
+#'    \item{Each seed has some probability of having been the product of an
+#'    outcrossing event. If so, it is assigned a new unique genotype.}
+#' }
 #'
 #' Because the total number of sampling points increases as the square of grid
 #' width, the number of individuals is the limiting factor on simulations.
@@ -32,12 +36,15 @@
 #' is outcrossed.
 #' @param n_generations Int >34. Number of generations to run the simulations.
 #' @param n_starting_genotypes Int >0. Number of initial genotypes to start with.
-#' Defaults to 124.
+#' Defaults to 50
+#' @param dormancy_rate Float >0. Strength of the seedbank. This is the rate
+#' parameter for the poisson distribution. Giving zero will simulate no seed
+#' bank.
 #' @param verbose Logical. If TRUE, messages about simulation progress will be
-#' printed. Defaults tp
+#' printed. Defaults to TRUE.
 #' @param return_all Logical. If TRUE, the entire population history will be
 #' returned as a list. If FALSE, only the final generation is returned as a
-#' vector.
+#' vector. Defaults to TRUE.
 #'
 #' @return If `return_all` is TRUE, genotypes over the entire population history
 #' will be returned as a list. If FALSE, only genotypes in the final generation
@@ -50,14 +57,11 @@ sim_population <- function(
   mean_dispersal_distance,
   outcrossing_rate,
   n_generations,
-  n_starting_genotypes = 124,
+  n_starting_genotypes = 50,
+  dormancy_rate=0,
   verbose = TRUE,
-  return_all = FALSE
+  return_all = TRUE
   ){
-
-  if(n_generations < 35){
-    stop("Simulations must run for at least 35 generations.")
-  }
 
   t0 <- proc.time()[3] # Record the time when the simulation started.
   if(verbose) cat("Initialising population.\n")
@@ -67,9 +71,10 @@ sim_population <- function(
 
   # We will keep track of the genotype at each sampling point using a list with
   # one element for each generation
-  pop <- vector('list', n_generations)
+  pop <- matrix(NA, nrow=n_generations, ncol=grid_size^2)
+  # pop <- vector('list', n_generations)
   # Initialise the first generation with a random draw from the genotypes.
-  pop[[1]] <- sample(iggs, size = grid_size^2, replace = T)
+  pop[1,] <- sample(iggs, size = grid_size^2, replace = T)
   # Data.frame of grid positions for each plant.
   coords <- data.frame(
     x   = rep(1:grid_size, grid_size),
@@ -105,28 +110,55 @@ sim_population <- function(
   if(verbose) close(pb)
   # Coerce seed_disp_draws from a list to a matrix, with a row for each sampling
   # point and a column for each generation.
-  seed_disp_draws <- do.call('rbind', seed_disp_draws)
+  seed_disp_draws <- do.call('cbind', seed_disp_draws)
 
-  # OUTCROSSING AND TRACKING GENOTYPES
-  # This loop over generations does two things:
+  # OUTCROSSING, SEED BANK AND TRACKING GENOTYPES
+  # This loop over generations does three things:
   # (1) Uses the seed dispersal events simulated above to put new genotypes into
   # each sampling point.
-  # (2) Chooses sampling points at random to receive outcrossed pollen and
-  # and create a new offspring (unqiue) genotype at those sampling points.
+  # (2) Draws those genotypes from the seed bank by choosing which of the
+  # previous generations each seed should come from.
+  # (3) Chooses sampling points at random to receive outcrossed pollen and
+  # and create a new (unique) offspring genotype at those sampling points.
   if(verbose) cat("Simulating outcrossing and updating genotypes based on dispersal events.\n")
   for(g in 2:n_generations){
-    # Update the new generation by drawing seeds from the previous generation.
-    pop[[g]] <- pop[[g-1]][seed_disp_draws[,g-1]]
+    # positions of seed donors for each sampling point.
+    donor_positions <- seed_disp_draws[g-1,]
+
+    # Choose how many generations back to draw seeds from the seed bank.
+    seed_bank <- rpois(grid_size^2, lambda = dormancy_rate) + 1
+    # If seeds are drawn from a generation before generation 1, set to 1.
+    seed_bank[seed_bank >= g] <- g-1
+
+    # Pull out the previous few generations from which to draw seeds.
+    # Note that the direction has changed: the previous year is at the top,
+    # and subsequent years following that.
+    d <- pop[g- (1:max(seed_bank)),]
+
+    # Pull seeds from the seed bank.
+    if(all(seed_bank == 1)){
+      # If every seed is drawn from the previous generation, just return that.
+      # This has to be done separately because suddenly d is a vector, not a matrix.
+      drawn_genotypes <- d[donor_positions]
+    } else {
+      # If there is a seed bank, d is a matrix
+      # Pull out the correct genotypes from the rows of seed bank.
+      drawn_genotypes <- sapply(1:grid_size^2, function(i) d[seed_bank[i], donor_positions[i]])
+    }
+    # Update the new generation.
+    pop[g,] <- drawn_genotypes
 
     # Choose plants at random to receive outcrossed pollen.
     cross01 <- rbinom(grid_size^2, 1, outcrossing_rate)
     cross01 <- as.logical(cross01)
     # Give these plants a new unique genotype by appending generation number and
     # and integer from 1 to the number of outcrossers.
-    pop[[g]][cross01] <- paste(pop[[g]][cross01],"_", g, ".", 1:sum(cross01), sep="")
+    pop[g, cross01] <- paste(pop[g,][cross01],"_", g, ".", 1:sum(cross01), sep="")
   }
-  # Each population is currently a vector. Coerce to a grid.
-  pop <- lapply(pop, function(x) matrix(x, nrow=grid_size))
+
+  # Pop is currently a matrix of dimensions n_generations x grid_size^2
+  # Coerce to a list of n_generations matrices, each of grid_size x grid_size
+  pop <- lapply(1:n_generations, function(i) matrix(pop[i,], nrow=grid_size))
 
   t1 <- proc.time()[3]
   if(verbose) cat("\nSimulation complete after", round(t1-t0, 2), "seconds.\n")
@@ -134,6 +166,6 @@ sim_population <- function(
   if(return_all){
     return(pop)
   } else {
-    return(pop[[g]])
+    return(pop[n_generations,])
   }
 }

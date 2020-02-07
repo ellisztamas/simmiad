@@ -19,7 +19,8 @@ An R package for simulating a population of wild Emmer wheat to ask whether the 
 This simulates a population on an evenly-spaced grid of sampling points through time:
 
 * Sampling points are populated at random with a set of unqiue starting genotypes.
-* In the next generation, each sampling point is filled by one seed from the same or a different sampling point. Whatever genotype was at the donor sampling point now occupies the focal sampling point. I assume seed dispersal distances are exponentially distributed with some mean value that is used as an input parameter.
+* In the next generation, each sampling point is filled by one seed from the same or a different sampling point from a previous generation. Whichever genotype was at the donor sampling point now occupies the focal sampling point. I assume seed dispersal distances are exponentially distributed with some mean value that is used as an input parameter.
+* To allow for a seed bank, each seed can be drawn from any previous generation. The generation is drawn from a poisson distribution.
 * Each seed has some probability of having been the product of an outcrossing event. If so, it is assigned a new unique genotype.
 
 This makes certain assumptions that it is good to be explicit about:
