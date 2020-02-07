@@ -9,9 +9,10 @@ sim_population(
   mean_dispersal_distance,
   outcrossing_rate,
   n_generations,
-  n_starting_genotypes = 124,
+  n_starting_genotypes = 50,
+  dormancy_rate = 0,
   verbose = TRUE,
-  return_all = FALSE
+  return_all = TRUE
 )
 }
 \arguments{
@@ -28,14 +29,18 @@ is outcrossed.}
 \item{n_generations}{Int >34. Number of generations to run the simulations.}
 
 \item{n_starting_genotypes}{Int >0. Number of initial genotypes to start with.
-Defaults to 124.}
+Defaults to 50}
+
+\item{dormancy_rate}{Float >0. Strength of the seedbank. This is the rate
+parameter for the poisson distribution. Giving zero will simulate no seed
+bank.}
 
 \item{verbose}{Logical. If TRUE, messages about simulation progress will be
-printed. Defaults tp}
+printed. Defaults to TRUE.}
 
 \item{return_all}{Logical. If TRUE, the entire population history will be
 returned as a list. If FALSE, only the final generation is returned as a
-vector.}
+vector. Defaults to TRUE.}
 }
 \value{
 If `return_all` is TRUE, genotypes over the entire population history
@@ -46,18 +51,22 @@ is returned as a vector.
 Simulate a single population through time.
 }
 \details{
-This sets up a population with \eqn{N} squared sampling points arranged at 1m
-intervals on a grid.
-Sampling points are then populated by randomly assigning one of a set of
-starting genotypes to each starting point (i.e. there is no initial spatial
-structure).
-In the next generation, the genotype at each sampling point is filled by seed
-dispersal, assuming dispersal distances are exponentially distributed.
-A single donor plant is chosen from the previous generation in proportion to
-the probability of seeds travelling that distance under the exponential.
-To account for outcrossing, each establishing seed is randomly assigned to be
-outcrossed seed or not in proportion to a given outcrossing rate.
-Outcrossed seeds are given a new unique genotype.
+`sim_population` simulates a population on an evenly-spaced grid of sampling
+points through time:
+
+\enumerate{
+   \item{Sampling points are populated at random with a set of unique
+   starting genotypes.}
+   \item{In the next generation, each sampling point is filled by one seed
+   from the same or a different sampling point from a previous generation.
+   Whichever genotype was at the donor sampling point now occupies the focal
+   sampling point. I assume seed dispersal distances are exponentially
+   distributed with some mean value that is used as an input parameter.}
+   \item{To allow for a seed bank, each seed can be drawn from any previous
+   generation. The generation is drawn from a poisson distribution.}
+   \item{Each seed has some probability of having been the product of an
+   outcrossing event. If so, it is assigned a new unique genotype.}
+}
 
 Because the total number of sampling points increases as the square of grid
 width, the number of individuals is the limiting factor on simulations.

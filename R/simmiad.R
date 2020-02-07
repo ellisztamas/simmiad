@@ -15,8 +15,8 @@
 #'identical genotypes and between pairs of non-identical genotypes.
 #'Second, it estimates the spatial stability of the populations by calculating
 #'how often a sampling point is occupied by idnetical genotypes at different
-#'time points. This is done for the equivalent of pairs of successive real
-#'sampling years (1984 to 1988, 1988 to 1992 etc).
+#'time points. This is done by comparing the final generation to each of the
+#'twelve previous generations.
 #'
 #'@inheritParams sim_population
 #'@param nsims Int >0. Number of replicate populations to simulate.
@@ -39,7 +39,8 @@ simmiad <- function(
   mean_dispersal_distance,
   outcrossing_rate,
   n_generations,
-  n_starting_genotypes = 124,
+  n_starting_genotypes = 50,
+  dormancy_rate=0,
   transect_length = NULL,
   filename='simmiad',
   nsims){
@@ -60,7 +61,7 @@ simmiad <- function(
 
   cat("\nBeginning",nsims,"simulations...\n", file = logfile, append=TRUE)
   # Empty file to store output
-  cnames <- c("i", "identical", "different", "84-88", "88-92", "92-96", "96-02", "02-14","14-16","16-18")
+  cnames <- c("i", "identical", "different", paste("ts", 1:12, sep="_"))
   write.table(matrix(cnames, nrow=1),
               file = outfile,
               sep =",",
@@ -100,16 +101,13 @@ simmiad <- function(
 
     # Temporal stability
     # Positions in generations corresponding to 1984 to 2018 (zero is 2018).
-    gx <- length(sm)- c(34, 30, 26,22,16, 4,2,0)
-    # Run transect_stability on each pair of sampling years.
-    temporal <- sapply(2:8,
-           function(g){
-             transect_stability(
-               sm[[gx[g-1]]],
-               sm[[gx[g  ]]]
-             )
-           }
-    )
+    temporal <- numeric(12)
+    for(g in 1:12){
+      temporal[g] <- transect_stability(
+        sm[[length(sm)]],
+        sm[[length(sm)-g]]
+      )
+    }
 
     # Create a row of output data.
     output <- matrix(c(i=i, spatial, temporal), nrow = 1)

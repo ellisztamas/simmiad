@@ -9,7 +9,8 @@ simmiad(
   mean_dispersal_distance,
   outcrossing_rate,
   n_generations,
-  n_starting_genotypes = 124,
+  n_starting_genotypes = 50,
+  dormancy_rate = 0,
   transect_length = NULL,
   filename = "simmiad",
   nsims
@@ -29,7 +30,11 @@ is outcrossed.}
 \item{n_generations}{Int >34. Number of generations to run the simulations.}
 
 \item{n_starting_genotypes}{Int >0. Number of initial genotypes to start with.
-Defaults to 124.}
+Defaults to 50}
+
+\item{dormancy_rate}{Float >0. Strength of the seedbank. This is the rate
+parameter for the poisson distribution. Giving zero will simulate no seed
+bank.}
 
 \item{transect_length}{Int between 0 and grid_size. Number of sampling points
 to draw a transect for. Defaults to `grid_size`.}
@@ -62,8 +67,8 @@ a random row of the grid, and the degree of clustering estimated using
 identical genotypes and between pairs of non-identical genotypes.
 Second, it estimates the spatial stability of the populations by calculating
 how often a sampling point is occupied by idnetical genotypes at different
-time points. This is done for the equivalent of pairs of successive real
-sampling years (1984 to 1988, 1988 to 1992 etc).
+time points. This is done by comparing the final generation to each of the
+twelve previous generations.
 }
 \seealso{
 `sim_population`, `transect_cluster`, `transect_stability`
