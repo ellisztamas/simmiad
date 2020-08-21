@@ -58,9 +58,17 @@ sim_population <- function(
   n_sample_points,
   sample_spacing
 ){
+  if(sample_spacing < density) {
+    warning("Distances between sampling points are less than mean plant density. It is likely that the same plant will be sampled twice.")
+  }
   # Plants exist in a box centred on zero.
   # Range limit is half the width of the box.
   range_limit <- sqrt(population_size / density) / 2
+  # Throw an error if the transect is longer than the width of the population
+  if((n_sample_points-1) * sample_spacing > 2*range_limit){
+    stop("Total transect length (n_sample_points-1 * sample_spacing) is longer than the width of population range.")
+  }
+
   # Empty list to store transects in each generation
   samples <- vector(mode = "list", length = n_generations)
 
@@ -85,6 +93,7 @@ sim_population <- function(
     n_sample_points = n_sample_points,
     sample_spacing = sample_spacing,
     range_limit = range_limit)
+
   samples[[1]] <- geno[tx]
 
   # Loop through subsequent generations
