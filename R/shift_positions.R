@@ -13,6 +13,7 @@
 #'
 #' @return A matrix matching the shape of the input `coords`, but with values
 #' shifted by some exponential distance.
+#' @export
 shift_positions <- function(coords, mean_dispersal_distance, range_limit){
   if(!is.matrix(coords)){
     stop("`coords` should be a matrix.")

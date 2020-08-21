@@ -5,23 +5,22 @@
 \title{Simulate a population}
 \usage{
 sim_population(
-  grid_size,
+  population_size,
   mean_dispersal_distance,
   outcrossing_rate,
   n_generations,
   n_starting_genotypes = 50,
-  dormancy_rate = 0,
-  verbose = TRUE,
-  return_all = TRUE
+  density = 3,
+  n_sample_points = 30,
+  sample_spacing = 5
 )
 }
 \arguments{
-\item{grid_size}{Int >0. Number of rows in the grid. Population size will be
-the squre of this number.}
+\item{population_size}{Int >0. Number of individuls in the population.}
 
-\item{mean_dispersal_distance}{Float >0. Mean seed dispersal distance.
-Sampling points are arranged at intervals of 1m, so this should be relative
-to that.}
+\item{mean_dispersal_distance}{Float >0. Mean seed dispersal distance. The
+reciprocal of this is used as the rate parameter to draw from the exponential
+distribution.}
 
 \item{outcrossing_rate}{Float between 0 and 1. Probability that an individual
 is outcrossed.}
@@ -31,50 +30,48 @@ is outcrossed.}
 \item{n_starting_genotypes}{Int >0. Number of initial genotypes to start with.
 Defaults to 50}
 
-\item{dormancy_rate}{Float >0. Strength of the seedbank. This is the rate
-parameter for the poisson distribution. Giving zero will simulate no seed
-bank.}
+\item{density}{Float >0. Average density of plants per square metre.}
 
-\item{verbose}{Logical. If TRUE, messages about simulation progress will be
-printed. Defaults to TRUE.}
+\item{n_sample_points}{Number of points to sample along the transect.}
 
-\item{return_all}{Logical. If TRUE, the entire population history will be
-returned as a list. If FALSE, only the final generation is returned as a
-vector. Defaults to TRUE.}
+\item{sample_spacing}{Distance between sampling points.}
 }
 \value{
-If `return_all` is TRUE, genotypes over the entire population history
-will be returned as a list. If FALSE, only genotypes in the final generation
-is returned as a vector.
+A list of genotypes recorded at each sampling point in each
+generation.
 }
 \description{
-Simulate a single population through time.
+Simulate a single population through time on a torus, and sample a transect
+for each generation.
 }
 \details{
-`sim_population` simulates a population on an evenly-spaced grid of sampling
-points through time:
-
+\code{sim_population} simulates a population of annuals dispersing in continuous
+space following exponentially distributed seed dispersal distances.
 \enumerate{
-   \item{Sampling points are populated at random with a set of unique
-   starting genotypes.}
-   \item{In the next generation, each sampling point is filled by one seed
-   from the same or a different sampling point from a previous generation.
-   Whichever genotype was at the donor sampling point now occupies the focal
-   sampling point. I assume seed dispersal distances are exponentially
-   distributed with some mean value that is used as an input parameter.}
-   \item{To allow for a seed bank, each seed can be drawn from any previous
-   generation. The generation is drawn from a poisson distribution.}
-   \item{Each seed has some probability of having been the product of an
-   outcrossing event. If so, it is assigned a new unique genotype.}
+\item Individuals are drawn from a set of starting genotypes and randomly
+distributed in a grid. Individuals are labelled by their genotype as 'g'
+followed by an integer label.
+\item Individuals are chosen at random to found the next generation. They
+move seed dispersal to new location, with distances drawn from an exponential
+distribution. The population exists on a torus to eliminat edge effects;
+if dispersal takes a plant of the edge of the range it moves to the other
+side of the range.
+\item A subset of the new generation are chosen to have been germinated from
+outcrossed seed. If so, they are given a new unique label by appending their
+current genotype label by the generation number plus a unique integer.
+\item At each generation a transect through the population is drawn at x=0 with
+sampling points at equally spaced intervals. The plant closest to each
+sampling point is recorded.
 }
 
-Because the total number of sampling points increases as the square of grid
-width, the number of individuals is the limiting factor on simulations.
-To speed things up `sim_population` first draws dispersal distances for
-individual sampling points for all generations at once, and then fills in
-the genotypes in a second step.
-This is valid if we assume no differences in fitness or dispersal between
-genotypes or though time (at least on average).
+A seed bank is not currently implemented.
+
+Plants exist within a box whose size is determined by the population size and
+plant density (more plants at lower density = larger box). \code{sim_population}
+will throw and error if the length of the transect
+(\code{(n_sample_points-1) * sample_spacing}) is longer than the width of the box.
+In this case, you can either make the population larger and less denser, or
+choose fewer, closer sampling points.
 }
 \author{
 Tom Ellis

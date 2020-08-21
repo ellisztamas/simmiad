@@ -10,7 +10,7 @@ transect_clustering(genotypes, positions)
 \item{genotypes}{Vector of genotype labels}
 
 \item{positions}{Vector of positions along a linear transect. Should be the
-same length as `genotypes`.}
+same length as \code{genotypes}.}
 }
 \value{
 Mean distances between sampling points with identical and
@@ -20,7 +20,7 @@ non-identical genotype.
 Estimate the degree of spatial clustering along a transect
 }
 \details{
-`transect_clustering` estimates the degree of non-randomness in the
+\code{transect_clustering} estimates the degree of non-randomness in the
 distribution of genotypes along a linear transect by comparing the mean
 pairwise distances between sampling points with the same genotype to mean
 pairwise distances between sampling points with non-identical genotypes.

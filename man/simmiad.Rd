@@ -17,12 +17,9 @@ simmiad(
 )
 }
 \arguments{
-\item{grid_size}{Int >0. Number of rows in the grid. Population size will be
-the squre of this number.}
-
-\item{mean_dispersal_distance}{Float >0. Mean seed dispersal distance.
-Sampling points are arranged at intervals of 1m, so this should be relative
-to that.}
+\item{mean_dispersal_distance}{Float >0. Mean seed dispersal distance. The
+reciprocal of this is used as the rate parameter to draw from the exponential
+distribution.}
 
 \item{outcrossing_rate}{Float between 0 and 1. Probability that an individual
 is outcrossed.}
@@ -32,12 +29,8 @@ is outcrossed.}
 \item{n_starting_genotypes}{Int >0. Number of initial genotypes to start with.
 Defaults to 50}
 
-\item{dormancy_rate}{Float >0. Strength of the seedbank. This is the rate
-parameter for the poisson distribution. Giving zero will simulate no seed
-bank.}
-
 \item{transect_length}{Int between 0 and grid_size. Number of sampling points
-to draw a transect for. Defaults to `grid_size`.}
+to draw a transect for. Defaults to \code{grid_size}.}
 
 \item{filename}{Str. Directory where output and log file should be saved.}
 
@@ -45,25 +38,27 @@ to draw a transect for. Defaults to `grid_size`.}
 }
 \value{
 Nothing will be printed on screeen, but two files are saved to disk:
-1. A CSV file giving genotype distances between identical and
+\enumerate{
+\item A CSV file giving genotype distances between identical and
 non-identical plants, and the output of transect_stability for each pair of
 sampling years.
-2. A log file giving simulation details.
+\item A log file giving simulation details.
+}
 }
 \description{
-`simmiad` Simulates multiple replicate populations under a set of input
+\code{simmiad} Simulates multiple replicate populations under a set of input
 parameters, and outputs a summary of the clustering among genotypes.
 }
 \details{
-`simmiad` is a wrapper function to call multiple instances of `sim_population`,
+\code{simmiad} is a wrapper function to call multiple instances of \code{sim_population},
 estimate the degree of clustering in each, and save results to disk. See the
-help file `?sim_population` for details of individual population simulations.
+help file \code{?sim_population} for details of individual population simulations.
 
-For each simulation, `simmiad` draws a random horizontal transect and saves
+For each simulation, \code{simmiad} draws a random horizontal transect and saves
 two kinds of summary information about this transect to disk. First,
 in the final generation of each population, a single transect is taken through
 a random row of the grid, and the degree of clustering estimated using
-`transect_cluster`. This summarises the mean distance between pairs of
+\code{transect_cluster}. This summarises the mean distance between pairs of
 identical genotypes and between pairs of non-identical genotypes.
 Second, it estimates the spatial stability of the populations by calculating
 how often a sampling point is occupied by idnetical genotypes at different
@@ -71,7 +66,7 @@ time points. This is done by comparing the final generation to each of the
 twelve previous generations.
 }
 \seealso{
-`sim_population`, `transect_cluster`, `transect_stability`
+\code{sim_population}, \code{transect_cluster}, \code{transect_stability}
 }
 \author{
 Tom Ellis
