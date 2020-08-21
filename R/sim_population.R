@@ -91,8 +91,8 @@ sim_population <- function(
   tx <- take_transect(
     coords,
     n_sample_points = n_sample_points,
-    sample_spacing = sample_spacing,
-    range_limit = range_limit)
+    sample_spacing = sample_spacing
+    )
 
   samples[[1]] <- geno[tx]
 
@@ -120,8 +120,7 @@ sim_population <- function(
     tx <- take_transect(
       coords,
       n_sample_points = n_sample_points,
-      sample_spacing = sample_spacing,
-      range_limit = range_limit
+      sample_spacing = sample_spacing
     )
     samples[[g]] <- geno[tx]
   }

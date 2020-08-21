@@ -43,7 +43,7 @@ simmiad <- function(
   nsims
 ){
   t0 <- proc.time()[3] # record the starting time.
-  if(n_generations < 12) {
+  if(n_generations < 13) {
     stop("n_generations must be at least 12.")
   }
   # Print message about sims
