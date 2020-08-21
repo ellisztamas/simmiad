@@ -9,10 +9,10 @@ sim_population(
   mean_dispersal_distance,
   outcrossing_rate,
   n_generations,
-  n_starting_genotypes = 50,
-  density = 3,
-  n_sample_points = 30,
-  sample_spacing = 5
+  n_starting_genotypes,
+  density,
+  n_sample_points,
+  sample_spacing
 )
 }
 \arguments{
@@ -25,7 +25,7 @@ distribution.}
 \item{outcrossing_rate}{Float between 0 and 1. Probability that an individual
 is outcrossed.}
 
-\item{n_generations}{Int >34. Number of generations to run the simulations.}
+\item{n_generations}{Int >12. Number of generations to run the simulations.}
 
 \item{n_starting_genotypes}{Int >0. Number of initial genotypes to start with.
 Defaults to 50}
@@ -70,7 +70,7 @@ Plants exist within a box whose size is determined by the population size and
 plant density (more plants at lower density = larger box). \code{sim_population}
 will throw and error if the length of the transect
 (\code{(n_sample_points-1) * sample_spacing}) is longer than the width of the box.
-In this case, you can either make the population larger and less denser, or
+In this case, you can either make the population larger and less dense, or
 choose fewer, closer sampling points.
 }
 \author{

@@ -36,7 +36,7 @@
 #' distribution.
 #' @param outcrossing_rate Float between 0 and 1. Probability that an individual
 #' is outcrossed.
-#' @param n_generations Int >34. Number of generations to run the simulations.
+#' @param n_generations Int >12. Number of generations to run the simulations.
 #' @param n_starting_genotypes Int >0. Number of initial genotypes to start with.
 #' Defaults to 50
 #' @param density Float >0. Average density of plants per square metre.
@@ -53,10 +53,10 @@ sim_population <- function(
   mean_dispersal_distance,
   outcrossing_rate,
   n_generations,
-  n_starting_genotypes = 50,
-  density = 3,
-  n_sample_points = 30,
-  sample_spacing = 5
+  n_starting_genotypes,
+  density,
+  n_sample_points,
+  sample_spacing
 ){
   # Plants exist in a box centred on zero.
   # Range limit is half the width of the box.
