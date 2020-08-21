@@ -20,7 +20,6 @@
 #'
 #'@inheritParams sim_population
 #'@param nsims Int >0. Number of replicate populations to simulate.
-#'@param filename Str. Directory where output and log file should be saved.
 #'
 #'@return Nothing will be printed on screeen, but two files are saved to disk:
 #'1. A CSV file giving genotype distances between identical and
@@ -41,8 +40,7 @@ simmiad <- function(
   density = 3,
   n_sample_points = 30,
   sample_spacing = 5,
-  nsims,
-  filename
+  nsims
 ){
   t0 <- proc.time()[3] # record the starting time.
   if(n_generations < 12) {
@@ -54,13 +52,6 @@ simmiad <- function(
   # Print message about sims
   cat("\nSimulations of wild Emmer wheat begun on", format(Sys.time(), "%a %b %d %X %Y"), "\n")
   cat("Output will be save to",outfile,"and progress recorded in",logfile,"\n")
-  # Write some messages about simulation parameters to a log file.
-  cat("Log file for simulations of wild Emmer wheat begun on", format(Sys.time(), "%a %b %d %X %Y"), ".\n", file = logfile)
-  cat("See ", filename,".csv for simulation output.\n\n", sep="", file = logfile, append = TRUE)
-
-  cat("Seed diserpsal distances are exponentially distributed with mean =", mean_dispersal_distance,"metres.\n", file = logfile, append = TRUE)
-  cat("Plants outcross with probability ",outcrossing_rate,".\n", sep = "", file = logfile, append=TRUE)
-  cat("\nBeginning",nsims,"simulations...\n", file = logfile, append=TRUE)
 
   # Empty list to store data
   output <- vector(mode = "list", length = nreps)
@@ -100,11 +91,10 @@ simmiad <- function(
   colnames(output) <- c("i", "identical", "different", "t1", "t2", "t4", "t6", "t12")
   output$i <- as.integer(output$i)
 
-  write.csv(output, outfile, row.names = F)
+  return(output)
+
 
   t1 <- proc.time()[3] # record the end time.
 
-  cat("\nSimulations completed", format(Sys.time(), "%a %b %d %X %Y"), "after", round((t1-t0)/60, 2), "minutes\n",
-      file = logfile, append=T)
   cat("\nSimulations completed", format(Sys.time(), "%a %b %d %X %Y"), "after", round((t1-t0)/60, 2), "minutes.\n\n\n")
 }
