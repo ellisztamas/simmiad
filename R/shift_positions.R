@@ -27,6 +27,7 @@ shift_positions <- function(coords, mean_dispersal_distance, range_limit){
   if(mean_dispersal_distance > range_limit){
     stop("`mean_dispersal_distance` must be less than the range limit.")
   }
+  population_size <- nrow(coords)
   # Draw a total dispersal distance for each individual
   d <- rexp(
     n=population_size,

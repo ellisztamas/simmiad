@@ -27,7 +27,7 @@
 #' plant density (more plants at lower density = larger box). `sim_population`
 #' will throw and error if the length of the transect
 #' (`(n_sample_points-1) * sample_spacing`) is longer than the width of the box.
-#' In this case, you can either make the population larger and less denser, or
+#' In this case, you can either make the population larger and less dense, or
 #' choose fewer, closer sampling points.
 #'
 #' @param population_size Int >0. Number of individuls in the population.
@@ -83,7 +83,8 @@ sim_population <- function(
   tx <- take_transect(
     coords,
     n_sample_points = n_sample_points,
-    sample_spacing = sample_spacing)
+    sample_spacing = sample_spacing,
+    range_limit = range_limit)
   samples[[1]] <- geno[tx]
 
   # Loop through subsequent generations
@@ -110,7 +111,8 @@ sim_population <- function(
     tx <- take_transect(
       coords,
       n_sample_points = n_sample_points,
-      sample_spacing = sample_spacing
+      sample_spacing = sample_spacing,
+      range_limit = range_limit
     )
     samples[[g]] <- geno[tx]
   }
