@@ -46,15 +46,11 @@ simmiad <- function(
   if(n_generations < 12) {
     stop("n_generations must be at least 12.")
   }
-  # Filenames to save output and logs
-  logfile <- paste(filename, "log", sep=".")
-  outfile = paste(filename, "simmiad", sep=".")
   # Print message about sims
   cat("\nSimulations of wild Emmer wheat begun on", format(Sys.time(), "%a %b %d %X %Y"), "\n")
-  cat("Output will be save to",outfile,"and progress recorded in",logfile,"\n")
 
-  # Empty list to store data
-  output <- vector(mode = "list", length = nreps)
+    # Empty list to store data
+  output <- vector(mode = "list", length = nsims)
 
   pb <- txtProgressBar(min = 2, max = nsims, style = 3)
   for(i in 2:nsims){

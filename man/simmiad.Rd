@@ -13,8 +13,7 @@ simmiad(
   density = 3,
   n_sample_points = 30,
   sample_spacing = 5,
-  nsims,
-  filename
+  nsims
 )
 }
 \arguments{
@@ -39,8 +38,6 @@ Defaults to 50}
 \item{sample_spacing}{Distance between sampling points.}
 
 \item{nsims}{Int >0. Number of replicate populations to simulate.}
-
-\item{filename}{Str. Directory where output and log file should be saved.}
 }
 \value{
 Nothing will be printed on screeen, but two files are saved to disk:
