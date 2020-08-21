@@ -3,6 +3,5 @@
 export(shift_positions)
 export(sim_population)
 export(simmiad)
-export(take_transect)
 export(transect_clustering)
 export(transect_stability)

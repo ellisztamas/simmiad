@@ -5,18 +5,21 @@
 \title{Simulate replicate populations}
 \usage{
 simmiad(
-  grid_size,
+  population_size,
   mean_dispersal_distance,
   outcrossing_rate,
   n_generations,
   n_starting_genotypes = 50,
-  dormancy_rate = 0,
-  transect_length = NULL,
-  filename = "simmiad",
-  nsims
+  density = 3,
+  n_sample_points = 30,
+  sample_spacing = 5,
+  nsims,
+  filename
 )
 }
 \arguments{
+\item{population_size}{Int >0. Number of individuls in the population.}
+
 \item{mean_dispersal_distance}{Float >0. Mean seed dispersal distance. The
 reciprocal of this is used as the rate parameter to draw from the exponential
 distribution.}
@@ -24,17 +27,20 @@ distribution.}
 \item{outcrossing_rate}{Float between 0 and 1. Probability that an individual
 is outcrossed.}
 
-\item{n_generations}{Int >34. Number of generations to run the simulations.}
+\item{n_generations}{Int >12. Number of generations to run the simulations.}
 
 \item{n_starting_genotypes}{Int >0. Number of initial genotypes to start with.
 Defaults to 50}
 
-\item{transect_length}{Int between 0 and grid_size. Number of sampling points
-to draw a transect for. Defaults to \code{grid_size}.}
+\item{density}{Float >0. Average density of plants per square metre.}
 
-\item{filename}{Str. Directory where output and log file should be saved.}
+\item{n_sample_points}{Number of points to sample along the transect.}
+
+\item{sample_spacing}{Distance between sampling points.}
 
 \item{nsims}{Int >0. Number of replicate populations to simulate.}
+
+\item{filename}{Str. Directory where output and log file should be saved.}
 }
 \value{
 Nothing will be printed on screeen, but two files are saved to disk:
@@ -54,7 +60,7 @@ parameters, and outputs a summary of the clustering among genotypes.
 estimate the degree of clustering in each, and save results to disk. See the
 help file \code{?sim_population} for details of individual population simulations.
 
-For each simulation, \code{simmiad} draws a random horizontal transect and saves
+For each simulation, \code{simmiad} draws a horizontal transect and saves
 two kinds of summary information about this transect to disk. First,
 in the final generation of each population, a single transect is taken through
 a random row of the grid, and the degree of clustering estimated using
