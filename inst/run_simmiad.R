@@ -67,10 +67,15 @@ output <- simmiad(
   density = opt$density,
   n_sample_points = opt$n_sample_points,
   sample_spacing = opt$sample_spacing,
-  nsims = opt$nsims
+  nsims = opt$nsims,
+  progress = FALSE
 )
 #Save to disk
-write.csv(output, opt$filename, row.names = F)
+write.csv(
+  output,
+  file = paste(opt$filename, "simmiad", sep="."),
+  row.names = F
+  )
 
 t1 <- proc.time()[3] # record the end time.
 cat("\nSimulations completed", format(Sys.time(), "%a %b %d %X %Y"), "after", round((t1-t0)/60, 2), "minutes\n",

@@ -20,6 +20,7 @@
 #'
 #'@inheritParams sim_population
 #'@param nsims Int >0. Number of replicate populations to simulate.
+#'@param progress If TRUE, a progress bar is printed.
 #'
 #'@return Nothing will be printed on screeen, but two files are saved to disk:
 #'1. A CSV file giving genotype distances between identical and
@@ -40,7 +41,8 @@ simmiad <- function(
   density = 3,
   n_sample_points = 30,
   sample_spacing = 5,
-  nsims
+  nsims,
+  progress = TRUE
 ){
   t0 <- proc.time()[3] # record the starting time.
   if(n_generations < 13) {
@@ -52,9 +54,9 @@ simmiad <- function(
     # Empty list to store data
   output <- vector(mode = "list", length = nsims)
 
-  pb <- txtProgressBar(min = 2, max = nsims, style = 3)
+  if(progress) pb <- txtProgressBar(min = 2, max = nsims, style = 3)
   for(i in 2:nsims){
-    setTxtProgressBar(pb, i)
+    if(progress) setTxtProgressBar(pb, i)
 
     # Simulate a single replicate population
     sm <-sim_population(
@@ -78,7 +80,7 @@ simmiad <- function(
       t12 = transect_stability(sm[[n_generations-12]], sm[[n_generations]])
     )
   }
-  close(pb)
+  if(progress) close(pb)
 
   # Concatenate the list to a data.frame
   output <- do.call('rbind', output)
