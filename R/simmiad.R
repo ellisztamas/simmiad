@@ -11,22 +11,20 @@
 #'two kinds of summary information about this transect to disk. First,
 #'in the final generation of each population, a single transect is taken through
 #'a random row of the grid, and the degree of clustering estimated using
-#'`transect_cluster`. This summarises the mean distance between pairs of
+#'`transect_cluster`. This summarises the number and mean distance between pairs of
 #'identical genotypes and between pairs of non-identical genotypes.
 #'Second, it estimates the spatial stability of the populations by calculating
 #'how often a sampling point is occupied by idnetical genotypes at different
-#'time points. This is done by comparing the final generation to each of the
-#'twelve previous generations.
+#'time points. This is done by comparing the final generation to 1, 2, 4, 6 and
+#'twelve years prior to that.
 #'
 #'@inheritParams sim_population
 #'@param nsims Int >0. Number of replicate populations to simulate.
 #'@param progress If TRUE, a progress bar is printed.
 #'
-#'@return Nothing will be printed on screeen, but two files are saved to disk:
-#'1. A CSV file giving genotype distances between identical and
-#'non-identical plants, and the output of transect_stability for each pair of
-#'sampling years.
-#'2. A log file giving simulation details.
+#'@return A data.frame giving simulation replicate, number of identicalgenotypes
+#'in the transect, mean distances between identical and non-identical plants and
+#'the output of transect_stability for each pair of sampling years.
 #'
 #'@author Tom Ellis
 #'@seealso `sim_population`, `transect_cluster`, `transect_stability`
@@ -55,7 +53,7 @@ simmiad <- function(
   output <- vector(mode = "list", length = nsims)
 
   if(progress) pb <- txtProgressBar(min = 2, max = nsims, style = 3)
-  for(i in 2:nsims){
+  for(i in 1:nsims){
     if(progress) setTxtProgressBar(pb, i)
 
     # Simulate a single replicate population
@@ -69,10 +67,15 @@ simmiad <- function(
       n_sample_points = n_sample_points,
       sample_spacing = sample_spacing
     )
+
+    # Spatial clustering
+    sample_positions <- (1:n_sample_points) * sample_spacing
+    spatial <- transect_clustering(sm[[n_generations]], sample_positions)
+
     # send the data to output
     output[[i]] <- c(
       i = i,
-      transect_clustering(sm[[n_generations]], (1:n_sample_points) * sample_spacing),
+      spatial,
       t1  = transect_stability(sm[[n_generations-1]],  sm[[n_generations]]),
       t2  = transect_stability(sm[[n_generations-2]],  sm[[n_generations]]),
       t4  = transect_stability(sm[[n_generations-4]],  sm[[n_generations]]),
@@ -85,14 +88,12 @@ simmiad <- function(
   # Concatenate the list to a data.frame
   output <- do.call('rbind', output)
   output <- as.data.frame(output)
-
-  colnames(output) <- c("i", "identical", "different", "t1", "t2", "t4", "t6", "t12")
+  colnames(output) <- c("i","n", "identical", "different", "t1", "t2", "t4", "t6", "t12")
   output$i <- as.integer(output$i)
-
-  return(output)
-
+  output$n <- as.integer(output$n)
 
   t1 <- proc.time()[3] # record the end time.
-
   cat("\nSimulations completed", format(Sys.time(), "%a %b %d %X %Y"), "after", round((t1-t0)/60, 2), "minutes.\n\n\n")
+
+  return(output)
 }
