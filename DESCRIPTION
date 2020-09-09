@@ -1,7 +1,7 @@
 Package: simmiad
 Type: Package
 Title: Simulations of Emmer wheat at the Ammiad kibbutz
-Version: 1.0.0
+Version: 1.0.1
 Author: Thomas James Ellis
 Maintainer: Thomas James Ellis <thomas.ellis@gmi.oeaw.ac.at>
 Description: Tools for simulating a population of wild Emmer wheat

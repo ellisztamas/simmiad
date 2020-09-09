@@ -13,8 +13,9 @@ transect_clustering(genotypes, positions)
 same length as \code{genotypes}.}
 }
 \value{
-Mean distances between sampling points with identical and
-non-identical genotype.
+A vector of three elements giving the number of identical gentotypes
+in the transect, the mean distance between sampling points with identical
+genotypes and the mean distance between non-identical genotypes.
 }
 \description{
 Estimate the degree of spatial clustering along a transect

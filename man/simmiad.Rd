@@ -45,9 +45,9 @@ Defaults to 50}
 \value{
 Nothing will be printed on screeen, but two files are saved to disk:
 \enumerate{
-\item A CSV file giving genotype distances between identical and
-non-identical plants, and the output of transect_stability for each pair of
-sampling years.
+\item A CSV file giving simulation replicate, number of identical genotypes in
+the transect, mean distances between identical and non-identical plants and
+the output of transect_stability for each pair of sampling years.
 \item A log file giving simulation details.
 }
 }
@@ -64,12 +64,12 @@ For each simulation, \code{simmiad} draws a horizontal transect and saves
 two kinds of summary information about this transect to disk. First,
 in the final generation of each population, a single transect is taken through
 a random row of the grid, and the degree of clustering estimated using
-\code{transect_cluster}. This summarises the mean distance between pairs of
+\code{transect_cluster}. This summarises the number and mean distance between pairs of
 identical genotypes and between pairs of non-identical genotypes.
 Second, it estimates the spatial stability of the populations by calculating
 how often a sampling point is occupied by idnetical genotypes at different
-time points. This is done by comparing the final generation to each of the
-twelve previous generations.
+time points. This is done by comparing the final generation to 1, 2, 4, 6 and
+twelve years prior to that.
 }
 \seealso{
 \code{sim_population}, \code{transect_cluster}, \code{transect_stability}
