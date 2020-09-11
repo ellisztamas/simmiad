@@ -43,13 +43,10 @@ Defaults to 50}
 \item{progress}{If TRUE, a progress bar is printed.}
 }
 \value{
-Nothing will be printed on screeen, but two files are saved to disk:
-\enumerate{
-\item A CSV file giving simulation replicate, number of identical genotypes in
-the transect, mean distances between identical and non-identical plants and
-the output of transect_stability for each pair of sampling years.
-\item A log file giving simulation details.
-}
+A data.frame giving simulation replicate, number of identical and
+non-identical genotypes in the transect, mean distances between identical
+and non-identical plants and the output of transect_stability for each pair
+of sampling years.
 }
 \description{
 \code{simmiad} Simulates multiple replicate populations under a set of input

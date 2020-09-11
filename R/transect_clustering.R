@@ -11,7 +11,7 @@
 #' @param positions Vector of positions along a linear transect. Should be the
 #' same length as `genotypes`.
 #'
-#' @return A vector of three elements giving the number of pairs of identical
+#' @return A vector of four elements giving the number of pairs of identical
 #' and non-identical gentotypes in the transect, and the mean distance between
 #' pairs of identical and non-identical genotypes.
 #'

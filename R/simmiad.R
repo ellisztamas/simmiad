@@ -22,11 +22,10 @@
 #'@param nsims Int >0. Number of replicate populations to simulate.
 #'@param progress If TRUE, a progress bar is printed.
 #'
-#'@return Nothing will be printed on screeen, but two files are saved to disk:
-#'1. A CSV file giving simulation replicate, number of identical genotypes in
-#'the transect, mean distances between identical and non-identical plants and
-#'the output of transect_stability for each pair of sampling years.
-#'2. A log file giving simulation details.
+#'@return A data.frame giving simulation replicate, number of identical and
+#'non-identical genotypes in the transect, mean distances between identical
+#'and non-identical plants and the output of transect_stability for each pair
+#'of sampling years.
 #'
 #'@author Tom Ellis
 #'@seealso `sim_population`, `transect_cluster`, `transect_stability`
