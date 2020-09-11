@@ -11,9 +11,9 @@
 #' @param positions Vector of positions along a linear transect. Should be the
 #' same length as `genotypes`.
 #'
-#' @return A vector of three elements giving the number of identical gentotypes
-#' in the transect, the mean distance between sampling points with identical
-#' genotypes and the mean distance between non-identical genotypes.
+#' @return A vector of three elements giving the number of pairs of identical
+#' and non-identical gentotypes in the transect, and the mean distance between
+#' pairs of identical and non-identical genotypes.
 #'
 #' @author Tom Ellis
 #' @export
@@ -32,8 +32,9 @@ transect_clustering <- function(genotypes, positions){
 
   # Return the distances between identical and non-identical genotypes
   c(
-    n         = length(dist_pairs[ geno_ix]),          # number of matching genotypes
-    identical = mean(dist_pairs[ geno_ix], na.rm = T), # distance between identical genotypes
-    different = mean(dist_pairs[!geno_ix], na.rm = T)  # distance between non-identical genotypes
+    n_matches = length(dist_pairs[ geno_ix]),          # number of matching genotypes
+    n_diff    = length(dist_pairs),                    # Number of non-identical pairs of genotypes
+    d_matches = mean(dist_pairs[ geno_ix], na.rm = T), # distance between identical genotypes
+    d_diff    = mean(dist_pairs[!geno_ix], na.rm = T)  # distance between non-identical genotypes
   )
 }
