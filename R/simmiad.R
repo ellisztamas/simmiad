@@ -89,7 +89,7 @@ simmiad <- function(
   # Concatenate the list to a data.frame
   output <- do.call('rbind', output)
   output <- as.data.frame(output)
-  colnames(output) <- c("i","n", "identical", "different", "t1", "t2", "t4", "t6", "t12")
+  colnames(output) <- c("i","n_matches", "n_diff", "d_matches", "d_diff", "t1", "t2", "t4", "t6", "t12")
   output$i <- as.integer(output$i)
   output$n <- as.integer(output$n)
 
