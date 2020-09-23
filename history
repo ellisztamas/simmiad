@@ -56,8 +56,8 @@ also like to check how temporal stability changes over time. One way to do both
 is to compare the final generation n with generation {n-1, n-2, ... , (n-g)+1}
 for a total of g replicates.
 
-Update `sim_population` to return a vector of comparisons between years as part
-of a longer list of outputs.
+Update: in fact it makes more sense to include this in a more general update of
+simmiad(), so I will leave this.
 
 ## 1.4_feat_set-population-size
 
@@ -78,10 +78,10 @@ should affect `sim_population()` and `simmiad()`.
 
 ## 1.5_feat_sample-with-1-metre
 
-22.9.2020.
-
+23.9.2020.
 take_trasect() takes the closest plant to each sampling point. Add a check that
-a plant should only be sampled if it is within 1m of the sampling point.
+a plant should only be sampled if it is within 1m of the sampling point, and
+return NA if not.
 
 ## 1.6_feat_identity_at_different_distances
 
