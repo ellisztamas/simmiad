@@ -21,6 +21,7 @@
 #'@inheritParams sim_population
 #'@param nsims Int >0. Number of replicate populations to simulate.
 #'@param progress If TRUE, a progress bar is printed.
+#'@param how_far_back Integer number of generations
 #'
 #'@return A data.frame giving simulation replicate, number of identical and
 #'non-identical genotypes in the transect, mean distances between identical
@@ -41,11 +42,20 @@ simmiad <- function(
   n_sample_points = 30,
   sample_spacing = 5,
   nsims,
-  progress = TRUE
+  progress = TRUE,
+  how_far_back = n_generations
 ){
   t0 <- proc.time()[3] # record the starting time.
   if(n_generations < 13) {
     stop("n_generations must be at least 12.")
+  }
+  if(how_far_back > n_generations){
+    how_far_back <- n_generations
+    warning(strwrap(
+      "The number of generations over which to calculate temporal stability
+      given by `how_far_back`) is greater than the total number of generations.
+      This will be set to the maximum number of generations.")
+      )
   }
   # Print message about sims
   cat("\nSimulations of wild Emmer wheat begun on", format(Sys.time(), "%a %b %d %X %Y"), "\n")
@@ -59,7 +69,6 @@ simmiad <- function(
 
     # Simulate a single replicate population
     sm <-sim_population(
-      population_size = population_size,
       mean_dispersal_distance = mean_dispersal_distance,
       outcrossing_rate = outcrossing_rate,
       n_generations = n_generations,
@@ -72,6 +81,15 @@ simmiad <- function(
     # Spatial clustering
     sample_positions <- (1:n_sample_points) * sample_spacing
     spatial <- transect_clustering(sm[[n_generations]], sample_positions)
+
+    # Temporal stability
+    temporal <- numeric(how_far_back)
+    for (g in 1:(how_far_back-1)){
+      temporal[[g]] <- transect_stability(
+        x = sm[[n_generations]],
+        y = sm[[n_generations - g]]
+      )
+    }
 
     # send the data to output
     output[[i]] <- c(

@@ -61,7 +61,7 @@ of a longer list of outputs.
 
 ## 1.4_feat_set-population-size
 
-22.9.2020. Replace population_size argument with how much bigger the population
+23.9.2020. Replace population_size argument with how much bigger the population
 should be than the transect.
 
 Currently there are arguments for population size and density, and area is
