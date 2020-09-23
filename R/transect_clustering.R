@@ -11,9 +11,9 @@
 #' @param positions Vector of positions along a linear transect. Should be the
 #' same length as `genotypes`.
 #'
-#' @return A vector of four elements giving the number of pairs of identical
-#' and non-identical gentotypes in the transect, and the mean distance between
-#' pairs of identical and non-identical genotypes.
+#' @return A vector of three elements giving the number of pairs of identical
+#' and non-identical gentotypes in the transect, and the Pearson correlation
+#' coefficient between distance and pairwise identity.
 #'
 #' @author Tom Ellis
 #' @export
@@ -32,9 +32,8 @@ transect_clustering <- function(genotypes, positions){
 
   # Return the distances between identical and non-identical genotypes
   c(
-    n_matches = length(dist_pairs[ geno_ix]),          # number of matching genotypes
-    n_diff    = length(dist_pairs),                    # Number of non-identical pairs of genotypes
-    d_matches = mean(dist_pairs[ geno_ix], na.rm = T), # distance between identical genotypes
-    d_diff    = mean(dist_pairs[!geno_ix], na.rm = T)  # distance between non-identical genotypes
+    n_matches = length(dist_pairs[ geno_ix]),      # number of matching genotypes
+    n_diff    = length(dist_pairs),                # Number of non-identical pairs of genotypes
+    covar     = cor(geno_ix, dist_pairs, use='p')
   )
 }
