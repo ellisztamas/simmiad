@@ -85,7 +85,8 @@ return NA if not.
 
 ## 1.6_feat_identity_at_different_distances
 
-23.9.2020
+23.9.2020 Added `distance_identities` to calculates the probability of observing
+identical genotypes at different distances along a transect.
 
 This originally aimed to address how what we can say about transect A-West, but
 is informative more generally. For observed and simulated transects calculate
@@ -111,9 +112,6 @@ For simulated transects, estimate this for each year, and return a matrix with
 a row for each replicate.
 For the A/A-West comparison calculate curves for each transect in 20, plus a
 mean for the average between-transect comparison at 20m.
-
-This requires a new function `distance_curve()` that should return all observed
-distances and probabilities of seeing a match at each.
 
 ## 1.7_feat_output_as_folders
 
