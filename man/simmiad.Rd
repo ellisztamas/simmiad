@@ -14,12 +14,11 @@ simmiad(
   n_sample_points = 30,
   sample_spacing = 5,
   nsims,
-  progress = TRUE
+  progress = TRUE,
+  how_far_back = n_generations
 )
 }
 \arguments{
-\item{population_size}{Int >0. Number of individuls in the population.}
-
 \item{mean_dispersal_distance}{Float >0. Mean seed dispersal distance. The
 reciprocal of this is used as the rate parameter to draw from the exponential
 distribution.}
@@ -41,6 +40,8 @@ Defaults to 50}
 \item{nsims}{Int >0. Number of replicate populations to simulate.}
 
 \item{progress}{If TRUE, a progress bar is printed.}
+
+\item{how_far_back}{Integer number of generations}
 }
 \value{
 A data.frame giving simulation replicate, number of identical and

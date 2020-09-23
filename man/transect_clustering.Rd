@@ -13,9 +13,9 @@ transect_clustering(genotypes, positions)
 same length as \code{genotypes}.}
 }
 \value{
-A vector of four elements giving the number of pairs of identical
-and non-identical gentotypes in the transect, and the mean distance between
-pairs of identical and non-identical genotypes.
+A vector of three elements giving the number of pairs of identical
+and non-identical gentotypes in the transect, and the Pearson correlation
+coefficient between distance and pairwise identity.
 }
 \description{
 Estimate the degree of spatial clustering along a transect

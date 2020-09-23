@@ -7,8 +7,8 @@
 #' space following exponentially distributed seed dispersal distances.
 #'
 #' 1. Individuals are drawn from a set of starting genotypes and randomly
-#' distributed in a grid. Individuals are labelled by their genotype as 'g'
-#' followed by an integer label.
+#' distributed in a square habitat Individuals are labelled by their genotype
+#' as 'g' followed by an integer label.
 #' 2. Individuals are chosen at random to found the next generation. They
 #' move seed dispersal to new location, with distances drawn from an exponential
 #' distribution. The population exists on a torus to eliminat edge effects;
@@ -23,14 +23,12 @@
 #'
 #' A seed bank is not currently implemented.
 #'
-#' Plants exist within a box whose size is determined by the population size and
-#' plant density (more plants at lower density = larger box). `sim_population`
-#' will throw and error if the length of the transect
-#' (`(n_sample_points-1) * sample_spacing`) is longer than the width of the box.
-#' In this case, you can either make the population larger and less dense, or
-#' choose fewer, closer sampling points.
+#' Plants exist within a box centred around zero with a transect going through
+#' zero. The width of the box is defined to be 1.5-fold larger than the length
+#' of the transect (but this can be changed with the argument `range_limit`).
+#' Total population size is then the density of plants multiplied by the squared
+#' width of the box.
 #'
-#' @param population_size Int >0. Number of individuls in the population.
 #' @param mean_dispersal_distance Float >0. Mean seed dispersal distance. The
 #' reciprocal of this is used as the rate parameter to draw from the exponential
 #' distribution.
@@ -42,6 +40,9 @@
 #' @param density Float >0. Average density of plants per square metre.
 #' @param n_sample_points Number of points to sample along the transect.
 #' @param sample_spacing Distance between sampling points.
+#' @param range_limit Float >1 defining how much wider than the transect the
+#' width of the habitat should be. This, along with plant density, determines
+#' how many plants will be simulated. Defaults to 1.5.
 #'
 #' @return A list of genotypes recorded at each sampling point in each
 #' generation.
@@ -49,25 +50,23 @@
 #' @author Tom Ellis
 #' @export
 sim_population <- function(
-  population_size,
   mean_dispersal_distance,
   outcrossing_rate,
   n_generations,
   n_starting_genotypes,
   density,
   n_sample_points,
-  sample_spacing
+  sample_spacing,
+  range_limit = 1.5
 ){
-  if(sample_spacing < density) {
-    warning("Distances between sampling points are less than mean plant density. It is likely that the same plant will be sampled twice.")
-  }
-  # Plants exist in a box centred on zero.
+  if(range_limit < 1) stop("range_limit must be greater than one.")
+  if(! density > 0) stop("density should be positive.")
+  # Plants exist in a box centred on zero through which the transect runs
   # Range limit is half the width of the box.
-  range_limit <- sqrt(population_size / density) / 2
-  # Throw an error if the transect is longer than the width of the population
-  if((n_sample_points-1) * sample_spacing > 2*range_limit){
-    stop("Total transect length (n_sample_points-1 * sample_spacing) is longer than the width of population range.")
-  }
+  range_limit <- (n_sample_points * sample_spacing * range_limit)/2
+  # Given a density of plants per sq. metre and a size of the box, calculate
+  # how many individuals you need
+  population_size <- density * (2*range_limit)^2
 
   # Empty list to store transects in each generation
   samples <- vector(mode = "list", length = n_generations)
