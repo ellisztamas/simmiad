@@ -33,7 +33,6 @@
 #'@export
 #'
 simmiad <- function(
-  population_size,
   mean_dispersal_distance,
   outcrossing_rate,
   n_generations,
@@ -41,27 +40,31 @@ simmiad <- function(
   density = 3,
   n_sample_points = 30,
   sample_spacing = 5,
+  range_limit = 1.5,
   nsims,
   progress = TRUE,
   how_far_back = n_generations
 ){
   t0 <- proc.time()[3] # record the starting time.
-  if(n_generations < 13) {
-    stop("n_generations must be at least 12.")
-  }
+
   if(how_far_back > n_generations){
     how_far_back <- n_generations
     warning(strwrap(
       "The number of generations over which to calculate temporal stability
       given by `how_far_back`) is greater than the total number of generations.
       This will be set to the maximum number of generations.")
-      )
+    )
   }
   # Print message about sims
   cat("\nSimulations of wild Emmer wheat begun on", format(Sys.time(), "%a %b %d %X %Y"), "\n")
 
-    # Empty list to store data
-  output <- vector(mode = "list", length = nsims)
+  # Empty structures to store data
+  clustering     <- matrix(NA, nrow = nsims, ncol = n_generations)
+  matching_pairs <- matrix(NA, nrow = nsims, ncol = n_generations)
+  count_NAs      <- matrix(NA, nrow = nsims, ncol = n_generations)
+  n_genotypes    <- matrix(NA, nrow = nsims, ncol = n_generations)
+  stability      <- matrix(NA, nrow = nsims, ncol = n_generations)
+  distance_identity <- matrix(NA, nrow=nsims, ncol=n_sample_points-1)
 
   if(progress) pb <- txtProgressBar(min = 2, max = nsims, style = 3)
   for(i in 1:nsims){
@@ -74,45 +77,73 @@ simmiad <- function(
       n_generations = n_generations,
       n_starting_genotypes = n_starting_genotypes,
       density = density,
+      range_limit = range_limit,
       n_sample_points = n_sample_points,
       sample_spacing = sample_spacing
     )
 
+    # Empty matrices to store simulation output
     # Spatial clustering
     sample_positions <- (1:n_sample_points) * sample_spacing
-    spatial <- transect_clustering(sm[[n_generations]], sample_positions)
+    spatial <- sapply(sm, transect_clustering, positions=sample_positions)
+    # Covariance between distance and identity
+    clustering[i,] <- spatial['covar',]
+    # Number of matching pairs in the transect
+    matching_pairs[i,] <- spatial['n_matches',]
+    # Number of NA samples in each year
+    count_NAs[i,] <- colSums(sapply(sm, is.na))
+    # Number of unque genotypes in each year
+    n_genotypes[i,] <- sapply(sm, function(x) length(unique(x)))
+    # Probabilities of finding identical genotypes in pairs of samping points
+    # at different distances, averaged over years
+    di <- distance_identities(sm, sample_positions)
+    distance_identity[i,] <- di %>%
+      group_by(distances) %>%
+      summarise(
+        matches = sum(matches * n),
+        n = sum(n)
+      ) %>%
+      mutate(mean = matches/n) %>%
+      pull(mean)
 
     # Temporal stability
     temporal <- numeric(how_far_back)
     for (g in 1:(how_far_back-1)){
-      temporal[[g]] <- transect_stability(
+      temporal[g] <- transect_stability(
         x = sm[[n_generations]],
         y = sm[[n_generations - g]]
       )
     }
+    stability[i,] <- temporal
 
-    # send the data to output
-    output[[i]] <- c(
-      i = i,
-      spatial,
-      t1  = transect_stability(sm[[n_generations-1]],  sm[[n_generations]]),
-      t2  = transect_stability(sm[[n_generations-2]],  sm[[n_generations]]),
-      t4  = transect_stability(sm[[n_generations-4]],  sm[[n_generations]]),
-      t6  = transect_stability(sm[[n_generations-6]],  sm[[n_generations]]),
-      t12 = transect_stability(sm[[n_generations-12]], sm[[n_generations]])
-    )
   }
   if(progress) close(pb)
 
-  # Concatenate the list to a data.frame
-  output <- do.call('rbind', output)
-  output <- as.data.frame(output)
-  colnames(output) <- c("i","n_matches", "n_diff", "d_matches", "d_diff", "t1", "t2", "t4", "t6", "t12")
-  output$i <- as.integer(output$i)
-  output$n <- as.integer(output$n)
-
   t1 <- proc.time()[3] # record the end time.
   cat("\nSimulations completed", format(Sys.time(), "%a %b %d %X %Y"), "after", round((t1-t0)/60, 2), "minutes.\n\n\n")
+
+  # Create a lebible table of parameters to export later.
+  params <- parameter_table(
+    mean_dispersal_distance = mean_dispersal_distance,
+    outcrossing_rate = outcrossing_rate,
+    n_generations = n_generations,
+    n_starting_genotypes = n_starting_genotypes,
+    nsims = nsims,
+    density = density,
+    n_sample_points = n_sample_points,
+    sample_spacing = sample_spacing,
+    how_far_back = how_far_back
+  )
+
+  output <- list(
+    parameters = params,
+    clustering = clustering,
+    matching_pairs = matching_pairs,
+    count_NAs = count_NAs,
+    n_genotypes = n_genotypes,
+    stability = stability,
+    distance_identity = distance_identity
+  )
 
   return(output)
 }

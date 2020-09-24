@@ -115,13 +115,12 @@ mean for the average between-transect comparison at 20m.
 
 ## 1.7_feat_output_as_folders
 
-22.9.2020 `simmiad()` saves a folder of summary stats instead of a single file.
+24.9.2020 Save a folder of summary stats instead of a single file. `simmiad()`
+outputs a list, and `write_simmiad()` saves to disk.
 
 For a single call to `simmiad()` with n_generations=g and nsims=r I would like
 the function to create a folder of output with several files:
 
-* **log**: Legible text giving date the files were created, package version,
-session info, error messages, number of pairs in the transect.
 * **parameters**: Table of input parameters to save me having to muck about
 extracting these from file names.
 * **spatial**: r x g table of spatial clustering stats for every replicate
@@ -134,5 +133,3 @@ whole population for every replicate.
 genotypes in each transect.
 * **distance_curves**: matrix giving probabilities of observing identical
 genotypes at increasing distances, with a row for each replicate.
-
-This needs updates to both `simmiad()` and `sim_population`.

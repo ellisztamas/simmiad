@@ -92,7 +92,6 @@ sim_population <- function(
     n_sample_points = n_sample_points,
     sample_spacing = sample_spacing
     )
-
   samples[[1]] <- geno[tx]
 
   # Loop through subsequent generations

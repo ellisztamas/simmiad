@@ -13,5 +13,5 @@ LazyData: true
 RoxygenNote: 7.1.1
 Roxygen: list(markdown = TRUE)
 Imports:
-  magrittr (>=1.5)
-  dplyr (>=0.8.3)
+  magrittr (>= 1.5),
+  dplyr (>= 0.8.3)
