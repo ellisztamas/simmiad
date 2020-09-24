@@ -5,7 +5,6 @@
 \title{Simulate replicate populations}
 \usage{
 simmiad(
-  population_size,
   mean_dispersal_distance,
   outcrossing_rate,
   n_generations,
@@ -13,6 +12,7 @@ simmiad(
   density = 3,
   n_sample_points = 30,
   sample_spacing = 5,
+  range_limit = 1.5,
   nsims,
   progress = TRUE,
   how_far_back = n_generations
@@ -36,6 +36,10 @@ Defaults to 50}
 \item{n_sample_points}{Number of points to sample along the transect.}
 
 \item{sample_spacing}{Distance between sampling points.}
+
+\item{range_limit}{Float >1 defining how much wider than the transect the
+width of the habitat should be. This, along with plant density, determines
+how many plants will be simulated. Defaults to 1.5.}
 
 \item{nsims}{Int >0. Number of replicate populations to simulate.}
 
