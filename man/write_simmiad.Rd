@@ -7,7 +7,10 @@
 write_simmiad(x, directory)
 }
 \arguments{
-\item{x}{Directory where output should be saved.}
+\item{x}{Output of the function \code{simmiad()}}
+
+\item{directory}{Directory where output should be saved without trailing
+slash.}
 }
 \description{
 Write the output of simmiad simulations to disk
