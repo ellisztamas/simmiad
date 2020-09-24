@@ -15,6 +15,6 @@ write_simmiad <- function(x, directory){
     write.csv(
       x[[i]],
       file = paste(directory, "/", i, '.csv', sep=""),
-      row.names = F)
+      row.names = F, col.names = F)
   }
 }
