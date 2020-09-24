@@ -132,6 +132,7 @@ simmiad <- function(
     density = density,
     n_sample_points = n_sample_points,
     sample_spacing = sample_spacing,
+    range_limit = range_limit,
     how_far_back = how_far_back
   )
 

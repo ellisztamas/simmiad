@@ -13,6 +13,7 @@ parameter_table(
   nsims,
   n_sample_points,
   sample_spacing,
+  range_limit,
   how_far_back,
   habitat_width = (n_sample_points * sample_spacing * range_limit),
   population_size = density * habitat_width^2
@@ -38,6 +39,10 @@ Defaults to 50}
 \item{n_sample_points}{Number of points to sample along the transect.}
 
 \item{sample_spacing}{Distance between sampling points.}
+
+\item{range_limit}{Float >1 defining how much wider than the transect the
+width of the habitat should be. This, along with plant density, determines
+how many plants will be simulated. Defaults to 1.5.}
 
 \item{how_far_back}{Integer number of generations}
 

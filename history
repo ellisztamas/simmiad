@@ -128,7 +128,7 @@ through time
 * **temporal**: r x g table of temporal stability stats for every replicate
 comparing the final year to all previous
 * **n_genotypes**: r x g table counting the number of unique genotypes in the
-whole population for every replicate.
+transect for every replicate.
 * **transect_matches**: r x g table counting the number of pairs of identical
 genotypes in each transect.
 * **distance_curves**: matrix giving probabilities of observing identical
