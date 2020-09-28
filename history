@@ -133,3 +133,8 @@ transect for every replicate.
 genotypes in each transect.
 * **distance_curves**: matrix giving probabilities of observing identical
 genotypes at increasing distances, with a row for each replicate.
+
+## 1.8
+Remove dependency on dplyr
+Add a 'read-simmiad' function to get means and CIs. Loop over folders and pull
+out data for a single *parameter*.

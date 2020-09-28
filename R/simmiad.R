@@ -22,6 +22,9 @@
 #'@param nsims Int >0. Number of replicate populations to simulate.
 #'@param progress If TRUE, a progress bar is printed.
 #'@param how_far_back Integer number of generations
+#'@param stability_years Vector of integers indexing which generations to average
+#'over when calculating distance_identities(). Defaults to the last 50% of
+#'generations.
 #'
 #'@return A data.frame giving simulation replicate, number of identical and
 #'non-identical genotypes in the transect, mean distances between identical
@@ -43,7 +46,8 @@ simmiad <- function(
   range_limit = 1.5,
   nsims,
   progress = TRUE,
-  how_far_back = n_generations
+  how_far_back = n_generations,
+  stability_years = n_generations:(n_generations/2)
 ){
   t0 <- proc.time()[3] # record the starting time.
 
@@ -55,6 +59,13 @@ simmiad <- function(
       This will be set to the maximum number of generations.")
     )
   }
+  if(!is.integer(stability_years)){
+    stop("stability_years should be a vector of integers")
+  }
+  if(any(table(stability_years) > 1)){
+    stop("There are replicate entries in stability_years")
+  }
+
   # Print message about sims
   cat("\nSimulations of wild Emmer wheat begun on", format(Sys.time(), "%a %b %d %X %Y"), "\n")
 
@@ -96,7 +107,10 @@ simmiad <- function(
     n_genotypes[i,] <- sapply(sm, function(x) length(unique(x)))
     # Probabilities of finding identical genotypes in pairs of samping points
     # at different distances, averaged over years
-    di <- distance_identities(sm, sample_positions)
+    di <- distance_identities(
+      transects = sm[stability_years],
+      positions = sample_positions
+    )
     distance_identity[i,] <- di %>%
       group_by(distances) %>%
       summarise(
