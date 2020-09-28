@@ -111,14 +111,10 @@ simmiad <- function(
       transects = sm[stability_years],
       positions = sample_positions
     )
-    distance_identity[i,] <- di %>%
-      group_by(distances) %>%
-      summarise(
-        matches = sum(matches * n),
-        n = sum(n)
-      ) %>%
-      mutate(mean = matches/n) %>%
-      pull(mean)
+    di <- split(di, di$distances)
+    distance_identity[i,] <- sapply(di, function(i){
+      sum(i$matches * i$n, na.rm = T) / sum(i$n)
+    })
 
     # Temporal stability
     temporal <- numeric(how_far_back)

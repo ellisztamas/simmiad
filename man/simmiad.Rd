@@ -15,7 +15,8 @@ simmiad(
   range_limit = 1.5,
   nsims,
   progress = TRUE,
-  how_far_back = n_generations
+  how_far_back = n_generations,
+  stability_years = n_generations:(n_generations/2)
 )
 }
 \arguments{
@@ -46,6 +47,10 @@ how many plants will be simulated. Defaults to 1.5.}
 \item{progress}{If TRUE, a progress bar is printed.}
 
 \item{how_far_back}{Integer number of generations}
+
+\item{stability_years}{Vector of integers indexing which generations to average
+over when calculating distance_identities(). Defaults to the last 50\% of
+generations.}
 }
 \value{
 A data.frame giving simulation replicate, number of identical and

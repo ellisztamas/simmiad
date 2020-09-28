@@ -134,7 +134,21 @@ genotypes in each transect.
 * **distance_curves**: matrix giving probabilities of observing identical
 genotypes at increasing distances, with a row for each replicate.
 
-## 1.8
-Remove dependency on dplyr
+## 1.7.4
+28.09.2020
+Subset generations to average over for the call to distance_stability() in
+simmiad() with the argument stability_years.
+
+## 1.8.0
+28.09.2020
+Remove dependency on dplyr and magittr.
+I changed the calls to `summarise` and `group_by` in `simmiad()` to use base R
+functions and removed pipes.
+
+Also changed the processing of the output of `distance_clustering` in `simmiad`
+to rmeove NaNs caused by sampling points not having any sampled plant nearby.
+
+
+
 Add a 'read-simmiad' function to get means and CIs. Loop over folders and pull
 out data for a single *parameter*.

@@ -21,7 +21,8 @@ integers.}
 Returns a data.frame with a row for each pair of sampling points.
 Columns give the labels for the points being compared, their distance, the
 number of matches between them, and the number of non-NA observations for
-each pair.
+each pair. Matches will return NaN if sampling points at some distance
+did not contain a plant.
 }
 \description{
 Calculates the probability of observing identical genotypes at different
