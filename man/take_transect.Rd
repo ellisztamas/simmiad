@@ -21,6 +21,14 @@ If no plants are within 1m of the sampling point, returns NA.
 Take a transect of equally spaced sampling points through a population
 of plants with spatial coordinates, and pick the plant closest to each point.
 }
+\details{
+#' Plants exist within a box whose size is determined by the population size and
+plant density (more plants at lower density = larger box). \code{sim_population}
+will throw and error if the length of the transect
+(\code{(n_sample_points-1) * sample_spacing}) is longer than the width of the box.
+In this case, you can either make the population larger and less dense, or
+choose fewer, closer sampling points.
+}
 \author{
 Tom Ellis
 }
