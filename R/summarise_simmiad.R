@@ -12,19 +12,6 @@
 #' @return This returns a list giving means and CIs for the final generation, plus
 #' means through time across generations.
 #' @author Tom Ellis
-#' @examples
-#' base_folder <- "04_output/200929_simmiad_output/"
-#' files <- c(
-#'   "clustering.csv", "count_NAs.csv", "distance_identity.csv",
-#'     "matching_pairs.csv", "n_genotypes.csv", "stability.csv"
-#'     )
-#' sims <- vector('list', length(files))
-#' names(sims) <- files
-#' for(p in files){
-#'   sims[[p]] <- summarise_simmiad(base_folder, p)
-#'  }
-#' names(sims) <- tools::file_path_sans_ext(names(sims))
-#'
 #' @export
 summarise_simmiad <- function(base_folder, parameter){
   folders <- list.dirs(base_folder)
