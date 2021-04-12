@@ -44,7 +44,7 @@ Defaults to 50}
 width of the habitat should be. This, along with plant density, determines
 how many plants will be simulated. Defaults to 1.5.}
 
-\item{how_far_back}{Integer number of generations}
+\item{how_far_back}{Integer number of generations to sample with a transect}
 
 \item{habitat_width}{Length of the edge of the habitat square}
 

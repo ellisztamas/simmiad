@@ -46,7 +46,7 @@ how many plants will be simulated. Defaults to 1.5.}
 
 \item{progress}{If TRUE, a progress bar is printed.}
 
-\item{how_far_back}{Integer number of generations}
+\item{how_far_back}{Integer number of generations to sample with a transect}
 
 \item{stability_years}{Vector of integers indexing which generations to average
 over when calculating distance_identities(). Defaults to the last 50\% of
