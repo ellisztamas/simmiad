@@ -21,7 +21,7 @@
 #'@inheritParams sim_population
 #'@param nsims Int >0. Number of replicate populations to simulate.
 #'@param progress If TRUE, a progress bar is printed.
-#'@param how_far_back Integer number of generations
+#'@param how_far_back Integer number of generations to sample with a transect
 #'@param stability_years Vector of integers indexing which generations to average
 #'over when calculating distance_identities(). Defaults to the last 50% of
 #'generations.

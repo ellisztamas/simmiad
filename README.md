@@ -14,23 +14,7 @@ R package to simulate populations of wild Emmer wheat from the Kibbutz Ammiad
 
 ## Introduction
 
-An R package for simulating a population of wild Emmer wheat to ask whether the amount of spatial clustering of unique genotypes can be explained by purely neutral forces.
-
-This simulates a population on an evenly-spaced grid of sampling points through time:
-
-* Sampling points are populated at random with a set of unqiue starting genotypes.
-* In the next generation, each sampling point is filled by one seed from the same or a different sampling point from a previous generation. Whichever genotype was at the donor sampling point now occupies the focal sampling point. I assume seed dispersal distances are exponentially distributed with some mean value that is used as an input parameter.
-* To allow for a seed bank, each seed can be drawn from any previous generation. The generation is drawn from a poisson distribution.
-* Each seed has some probability of having been the product of an outcrossing event. If so, it is assigned a new unique genotype.
-
-This makes certain assumptions that it is good to be explicit about:
-
-* There are no differences in fitness between genotypes, or genotype-by-environment interactions for fitness with a heterogeneous landscape.
-* Population density is even across the landscape.
-* Seed dispersal distances are exponentially distributed. I am hoping dispersal is primarily through gravity and is fairly short scale. If there is something more complicated happening, for example additional longer-distance dispersal by rodents, this could be modelled with some kind of mixture of distributions, This would complicate things.
-* Outcrossing is random. In reality there will be some kind of pollen dispersal kernel shape, but I have no idea how that should look here.
-* Seed dispersal and outcrossing rates/distances do not change through time.
-* Plants live in a grid. They don't...
+An R package for simulating a population of wild Emmer wheat to ask whether the amount of spatial clustering of unique genotypes and the stability of that clustering through time can be explained by purely neutral forces. The idea is to simulate a population of plants evolving under seed dispersal and limited, random outcrossing only, then to sample plants along a transect in the same way that the real population is sampled.
 
 ## Installation
 
@@ -51,16 +35,47 @@ devtools::install_github("ellisztamas/simmiad")
 
 `simmiad` uses base R functions only.
 
+## How simulations work
+
+### Initial generation:
+
+* This simulates a population of plants at a given density on a torus (i.e. there are no edges). The radius of the torus is 50% longer than the length of the transect
+* Population size is determined as the number of plants needed to fill the torus given its area and population density.
+* Plants are initially distributed at random throughout the habitat and assigned one of a set of unique genotypes.
+
+### Simulating through time:
+
+* In the next generation, each plant generates an average of one seed. Offspring numbers are drawn from a multinomial distribution of size N, with probablity 1/N for each mother, where N is population size.
+* Each seed disperses in a random direction at a distance drawn from an exponential distribution.
+* Each seed has some probability of having been the product of an outcrossing event. If so, it is assigned a new unique genotype. If not, it is assumed to have been selfed and shares the genotype of its mother.
+* This is repeated for many generations (I used 500 generations)
+
+### Transect samples
+
+* At the end of the simulation, plants are sampled along a transect over multiple generations.
+* A transect is drawn through the middle of the population with evenly spaced sampling points.
+* At each sampling point, we sample the plant closest to the sampling point. If no plant is within 1m of the sampling point, then no plant is recorded.
+* This is repeated for some number of years back into the past from the final generation.
+
+### Assumptions
+This makes certain assumptions that it is good to be explicit about:
+
+* There are no differences in fitness between genotypes, or genotype-by-environment interactions for fitness with a heterogeneous landscape.
+* Population density is even across the landscape.
+* Seed dispersal distances are exponentially distributed. I am hoping dispersal is primarily through gravity and is fairly short scale. If there is something more complicated happening, for example additional longer-distance dispersal by rodents, this could be modelled with some kind of mixture of distributions, This would complicate things.
+* Outcrossing is random. In reality there will be some kind of pollen dispersal kernel shape, but I have no idea how that should look here.
+* Seed dispersal and outcrossing rates/distances do not change through time.
+
 ## Usage
 ### Simulate a single population
 
 Functions in `simmiad` simulate populations given a set of input parameters:
 
-* **grid_size**: Number of rows in the grid. Population size will be the square of this number.
 * **mean_dispersal_distance** Mean seed dispersal distance in metres.
 * **outcrossing_rate** Probability that an individual is outcrossed.
 * **n_generations** Number of generations to run the simulations.
 * **n_starting_genotypes** Number of initial genotypes to start with.
+* **density** Average density of plants per square metre.
 
 To simulate a single population you can use `sim_population`. For example, this runs a single simulation of a population with 3x3=9 plants of 124 genotypes for 100 generations, with mean dispersal distance of 3m and an outcrossing rate of 1%.
 
@@ -68,26 +83,41 @@ To simulate a single population you can use `sim_population`. For example, this 
 library('simmiad')
 set.seed(124) # so you get the same answer as me
 
+# Set input parameters
+mean_dispersal_distance = 0.5
+outcrossing_rate = 0.01
+n_generations = 10
+n_starting_genotypes = 10
+density = 1
+how_far_back <- n_generations
+n_sample_points = 30
+sample_spacing = 5
+
 sm <- sim_population(
-  grid_size = 3,
-  mean_dispersal_distance = 3,
-  outcrossing_rate = 0.01,
-  n_generations = 100,
-  n_starting_genotypes = 124
+  mean_dispersal_distance = mean_dispersal_distance,
+  outcrossing_rate = outcrossing_rate,
+  n_generations = n_generations,
+  n_starting_genotypes = n_starting_genotypes,
+  density = density,
+  n_sample_points = n_sample_points,
+  sample_spacing = sample_spacing,
   )
 ```
 
-This returns a matrix of the genotypes of the population in the final generation. You can set it to return genotypes from every generation by setting `return_all=TRUE`, but I don't recommend printing that to the console for larger simulations. The final generation looks like this:
+This returns a list of genotypes in each generation. The final generation looks like this:
 
 ```
-[,1]      [,2]      [,3]
-[1,] "g5"      "g45_8.1" "g5"
-[2,] "g45_8.1" "g5"      "g5"
-[3,] "g5"      "g45"     "g5"
+sm[[9]]
+ [1] "g5"       "g4"       "g7"       "g6"       NA         "g3"       "g9"      
+ [8] "g6"       "g2"       NA         "g2"       "g5"       "g2"       "g3"      
+[15] "g2"       "g5"       "g4"       "g4"       "g7"       "g4"       "g9"      
+[22] "g10"      NA         "g5"       "g1"       "g1"       "g10"      "g9"      
+[29] "g8_6.377" "g10"          
 ```
-'g' stands for genotype, and is followed by a number between 1 and 124 indicating the id of the initial genotype. If an outcrossing event has occurred the genotype label is appended by the generation outcrossing occured (8) and a unique integer within that generation. That ensures every outcrossed genotype is a new unique label. As this is the last of 10 generations, and the outcrossing event occured in generation 8, we can see that the outcrossed individual has left two offspring two generations later. Note that if outcrossed genotypes outcross again the names will keep getting longer (and messier!).
+'g' stands for genotype, and is followed by a number between 1 and 10 indicating the id of the initial genotype. Individual 29 shows what happens if outcrossing occurs: the genotype label is appended by the generation outcrossing occured and a unique integer within that generation. That ensures every outcrossed genotype is a new unique label. Note that if outcrossed genotypes outcross again the names will keep getting longer (and messier!).
 
 ### Describing spatial structure
+
 I am not sure this is the best way to acheive this, but one simple measure of clustering of unique genotypes is to compare the average distance between pairs of identical genotypes to pairs of non-identical genotypes. `transect_clustering` will do this for samples along a single transect.
 
 ```
@@ -107,27 +137,25 @@ transect_clustering(
 ```
 
 ### Replicate simulations
-Most of the time you will want to simulate multiple replicate populations with a set of input parameters. This can be done with the function `simmiad` using the same input parameters as [before](#Simulate-a-single-population), plus a file path to output the results and a value for the number of simulations to run:
+Most of the time you will want to simulate multiple replicate populations with a set of input parameters. This can be done with the function `simmiad` using similar input parameters as [before](#Simulate-a-single-population)
 
 ```
-simmiad(
-  grid_size = 100,
-  mean_dispersal_distance = 3,
-  outcrossing_rate = 0.01,
-  n_generations = 100,
-  n_starting_genotypes = 124,
-  filename='test_run',
+rs <- simmiad(
+  mean_dispersal_distance = 0.5,
+  outcrossing_rate = 0.001,
+  n_generations = 12,
+  n_starting_genotypes = 10,
+  density = 3,
+  n_sample_points = 5,
+  sample_spacing = 2,
   nsims = 3
-  )
+)
 ```
-This function simulates individual populations through time, then takes a single horizontal transect through the final generation. It then estimates [spatial clustering](#describing-spatial-structure) through that transect.
+This function simulates multiple individual populations through time, and returns a list of different data:
 
-This will not create an object in R, but will output the results directly to a CSV file called 'test_run.csv', and also save a log file called 'test_run.log'. You can change the path and file names by changing the `filename` argument. Open the results with
-```
-sm <- read.csv('test_run.csv')
-```
-
-Ther are three columns: the first column gives the simulation number; the second and third give the output of `transect_clustering`.
+1. **parameters** A data.frame giving input parameters.
+2. **clustering** The covariance between distance along the transect and the frequency of identical genotypes.
+3. 
 
 ## Author and license information
 
