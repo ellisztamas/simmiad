@@ -108,7 +108,7 @@ simmiad <- function(
     # Probabilities of finding identical genotypes in pairs of samping points
     # at different distances, averaged over years
     di <- distance_identities(
-      transects = sm[stability_years],
+      genotypes = sm[stability_years],
       positions = sample_positions
     )
     di <- split(di, di$distances)
