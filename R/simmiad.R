@@ -26,11 +26,28 @@
 #'over when calculating distance_identities(). Defaults to the last 50% of
 #'generations.
 #'
-#'@return A data.frame giving simulation replicate, number of identical and
-#'non-identical genotypes in the transect, mean distances between identical
-#'and non-identical plants and the output of transect_stability for each pair
-#'of sampling years.
+#'@return A list of seven dataframes.
 #'
+#' 1. **parameters** A data.frame giving input parameters.
+#' 2. **clustering** The covariance between distance along the transect and the 
+#' frequency of identical genotypes. 
+#' 3. **matching_pairs**: The number of pairs of identical genotypes in the 
+#' transect. 
+#' 4. **count_NA**: The number of empty sampling points. 
+#' 5. **n_genotypes**: The number of unique genotypes sampled in the transect 
+#' (note that this will be different from what you gave as `distance_identity`, 
+#' because the latter reflects genotypes in *the whole population*, not just in
+#'  the transect).
+#' 6. **stability**: How often individual sampling points are occupied by the 
+#' same genotype in the final generations and 1, 2, ..., n generations back.
+#' 7. **distance_identity**: Probabilities of finding identical genotypes in 
+#' pairs of sampling points at all possible distances between transects. For 
+#' example, if there are five evenly spaced sampling points as in the example 
+#' above, there are four possible distances between sampling points. Rows 
+#' indicate replicate simulations.
+#' 
+#' For 2-6, rows indicate replicate simulations and columns generations.
+#' 
 #'@author Tom Ellis
 #'@seealso `sim_population`, `transect_cluster`, `transect_stability`
 #'@export
@@ -105,7 +122,7 @@ simmiad <- function(
     count_NAs[i,] <- colSums(sapply(sm, is.na))
     # Number of unque genotypes in each year
     n_genotypes[i,] <- sapply(sm, function(x) length(unique(x)))
-    # Probabilities of finding identical genotypes in pairs of samping points
+    # Probabilities of finding identical genotypes in pairs of sampling points
     # at different distances, averaged over years
     di <- distance_identities(
       genotypes = sm[stability_years],

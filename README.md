@@ -6,18 +6,16 @@ R package to simulate populations of wild Emmer wheat from the Kibbutz Ammiad
 1. [Introduction](#introduction)
 2. [Installation](#installation)
 3. [Dependencies](#dependencies)
-4. [Usage](#usage)
-    1. [Simulate a single population](#simulate-a-single-population)
-    2. [Describing spatial structure](#describing-spatial-structure)
-    3. [Replicate simulations](#replicate-simulations)
-5. [Author and license information](#author-and-license-information)
+4. [How simulations work](#how-simulations-work)
+5. [Usage](#usage)
+6. [Author and license information](#author-and-license-information)
 
 ## Introduction
 
 An R package for simulating a population of wild Emmer wheat to ask whether the amount of spatial clustering of unique genotypes and the stability of that clustering through time can be explained by purely neutral forces. The idea is to simulate a population of plants evolving under seed dispersal and limited, random outcrossing only, then to sample plants along a transect in the same way that the real population is sampled.
 
 ## Installation
-
+### From GitHub
 Installation is easiest straight from GitHub using the package `devtools` from within R.
 If necessary, install this with
 
@@ -30,7 +28,6 @@ Then you can install with
 ```
 devtools::install_github("ellisztamas/simmiad")
 ```
-
 ## Dependencies
 
 `simmiad` uses base R functions only.
@@ -61,7 +58,7 @@ devtools::install_github("ellisztamas/simmiad")
 This makes certain assumptions that it is good to be explicit about:
 
 * There are no differences in fitness between genotypes, or genotype-by-environment interactions for fitness with a heterogeneous landscape.
-* Population density is even across the landscape.
+* Population density is even across the landscape except for random fluctuations.
 * Seed dispersal distances are exponentially distributed. I am hoping dispersal is primarily through gravity and is fairly short scale. If there is something more complicated happening, for example additional longer-distance dispersal by rodents, this could be modelled with some kind of mixture of distributions, This would complicate things.
 * Outcrossing is random. In reality there will be some kind of pollen dispersal kernel shape, but I have no idea how that should look here.
 * Seed dispersal and outcrossing rates/distances do not change through time.
@@ -107,34 +104,15 @@ sm <- sim_population(
 This returns a list of genotypes in each generation. The final generation looks like this:
 
 ```
-sm[[9]]
- [1] "g5"       "g4"       "g7"       "g6"       NA         "g3"       "g9"      
- [8] "g6"       "g2"       NA         "g2"       "g5"       "g2"       "g3"      
-[15] "g2"       "g5"       "g4"       "g4"       "g7"       "g4"       "g9"      
-[22] "g10"      NA         "g5"       "g1"       "g1"       "g10"      "g9"      
-[29] "g8_6.377" "g10"          
+ [1] NA         NA         NA         "g2"       NA         "g8"       "g8"       NA         "g1_3.363"
+[10] "g8"       "g5"       "g7"       "g1"       "g10"      "g1"       "g4"       "g7"       "g3"      
+[19] NA         "g2_5.77"  "g4"       "g9"       "g4"       "g3"       "g6"       "g5"       "g1"      
+[28] NA         "g3"       "g1"             
 ```
-'g' stands for genotype, and is followed by a number between 1 and 10 indicating the id of the initial genotype. Individual 29 shows what happens if outcrossing occurs: the genotype label is appended by the generation outcrossing occured and a unique integer within that generation. That ensures every outcrossed genotype is a new unique label. Note that if outcrossed genotypes outcross again the names will keep getting longer (and messier!).
 
-### Describing spatial structure
-
-I am not sure this is the best way to acheive this, but one simple measure of clustering of unique genotypes is to compare the average distance between pairs of identical genotypes to pairs of non-identical genotypes. `transect_clustering` will do this for samples along a single transect.
-
-```
-# Make a larger population
-sm2 <- sim_population(
-  grid_size = 100,
-  mean_dispersal_distance = 3,
-  outcrossing_rate = 0.01,
-  n_generations = 30,
-  n_starting_genotypes = 126
-)
-
-transect_clustering(
-  genotypes = sm2[4,], # Genotypes along the 4th row in the population
-  positions = 1:100 # Spaial positions along that transect
-  )
-```
+- 'g' stands for genotype, and is followed by a number between 1 and 10 indicating the id of the initial genotype.
+- Individuals 9 and 20 show what happens if outcrossing occurs: the genotype label is appended by the generation outcrossing occured and a unique integer within that generation. That ensures every outcrossed genotype is a new unique label. Note that if outcrossed genotypes outcross again the names will keep getting longer (and messier!).
+- The `NA` entries are sampling points where no plant could be sampled (i.e. there was no plant within one metre of the sampling point).
 
 ### Replicate simulations
 Most of the time you will want to simulate multiple replicate populations with a set of input parameters. This can be done with the function `simmiad` using similar input parameters as [before](#Simulate-a-single-population)
@@ -148,14 +126,21 @@ rs <- simmiad(
   density = 3,
   n_sample_points = 5,
   sample_spacing = 2,
-  nsims = 3
+  nsims = 3,
+  how_far_back = 9
 )
 ```
 This function simulates multiple individual populations through time, and returns a list of different data:
 
 1. **parameters** A data.frame giving input parameters.
 2. **clustering** The covariance between distance along the transect and the frequency of identical genotypes.
-3. 
+3. **matching_pairs**: The number of pairs of identical genotypes in the transect.
+4. **count_NA**: The number of empty sampling points.
+5. **n_genotypes**: The number of unique genotypes sampled in the transect (note that this will be different from what you gave as `distance_identity`, because the latter reflects genotypes in *the whole population*, not just in the transect).
+6. **stability**: How often individual sampling points are occupied by the same genotype in the final generations and 1, 2, ..., n generations back.
+7. **distance_identity**: Probabilities of finding identical genotypes in pairs of sampling points at all possible distances between transects. For example, if there are five evenly spaced sampling points as in the example above, there are four possible distances between sampling points. Rows indicate replicate simulations.
+
+In points 2 to 6 above, rows show replicate simulations and columns show generations.
 
 ## Author and license information
 
