@@ -63,64 +63,56 @@ sim_population <- function(
   if(! density > 0) stop("density should be positive.")
   # Plants exist in a box centred on zero through which the transect runs
   # Range limit is half the width of the box.
-  range_limit <- (n_sample_points * sample_spacing * range_limit)/2
+  box_limit <- (n_sample_points * sample_spacing * range_limit)/2
   # Given a density of plants per sq. metre and a size of the box, calculate
   # how many individuals you need
-  population_size <- density * (2*range_limit)^2
+  population_size <- density * (2*box_limit)^2
 
   # Empty list to store transects in each generation
   samples <- vector(mode = "list", length = n_generations)
 
   # Initialise the population with randomly dispersed genotypes
-  geno <- sample(
-    x = paste("g", 1:n_starting_genotypes, sep = ""), # vector of genotype labels
-    size = population_size,
-    replace = T
-  )
-  # Initialise positions for each plant
-  coords <- matrix(
-    runif(
-      n = population_size * 2,
-      min = -range_limit,
-      max = range_limit
-    ),
-    ncol=2
+  pop <- initialise_population(
+    mean_dispersal_distance = mean_dispersal_distance,
+    n_starting_genotypes = n_starting_genotypes,
+    population_size = population_size,
+    box_limit = box_limit
   )
   # Take a transect through generation 1.
   tx <- take_transect(
-    coords,
+    pop$coords,
     n_sample_points = n_sample_points,
     sample_spacing = sample_spacing
     )
-  samples[[1]] <- geno[tx]
+  samples[[1]] <- pop$geno[tx]
 
   # Loop through subsequent generations
   for(g in 2:n_generations){
     # Sample plants to reproduce at random
     ix <- sample(1:population_size, replace = T)
     # Update the genotypes
-    geno <- geno[ix]
+    pop$geno <- pop$geno[ix]
 
     # Choose plants at random to receive outcrossed pollen.
     cross01 <- rbinom(n = population_size, 1, outcrossing_rate)
     cross01 <- as.logical(cross01)
     # Give these plants a new unique genotype by appending generation number and
     # and integer from 1 to the number of outcrossers.
-    geno[cross01] <- paste(geno[cross01], "_", g-1, ".", 1:sum(cross01), sep = "")
+    pop$geno[cross01] <- paste(pop$geno[cross01], "_", g-1, ".", 1:sum(cross01), sep = "")
 
     # Peturb positions
-    coords <- shift_positions(
-      coords[ix,],
+    pop$coords <- shift_positions(
+      pop$coords[ix,],
       mean_dispersal_distance = mean_dispersal_distance,
-      range_limit = range_limit
+      box_limit = box_limit
     )
     # Take a transect of the new generation
     tx <- take_transect(
-      coords,
+      pop$coords,
       n_sample_points = n_sample_points,
       sample_spacing = sample_spacing
     )
-    samples[[g]] <- geno[tx]
+    samples[[g]] <- pop$geno[tx]
   }
   return(samples)
 }

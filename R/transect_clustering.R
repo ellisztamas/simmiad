@@ -34,6 +34,6 @@ transect_clustering <- function(genotypes, positions){
   c(
     n_matches = length(dist_pairs[ geno_ix]),      # number of matching genotypes
     n_diff    = length(dist_pairs),                # Number of non-identical pairs of genotypes
-    covar     = cor(geno_ix, dist_pairs, use='p')
+    covar     = suppressWarnings(cor(geno_ix, dist_pairs, use='p'))
   )
 }

@@ -29,25 +29,25 @@
 #'@return A list of seven dataframes.
 #'
 #' 1. **parameters** A data.frame giving input parameters.
-#' 2. **clustering** The covariance between distance along the transect and the 
-#' frequency of identical genotypes. 
-#' 3. **matching_pairs**: The number of pairs of identical genotypes in the 
-#' transect. 
-#' 4. **count_NA**: The number of empty sampling points. 
-#' 5. **n_genotypes**: The number of unique genotypes sampled in the transect 
-#' (note that this will be different from what you gave as `distance_identity`, 
+#' 2. **clustering** The covariance between distance along the transect and the
+#' frequency of identical genotypes.
+#' 3. **matching_pairs**: The number of pairs of identical genotypes in the
+#' transect.
+#' 4. **count_NA**: The number of empty sampling points.
+#' 5. **n_genotypes**: The number of unique genotypes sampled in the transect
+#' (note that this will be different from what you gave as `distance_identity`,
 #' because the latter reflects genotypes in *the whole population*, not just in
 #'  the transect).
-#' 6. **stability**: How often individual sampling points are occupied by the 
+#' 6. **stability**: How often individual sampling points are occupied by the
 #' same genotype in the final generations and 1, 2, ..., n generations back.
-#' 7. **distance_identity**: Probabilities of finding identical genotypes in 
-#' pairs of sampling points at all possible distances between transects. For 
-#' example, if there are five evenly spaced sampling points as in the example 
-#' above, there are four possible distances between sampling points. Rows 
+#' 7. **distance_identity**: Probabilities of finding identical genotypes in
+#' pairs of sampling points at all possible distances between transects. For
+#' example, if there are five evenly spaced sampling points as in the example
+#' above, there are four possible distances between sampling points. Rows
 #' indicate replicate simulations.
-#' 
+#'
 #' For 2-6, rows indicate replicate simulations and columns generations.
-#' 
+#'
 #'@author Tom Ellis
 #'@seealso `sim_population`, `transect_cluster`, `transect_stability`
 #'@export
@@ -99,7 +99,7 @@ simmiad <- function(
     if(progress) setTxtProgressBar(pb, i)
 
     # Simulate a single replicate population
-    sm <-sim_population(
+    sm <- sim_population(
       mean_dispersal_distance = mean_dispersal_distance,
       outcrossing_rate = outcrossing_rate,
       n_generations = n_generations,
@@ -113,7 +113,13 @@ simmiad <- function(
     # Empty matrices to store simulation output
     # Spatial clustering
     sample_positions <- (1:n_sample_points) * sample_spacing
-    spatial <- sapply(sm, transect_clustering, positions=sample_positions)
+    spatial <- sapply(
+      sm,
+      function(x) {
+        transect_clustering(
+          genotypes = x,
+          positions = sample_positions)
+      })
     # Covariance between distance and identity
     clustering[i,] <- spatial['covar',]
     # Number of matching pairs in the transect
