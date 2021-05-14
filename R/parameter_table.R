@@ -17,6 +17,7 @@ parameter_table <- function(
   sample_spacing,
   range_limit,
   how_far_back,
+  dormancy,
   habitat_width = (n_sample_points * sample_spacing * range_limit),
   population_size = density * habitat_width^2
 ){
@@ -27,6 +28,7 @@ parameter_table <- function(
       'n_generations',
       'n_starting_genotypes',
       'density',
+      'dormancy',
       'nsims',
       'n_sample_points',
       'sample_spacing',
@@ -42,6 +44,7 @@ parameter_table <- function(
       n_generations,
       n_starting_genotypes,
       density,
+      dormancy,
       nsims,
       n_sample_points,
       sample_spacing,
