@@ -165,6 +165,7 @@ simmiad <- function(
     n_starting_genotypes = n_starting_genotypes,
     nsims = nsims,
     density = density,
+    dormancy = dormancy,
     n_sample_points = n_sample_points,
     sample_spacing = sample_spacing,
     range_limit = range_limit,
