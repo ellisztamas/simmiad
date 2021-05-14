@@ -36,6 +36,7 @@ update_population <- function(
   stopifnot(ncol(seed_rain$coords) ==2 & ncol(seed_bank$coords) ==2)
   stopifnot(length(seed_rain$geno) == nrow(seed_rain$coords))
   stopifnot(length(seed_bank$geno) == nrow(seed_bank$coords))
+  stopifnot(length(seed_rain$geno) == nrow(seed_rain$coords))
   stopifnot(outcrossing_rate >= 0 & outcrossing_rate <= 1)
   stopifnot(dormancy >= 0 & dormancy <= 1)
   stopifnot(generation == round(generation))

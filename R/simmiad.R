@@ -98,7 +98,6 @@ simmiad <- function(
   if(progress) pb <- txtProgressBar(min = 2, max = nsims, style = 3)
   for(i in 1:nsims){
     if(progress) setTxtProgressBar(pb, i)
-
     # Simulate a single replicate population
     sm <- sim_population(
       mean_dispersal_distance = mean_dispersal_distance,
@@ -128,7 +127,7 @@ simmiad <- function(
     matching_pairs[i,] <- spatial['n_matches',]
     # Number of NA samples in each year
     count_NAs[i,] <- colSums(sapply(sm, is.na))
-    # Number of unque genotypes in each year
+    # Number of unique genotypes in each year
     n_genotypes[i,] <- sapply(sm, function(x) length(unique(x)))
     # Probabilities of finding identical genotypes in pairs of sampling points
     # at different distances, averaged over years
