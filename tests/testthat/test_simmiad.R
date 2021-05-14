@@ -6,7 +6,8 @@ rs <- simmiad(
   density = 3,
   n_sample_points = 5,
   sample_spacing = 5,
-  nsims = 3
+  nsims = 3,
+  dormancy = 0.3
 )
 
 test_that("simmiad() gives the expected output", {

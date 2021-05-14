@@ -63,6 +63,7 @@ simmiad <- function(
   range_limit = 1.5,
   nsims,
   progress = TRUE,
+  dormancy,
   how_far_back = n_generations,
   stability_years = n_generations:(n_generations/2)
 ){
@@ -107,7 +108,8 @@ simmiad <- function(
       density = density,
       range_limit = range_limit,
       n_sample_points = n_sample_points,
-      sample_spacing = sample_spacing
+      sample_spacing = sample_spacing,
+      dormancy = dormancy
     )
 
     # Empty matrices to store simulation output

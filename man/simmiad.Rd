@@ -15,6 +15,7 @@ simmiad(
   range_limit = 1.5,
   nsims,
   progress = TRUE,
+  dormancy,
   how_far_back = n_generations,
   stability_years = n_generations:(n_generations/2)
 )
@@ -46,6 +47,10 @@ how many plants will be simulated. Defaults to 1.5.}
 
 \item{progress}{If TRUE, a progress bar is printed.}
 
+\item{dormancy}{Float between 0 and 1. Probability that a seedling is drawn
+from the seed bank. Seedlings are drawn from the prior generation with
+probability 1-dormancy.}
+
 \item{how_far_back}{Integer number of generations to sample with a transect}
 
 \item{stability_years}{Vector of integers indexing which generations to average
@@ -53,10 +58,28 @@ over when calculating distance_identities(). Defaults to the last 50\% of
 generations.}
 }
 \value{
-A data.frame giving simulation replicate, number of identical and
-non-identical genotypes in the transect, mean distances between identical
-and non-identical plants and the output of transect_stability for each pair
-of sampling years.
+A list of seven dataframes.
+\enumerate{
+\item \strong{parameters} A data.frame giving input parameters.
+\item \strong{clustering} The covariance between distance along the transect and the
+frequency of identical genotypes.
+\item \strong{matching_pairs}: The number of pairs of identical genotypes in the
+transect.
+\item \strong{count_NA}: The number of empty sampling points.
+\item \strong{n_genotypes}: The number of unique genotypes sampled in the transect
+(note that this will be different from what you gave as \code{distance_identity},
+because the latter reflects genotypes in \emph{the whole population}, not just in
+the transect).
+\item \strong{stability}: How often individual sampling points are occupied by the
+same genotype in the final generations and 1, 2, ..., n generations back.
+\item \strong{distance_identity}: Probabilities of finding identical genotypes in
+pairs of sampling points at all possible distances between transects. For
+example, if there are five evenly spaced sampling points as in the example
+above, there are four possible distances between sampling points. Rows
+indicate replicate simulations.
+}
+
+For 2-6, rows indicate replicate simulations and columns generations.
 }
 \description{
 \code{simmiad} Simulates multiple replicate populations under a set of input

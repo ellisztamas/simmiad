@@ -12,6 +12,7 @@ sim_population(
   density,
   n_sample_points,
   sample_spacing,
+  dormancy,
   range_limit = 1.5
 )
 }
@@ -33,6 +34,10 @@ Defaults to 50}
 \item{n_sample_points}{Number of points to sample along the transect.}
 
 \item{sample_spacing}{Distance between sampling points.}
+
+\item{dormancy}{Float between 0 and 1. Probability that a seedling is drawn
+from the seed bank. Seedlings are drawn from the prior generation with
+probability 1-dormancy.}
 
 \item{range_limit}{Float >1 defining how much wider than the transect the
 width of the habitat should be. This, along with plant density, determines

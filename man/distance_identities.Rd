@@ -4,24 +4,27 @@
 \alias{distance_identities}
 \title{Decay of identity along a transect}
 \usage{
-distance_identities(transects, positions, labels = 1:length(positions))
+distance_identities(genotypes, positions, labels = 1:length(positions))
 }
 \arguments{
-\item{transects}{List of transects. Each element in the list should be a 1-d
-vector with an element for every sampling point along the transect, with each
-element the genotype observed at that sampliong point.}
+\item{genotypes}{Vector of genotypes occupying each sampling point.
+Alternatively a list of vectors can be provided. Each element in the list
+should be a 1-d vector with an element for every sampling point along the
+transect, with each element the genotype observed at that sampliong point.}
 
 \item{positions}{1-d vector of positions along the transect. This should be
-the same length of each vector in \code{transects}.}
+the same length of each vector in \code{genotypes}.}
 
 \item{labels}{Optional vector of labels for each sampling point. Defaults to
 integers.}
 }
 \value{
 Returns a data.frame with a row for each pair of sampling points.
-Columns give the labels for the points being compared, their distance, the
-number of matches between them, and the number of non-NA observations for
-each pair. Matches will return NaN if sampling points at some distance
+Columns give the labels for the points being compared, their distance,
+whether genotypes match, and the number of non-NA observations for
+each pair. If \code{genotypes} is a list this will return the average number of
+matches.
+Matches will return NaN if sampling points at some distance
 did not contain a plant.
 }
 \description{
@@ -35,11 +38,17 @@ Identities are averaged over multiple years for a transect.
 }
 \examples{
 positions <- sort(runif(16, -5,5))
-transects <- list(
+
+# Example with vector
+genotypes <- rep(letters[1:4], each=4)
+distance_identities(genotypes, positions, labels = LETTERS[1:16])
+
+# Example with list
+genotypes <- list(
   rep(letters[1:4], each=4),
     rep(letters[1:4], 4)
     )
-distance_identities(transects, positions, labels = LETTERS[1:16])
+distance_identities(genotypes, positions, labels = LETTERS[1:16])
 }
 \author{
 Tom Ellis

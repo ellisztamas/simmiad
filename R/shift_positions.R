@@ -9,7 +9,7 @@
 #' @param mean_dispersal_distance Float giving the average perturbation
 #' distance. The reciprocal of this value is used as a rate for the exponential
 #' distribution.
-#' @param box_limit Float giving the diameter of the torus.
+#' @param box_limit Float >1 giving half the circumference of the torus.
 #'
 #' @return A matrix matching the shape of the input `coords`, but with values
 #' shifted by some exponential distance.

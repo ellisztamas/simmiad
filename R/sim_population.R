@@ -40,6 +40,9 @@
 #' @param density Float >0. Average density of plants per square metre.
 #' @param n_sample_points Number of points to sample along the transect.
 #' @param sample_spacing Distance between sampling points.
+#' @param dormancy Float between 0 and 1. Probability that a seedling is drawn
+#' from the seed bank. Seedlings are drawn from the prior generation with
+#' probability 1-dormancy.
 #' @param range_limit Float >1 defining how much wider than the transect the
 #' width of the habitat should be. This, along with plant density, determines
 #' how many plants will be simulated. Defaults to 1.5.
@@ -57,10 +60,12 @@ sim_population <- function(
   density,
   n_sample_points,
   sample_spacing,
+  dormancy,
   range_limit = 1.5
 ){
-  if(range_limit < 1) stop("range_limit must be greater than one.")
-  if(! density > 0) stop("density should be positive.")
+  stopifnot(range_limit > 1)
+  stopifnot(density > 0)
+  stopifnot(dormancy >= 0 & dormancy <= 1)
   # Plants exist in a box centred on zero through which the transect runs
   # Range limit is half the width of the box.
   box_limit <- (n_sample_points * sample_spacing * range_limit)/2
@@ -78,6 +83,8 @@ sim_population <- function(
     population_size = population_size,
     box_limit = box_limit
   )
+  # Initially, the seed bank and current generation are the same, but will change in the loop.
+  seed_rain <- seed_bank <- pop
   # Take a transect through generation 1.
   tx <- take_transect(
     pop$coords,
@@ -89,23 +96,19 @@ sim_population <- function(
   # Loop through subsequent generations
   for(g in 2:n_generations){
     # Sample plants to reproduce at random
-    ix <- sample(1:population_size, replace = T)
-    # Update the genotypes
-    pop$geno <- pop$geno[ix]
-
-    # Choose plants at random to receive outcrossed pollen.
-    cross01 <- rbinom(n = population_size, 1, outcrossing_rate)
-    cross01 <- as.logical(cross01)
-    # Give these plants a new unique genotype by appending generation number and
-    # and integer from 1 to the number of outcrossers.
-    pop$geno[cross01] <- paste(pop$geno[cross01], "_", g-1, ".", 1:sum(cross01), sep = "")
-
-    # Peturb positions
-    pop$coords <- shift_positions(
-      pop$coords[ix,],
+    pop <- update_population(
+      seed_rain = seed_rain,
+      seed_bank = seed_bank,
       mean_dispersal_distance = mean_dispersal_distance,
+      outcrossing_rate = outcrossing_rate,
+      dormancy = dormancy,
+      generation = g,
       box_limit = box_limit
     )
+    # The previous generation now becomes a seed bank
+    seed_bank <- seed_rain
+    seed_rain <- pop
+
     # Take a transect of the new generation
     tx <- take_transect(
       pop$coords,

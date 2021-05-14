@@ -8,7 +8,7 @@
 #' distribution.
 #' @param n_starting_genotypes Int >0. Number of initial genotypes to start with.
 #' Defaults to 50
-#' @param box_limit Float >1. Half the width of the habitat. Calculated by
+#' @param box_limit Float >1 giving half the circumference of the torus.
 #' `sim_population` based on the length of the transect and plant density.
 #' @param population_size Integer > 1.
 #' @export
@@ -28,11 +28,7 @@ initialise_population <- function(
     geno = paste("g", 1:n_starting_genotypes, sep=""),
     # Initialise positions for each plant
     coords = matrix(
-      runif(
-        n = n_starting_genotypes * 2,
-        min = -box_limit,
-        max = box_limit
-      ),
+      runif(n = n_starting_genotypes * 2, min = -box_limit, max = box_limit),
       ncol=2
     )
   )

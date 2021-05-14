@@ -15,7 +15,8 @@ sm <- sim_population(
   density = density,
   n_sample_points = n_sample_points,
   sample_spacing = sample_spacing,
-  range_limit = range_limit
+  range_limit = range_limit,
+  dormancy = 0.3
 )
 
 test_that("sim_population returns a list of the right length", {
@@ -36,6 +37,6 @@ test_that("sim_population throws an error for range limit < 1", {
       sample_spacing = sample_spacing,
       range_limit = 0.8
     ),
-    "range_limit must be greater than one")
+    "range_limit > 1 is not TRUE")
 })
 
