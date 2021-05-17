@@ -83,6 +83,7 @@ sim_population <- function(
     population_size = population_size,
     box_limit = box_limit
   )
+
   # Initially, the seed bank and current generation are the same, but will change in the loop.
   seed_rain <- seed_bank <- pop
   # Take a transect through generation 1.
@@ -91,7 +92,15 @@ sim_population <- function(
     n_sample_points = n_sample_points,
     sample_spacing = sample_spacing
     )
-  samples[[1]] <- pop$geno[tx]
+  # Get genotypes along the transect by indexing pop$geno with tx
+  # If tx contains only NAs this returns a huge vector of NAs, causing a crash
+  # This hack gets around that.
+  if(all(is.na(tx))) {
+    samples[[1]] <- tx
+  }  else {
+    samples[[1]] <- pop$geno[tx]
+  }
+  # samples[[1]] <- pop$geno[tx]
 
   # Loop through subsequent generations
   for(g in 2:n_generations){
@@ -115,7 +124,12 @@ sim_population <- function(
       n_sample_points = n_sample_points,
       sample_spacing = sample_spacing
     )
-    samples[[g]] <- pop$geno[tx]
+    if(all(is.na(tx))) {
+      samples[[g]] <- tx
+    }  else {
+      samples[[g]] <- pop$geno[tx]
+    }
+    # samples[[g]] <- pop$geno[tx]
   }
   return(samples)
 }

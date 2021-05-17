@@ -3,7 +3,7 @@ test_that("initialise_population returns correct output", {
     mean_dispersal_distance = 1,
     n_starting_genotypes = 10,
     population_size = 30,
-    box_limit = 20
+    box_limit = 200
   )
   expect_true(is.list(ip))
   expect_true(length(ip$geno) == 30)

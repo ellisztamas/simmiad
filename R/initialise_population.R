@@ -38,13 +38,17 @@ initialise_population <- function(
     size = population_size,
     replace = TRUE
   )
-  # Update the genotypes and disperse from the mother.
-  list(
+  # Update the genotypes.
+  pop <- list(
     geno   = pop$geno[ix],
-    coords = shift_positions(
+    coords = pop$coords[ix,]
+  )
+  # Disperse from the mother
+  pop$coords <- shift_positions(
       pop$coords[ix,],
       mean_dispersal_distance = mean_dispersal_distance,
       box_limit = box_limit
-    )
   )
+
+  pop
 }

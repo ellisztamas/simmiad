@@ -18,7 +18,14 @@
 #' @author Tom Ellis
 #' @export
 transect_clustering <- function(genotypes, positions){
-  if(length(genotypes) != length(positions)){
+  if(all(is.na(genotypes))){
+    out <- c(
+      n_matches = NA,      # number of matching genotypes
+      n_diff    = NA,      # Number of non-identical pairs of genotypes
+      covar     = NA
+    )
+    return(out)
+  } else if(length(genotypes) != length(positions)){
     stop("Length of vectors for genotypes do not match.")
   }
   # Get the genotypes of all unqiue pairs of sampling points
