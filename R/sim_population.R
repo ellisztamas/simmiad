@@ -68,7 +68,7 @@ sim_population <- function(
   stopifnot(dormancy >= 0 & dormancy <= 1)
   # Plants exist in a box centred on zero through which the transect runs
   # Range limit is half the width of the box.
-  box_limit <- (n_sample_points * sample_spacing * range_limit)/2
+  box_limit <- ((n_sample_points-1) * sample_spacing * range_limit)/2
   # Given a density of plants per sq. metre and a size of the box, calculate
   # how many individuals you need
   population_size <- density * (2*box_limit)^2
@@ -80,8 +80,9 @@ sim_population <- function(
   pop <- initialise_population(
     mean_dispersal_distance = mean_dispersal_distance,
     n_starting_genotypes = n_starting_genotypes,
-    population_size = population_size,
-    box_limit = box_limit
+    population_size = round(population_size),
+    box_limit = box_limit,
+    method="uniform"
   )
 
   # Initially, the seed bank and current generation are the same, but will change in the loop.

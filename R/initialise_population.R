@@ -16,39 +16,61 @@ initialise_population <- function(
   mean_dispersal_distance,
   n_starting_genotypes,
   population_size,
-  box_limit
+  box_limit,
+  method = "uniform"
 ) {
   stopifnot(mean_dispersal_distance > 0 )
   stopifnot(n_starting_genotypes > 0 )
   stopifnot(population_size > 0 )
   stopifnot(box_limit >= 1 )
-  # Initialise the population with randomly dispersed genotypes
-  pop <- list(
-    # One label for each genotype
-    geno = paste("g", 1:n_starting_genotypes, sep=""),
-    # Initialise positions for each plant
-    coords = matrix(
-      runif(n = n_starting_genotypes * 2, min = -box_limit, max = box_limit),
-      ncol=2
+
+  if(method == "uniform"){
+    # Start with genotypes randomly dispersed over the habitat
+    pop <- list(
+      # vector of genotype labels
+      geno = sample(
+        x = paste("g", 1:n_starting_genotypes, sep = ""),
+        size = population_size,
+        replace = T
+      ),
+      # Matrix of coordinates.
+      coords = matrix(
+        runif(n = population_size * 2, min = -box_limit, max = box_limit),
+        ncol=2
+      )
     )
-  )
-  # Draw a sample of individuals for generation 1.
-  ix <- sample(
-    x = 1:n_starting_genotypes,
-    size = population_size,
-    replace = TRUE
-  )
-  # Update the genotypes.
-  pop <- list(
-    geno   = pop$geno[ix],
-    coords = pop$coords[ix,]
-  )
-  # Disperse from the mother
-  pop$coords <- shift_positions(
+    return(pop)
+  } else if( method == "founders" ){
+    # Initialise the population with randomly dispersed genotypes
+    pop <- list(
+      # One label for each genotype
+      geno = paste("g", 1:n_starting_genotypes, sep=""),
+      # Initialise positions for each plant
+      coords = matrix(
+        runif(n = n_starting_genotypes * 2, min = -box_limit, max = box_limit),
+        ncol=2
+      )
+    )
+    # Draw a sample of individuals for generation 1.
+    ix <- sample(
+      x = 1:n_starting_genotypes,
+      size = population_size,
+      replace = TRUE
+    )
+    # Update the genotypes.
+    pop <- list(
+      geno   = pop$geno[ix],
+      coords = pop$coords[ix,]
+    )
+    # Disperse from the mother
+    pop$coords <- shift_positions(
       pop$coords[ix,],
       mean_dispersal_distance = mean_dispersal_distance,
       box_limit = box_limit
-  )
+    )
 
-  pop
+    return(pop)
+  } else {
+    stop("`method` should be one of 'uniform' or 'founders'.")
+  }
 }

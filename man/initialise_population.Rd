@@ -8,7 +8,8 @@ initialise_population(
   mean_dispersal_distance,
   n_starting_genotypes,
   population_size,
-  box_limit
+  box_limit,
+  method = "uniform"
 )
 }
 \arguments{
