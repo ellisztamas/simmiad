@@ -1,3 +1,5 @@
+[![DOI](https://zenodo.org/badge/237212349.svg)](https://zenodo.org/badge/latestdoi/237212349)
+
 # simmiad
 R package to simulate populations of wild Emmer wheat from the Kibbutz Ammiad
 
