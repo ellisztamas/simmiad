@@ -12,7 +12,6 @@
 #' @return This returns a list giving means and CIs for the final generation, plus
 #' means through time across generations.
 #' @author Tom Ellis
-#' @export
 summarise_simmiad <- function(base_folder, parameter){
   folders <- list.dirs(base_folder)
 
@@ -23,7 +22,7 @@ summarise_simmiad <- function(base_folder, parameter){
     # Open the parameter file
     p <-  read.csv(paste(folders[f], "/parameters.csv", sep="")) %>%
       filter(parameter %in% c(
-        'mean_dispersal_distance', 'outcrossing_rate', 'n_generations', 'n_starting_genotypes', 'density'
+        'mean_dispersal_distance', 'outcrossing_rate', 'n_generations', 'n_starting_genotypes', 'density', 'dormancy'
       ))
     # Open the data file
     df <- read.csv(paste(folders[f], "/", parameter, sep=""))
