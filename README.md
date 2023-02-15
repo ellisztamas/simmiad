@@ -44,10 +44,10 @@ devtools::install_github("ellisztamas/simmiad")
 
 ### Simulating through time:
 
-* In the next generation, each plant generates an average of one seed. Offspring numbers are drawn from a multinomial distribution of size N, with probablity 1/N for each mother, where N is population size.
+* In the next generation each plant has the chance to produce seeds. Offspring numbers are drawn from a multinomial distribution of size N, with probablity 1/N for each mother, where N is population size. Thus, each plant generates an average of one seed.
 * Each seed disperses in a random direction at a distance drawn from an exponential distribution.
 * Each seed has some probability of having been the product of an outcrossing event. If so, it is assigned a new unique genotype. If not, it is assumed to have been selfed and shares the genotype of its mother.
-* This is repeated for many generations (I used 500 generations)
+* This is repeated for many generations
 
 ### Transect samples
 
