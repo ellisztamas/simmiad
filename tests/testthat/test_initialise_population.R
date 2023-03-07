@@ -18,12 +18,25 @@ test_that("initialise_population returns correct output for founding genotypes",
     n_starting_genotypes = 10,
     population_size = 30,
     box_limit = 200,
-    method = "founders"
+    method = "clusters"
   )
   expect_true(is.list(founders))
   expect_true(length(founders$geno) == 30)
   expect_true(nrow(founders$coords) == 30)
   expect_true(ncol(founders$coords) == 2)
+})
+
+test_that("initialise_population returns correct output for 'mvnorm'.", {
+  multiv <- initialise_population(
+    n_starting_genotypes = 10,
+    population_size = 30,
+    box_limit = 200,
+    method = "mvnorm"
+  )
+  expect_true(is.list(multiv))
+  expect_true(length(multiv$geno) == 30)
+  expect_true(nrow(multiv$coords) == 30)
+  expect_true(ncol(multiv$coords) == 2)
 })
 
 test_that("initialise_population throws an error if the method is garbage.", {
@@ -35,6 +48,6 @@ test_that("initialise_population throws an error if the method is garbage.", {
       box_limit = 200,
       method = "whoops"
     ),
-    regexp = "*`method` should be one of 'uniform' or 'founders'."
+    regexp = "`method` should be one of 'uniform', 'clusters' or 'mvnorm'."
   )
 })

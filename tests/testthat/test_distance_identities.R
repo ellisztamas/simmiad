@@ -12,9 +12,16 @@ test_that("distance_identities returns a data.frame of the right dimensions", {
   expect_true(nrow(d) == (length(positions) * (length(positions)-1)) / 2)
 })
 
-# test_that("distance_identities throws an error if given a vector of genotypes", {
-#   expect_error(distance_identities(transects[[1]], positions))
-# })
+test_that("distance_identities returns expected output if genotypes is vector not list", {
+  # Check `matches` can only be zero or one.
+  expect_true(all(
+    distance_identities(transects[[1]], positions)$matches %in% c(0,1)
+  ))
+  # Check that only one comparson is made.
+  expect_true(all(
+    distance_identities(transects[[1]], positions)$n == 1
+  ))
+})
 
 test_that("distance_identities throws an error if arguments are different lengths", {
   expect_error(distance_identities(transects, positions[-1]))

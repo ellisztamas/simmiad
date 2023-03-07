@@ -7,7 +7,8 @@
     n_sample_points = 5,
     sample_spacing = 5,
     nsims = 3,
-    dormancy = 0.3
+    dormancy = 0.3,
+    progress = FALSE
   )
 
 test_that("simmiad() gives the expected output", {
