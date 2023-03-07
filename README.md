@@ -1,3 +1,5 @@
+[![DOI](https://zenodo.org/badge/237212349.svg)](https://zenodo.org/badge/latestdoi/237212349)
+
 # simmiad
 R package to simulate populations of wild Emmer wheat from the Kibbutz Ammiad
 
@@ -42,10 +44,10 @@ devtools::install_github("ellisztamas/simmiad")
 
 ### Simulating through time:
 
-* In the next generation, each plant generates an average of one seed. Offspring numbers are drawn from a multinomial distribution of size N, with probablity 1/N for each mother, where N is population size.
+* In the next generation each plant has the chance to produce seeds. Offspring numbers are drawn from a multinomial distribution of size N, with probablity 1/N for each mother, where N is population size. Thus, each plant generates an average of one seed.
 * Each seed disperses in a random direction at a distance drawn from an exponential distribution.
 * Each seed has some probability of having been the product of an outcrossing event. If so, it is assigned a new unique genotype. If not, it is assumed to have been selfed and shares the genotype of its mother.
-* This is repeated for many generations (I used 500 generations)
+* This is repeated for many generations
 
 ### Transect samples
 
@@ -115,7 +117,7 @@ This returns a list of genotypes in each generation. The final generation looks 
 - The `NA` entries are sampling points where no plant could be sampled (i.e. there was no plant within one metre of the sampling point).
 
 ### Replicate simulations
-Most of the time you will want to simulate multiple replicate populations with a set of input parameters. This can be done with the function `simmiad` using similar input parameters as [before](#Simulate-a-single-population)
+Most of the time you will want to simulate multiple replicate populations with a set of input parameters. This can be done with the function `simmiad` using similar input parameters as [before](#Simulate-a-single-population).
 
 ```
 rs <- simmiad(
@@ -136,7 +138,7 @@ This function simulates multiple individual populations through time, and return
 2. **clustering** The covariance between distance along the transect and the frequency of identical genotypes.
 3. **matching_pairs**: The number of pairs of identical genotypes in the transect.
 4. **count_NA**: The number of empty sampling points.
-5. **n_genotypes**: The number of unique genotypes sampled in the transect (note that this will be different from what you gave as `distance_identity`, because the latter reflects genotypes in *the whole population*, not just in the transect).
+5. **n_genotypes**: The number of unique genotypes sampled in the transect (note that this will be different from what you gave as `n_starting_genotypes`, because the latter reflects genotypes in *the whole population*, not just in the transect).
 6. **stability**: How often individual sampling points are occupied by the same genotype in the final generations and 1, 2, ..., n generations back.
 7. **distance_identity**: Probabilities of finding identical genotypes in pairs of sampling points at all possible distances between transects. For example, if there are five evenly spaced sampling points as in the example above, there are four possible distances between sampling points. Rows indicate replicate simulations.
 

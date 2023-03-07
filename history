@@ -148,7 +148,35 @@ functions and removed pipes.
 Also changed the processing of the output of `distance_clustering` in `simmiad`
 to rmeove NaNs caused by sampling points not having any sampled plant nearby.
 
-
-
 Add a 'read-simmiad' function to get means and CIs. Loop over folders and pull
 out data for a single *parameter*.
+
+## 1.11.3 Population structure via MV normal
+
+7th March 2023
+
+I want to allow simulations to start with a structure that reflects the observed
+genetic structure at Ammiad and see how long this is maintained. This is tricky
+because we only know something about the structure in 1 dimension (transects
+innit), but that somehow needs translating to 2 dimensions.
+
+Currently initialise_population can simulate a panmictic population
+(`method='uniform'`), or simulates seeds dispersing from distinct mothers by
+exponential dispersal (renamed to `method=clusters').
+
+Here I appended initialise_population to taken argument "mvnorm". This simulates
+uniformly distributed coordinates for indiduals, as well as uniformly-
+distributed centroid positions for genotypes. Individuals are assigned a
+genotype in proportion to their distance to each genotype centroid based on
+multivariate-normal probabilities. The variance covariance matrix for this is
+set as `sqrt(habitat_size/n_starting_genotypes) / 3 so that the tail of each
+genotype just about touches those of its neighbours, on average. That isn't
+a super strong basis.
+
+Edited distance_identitites to handle genotypes as a vector properly, plus tests
+to check it worked.
+
+Also edited write_simmiad to use read.table instead of read.csv, because the
+latter does not like files with no header.
+
+

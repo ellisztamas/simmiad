@@ -12,9 +12,10 @@ write_simmiad <- function(x, directory){
   dir.create(directory, showWarnings = FALSE)
 
   for(i in names(x)){
-    write.csv(
+    write.table(
       x[[i]],
       file = paste(directory, "/", i, '.csv', sep=""),
-      row.names = FALSE)
+      row.names = FALSE, col.names = FALSE,
+      sep=",")
   }
 }
