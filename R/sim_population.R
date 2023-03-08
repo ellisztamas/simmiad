@@ -61,7 +61,8 @@ sim_population <- function(
   n_sample_points,
   sample_spacing,
   dormancy,
-  range_limit = 1.5
+  range_limit = 1.5,
+  method = 'uniform'
 ){
   stopifnot(range_limit > 1)
   stopifnot(density > 0)
@@ -82,7 +83,7 @@ sim_population <- function(
     n_starting_genotypes = n_starting_genotypes,
     population_size = round(population_size),
     box_limit = box_limit,
-    method="uniform"
+    method=method
   )
 
   # Initially, the seed bank and current generation are the same, but will change in the loop.

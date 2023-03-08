@@ -65,7 +65,8 @@ simmiad <- function(
   progress = TRUE,
   dormancy,
   how_far_back = n_generations,
-  stability_years = n_generations:(n_generations/2)
+  stability_years = n_generations:(n_generations/2),
+  method = "uniform"
 ){
   t0 <- proc.time()[3] # record the starting time.
 
@@ -85,7 +86,12 @@ simmiad <- function(
   }
 
   # Print message about sims
-  cat("\nSimulations of wild Emmer wheat begun on", format(Sys.time(), "%a %b %d %X %Y"), "\n")
+  cat(
+    "\nSimulations of wild Emmer wheat begun on",
+    format(Sys.time(), "%a %b %d %X %Y"),
+    "using simmiad,", as.character(packageVersion('simmiad')),
+    ".\n"
+  )
 
   # Empty structures to store data
   clustering     <- matrix(NA, nrow = nsims, ncol = n_generations)
@@ -108,7 +114,8 @@ simmiad <- function(
       range_limit = range_limit,
       n_sample_points = n_sample_points,
       sample_spacing = sample_spacing,
-      dormancy = dormancy
+      dormancy = dormancy,
+      method = method
     )
 
     # Empty matrices to store simulation output

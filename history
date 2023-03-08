@@ -181,7 +181,13 @@ latter does not like files with no header.
 
 ## 1.11.4 Added mvtnorm
 
+Updated sim_population and simmiad to take argument `method` which is passed to
+initialise_population.
+
+simiad now prints a message to state the package version of simmiad being used.
+
 Added dependency on mvtnorm to DESCRIPTION
+
 
 
 
