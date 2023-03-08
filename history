@@ -179,4 +179,10 @@ to check it worked.
 Also edited write_simmiad to use read.table instead of read.csv, because the
 latter does not like files with no header.
 
+## 1.11.4 Added mvtnorm
+
+Added dependency on mvtnorm to DESCRIPTION
+
+
+
 
