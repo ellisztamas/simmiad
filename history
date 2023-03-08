@@ -179,7 +179,7 @@ to check it worked.
 Also edited write_simmiad to use read.table instead of read.csv, because the
 latter does not like files with no header.
 
-## 1.11.4 Added mvtnorm
+## 1.11.4 Functionality for structured populations
 
 Updated sim_population and simmiad to take argument `method` which is passed to
 initialise_population.
@@ -188,7 +188,9 @@ simiad now prints a message to state the package version of simmiad being used.
 
 Added dependency on mvtnorm to DESCRIPTION
 
+## 1.11.5 Added mvtnorm as a dependency
 
+Added mvtnorm to DESCRIPTION via 'Imports' instaed of 'Suggests'
 
 
 
