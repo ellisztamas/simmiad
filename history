@@ -192,5 +192,8 @@ Added dependency on mvtnorm to DESCRIPTION
 
 Added mvtnorm to DESCRIPTION via 'Imports' instaed of 'Suggests'
 
+## 1.11.6 Specified package for dmvnorm
 
+Specified call to multivariate normal function in initialise_population as
+`mvtnorm::dmvnorm(...)`
 

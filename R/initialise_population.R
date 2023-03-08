@@ -118,7 +118,7 @@ initialise_population <- function(
     # Returns a matrix with a row for each individual and a column for each genotype
     # Columns sum to one.
     prob_each_genotype <- apply(geno_coords, 1, function(x){
-      probs <- dmvnorm(
+      probs <- mvtnorm::dmvnorm(
         x = ind_coords,
         mean = c(x[1], x[2]),
         sigma = sigma
