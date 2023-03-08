@@ -15,6 +15,7 @@ take_transect(coords, n_sample_points, sample_spacing)
 }
 \value{
 A vector of integers giving the row positions of plants to be sampled.
+If no plants are within 1m of the sampling point, returns NA.
 }
 \description{
 Take a transect of equally spaced sampling points through a population

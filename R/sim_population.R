@@ -7,8 +7,8 @@
 #' space following exponentially distributed seed dispersal distances.
 #'
 #' 1. Individuals are drawn from a set of starting genotypes and randomly
-#' distributed in a grid. Individuals are labelled by their genotype as 'g'
-#' followed by an integer label.
+#' distributed in a square habitat Individuals are labelled by their genotype
+#' as 'g' followed by an integer label.
 #' 2. Individuals are chosen at random to found the next generation. They
 #' move seed dispersal to new location, with distances drawn from an exponential
 #' distribution. The population exists on a torus to eliminat edge effects;
@@ -23,14 +23,12 @@
 #'
 #' A seed bank is not currently implemented.
 #'
-#' Plants exist within a box whose size is determined by the population size and
-#' plant density (more plants at lower density = larger box). `sim_population`
-#' will throw and error if the length of the transect
-#' (`(n_sample_points-1) * sample_spacing`) is longer than the width of the box.
-#' In this case, you can either make the population larger and less dense, or
-#' choose fewer, closer sampling points.
+#' Plants exist within a box centred around zero with a transect going through
+#' zero. The width of the box is defined to be 1.5-fold larger than the length
+#' of the transect (but this can be changed with the argument `range_limit`).
+#' Total population size is then the density of plants multiplied by the squared
+#' width of the box.
 #'
-#' @param population_size Int >0. Number of individuls in the population.
 #' @param mean_dispersal_distance Float >0. Mean seed dispersal distance. The
 #' reciprocal of this is used as the rate parameter to draw from the exponential
 #' distribution.
@@ -42,6 +40,12 @@
 #' @param density Float >0. Average density of plants per square metre.
 #' @param n_sample_points Number of points to sample along the transect.
 #' @param sample_spacing Distance between sampling points.
+#' @param dormancy Float between 0 and 1. Probability that a seedling is drawn
+#' from the seed bank. Seedlings are drawn from the prior generation with
+#' probability 1-dormancy.
+#' @param range_limit Float >1 defining how much wider than the transect the
+#' width of the habitat should be. This, along with plant density, determines
+#' how many plants will be simulated. Defaults to 1.5.
 #'
 #' @return A list of genotypes recorded at each sampling point in each
 #' generation.
@@ -49,80 +53,84 @@
 #' @author Tom Ellis
 #' @export
 sim_population <- function(
-  population_size,
   mean_dispersal_distance,
   outcrossing_rate,
   n_generations,
   n_starting_genotypes,
   density,
   n_sample_points,
-  sample_spacing
+  sample_spacing,
+  dormancy,
+  range_limit = 1.5
 ){
-  if(sample_spacing < density) {
-    warning("Distances between sampling points are less than mean plant density. It is likely that the same plant will be sampled twice.")
-  }
-  # Plants exist in a box centred on zero.
+  stopifnot(range_limit > 1)
+  stopifnot(density > 0)
+  stopifnot(dormancy >= 0 & dormancy <= 1)
+  # Plants exist in a box centred on zero through which the transect runs
   # Range limit is half the width of the box.
-  range_limit <- sqrt(population_size / density) / 2
-  # Throw an error if the transect is longer than the width of the population
-  if((n_sample_points-1) * sample_spacing > 2*range_limit){
-    stop("Total transect length (n_sample_points-1 * sample_spacing) is longer than the width of population range.")
-  }
+  box_limit <- ((n_sample_points-1) * sample_spacing * range_limit)/2
+  # Given a density of plants per sq. metre and a size of the box, calculate
+  # how many individuals you need
+  population_size <- density * (2*box_limit)^2
 
   # Empty list to store transects in each generation
   samples <- vector(mode = "list", length = n_generations)
 
   # Initialise the population with randomly dispersed genotypes
-  geno <- sample(
-    x = paste("g", 1:n_starting_genotypes, sep = ""), # vector of genotype labels
-    size = population_size,
-    replace = T
+  pop <- initialise_population(
+    mean_dispersal_distance = mean_dispersal_distance,
+    n_starting_genotypes = n_starting_genotypes,
+    population_size = round(population_size),
+    box_limit = box_limit,
+    method="uniform"
   )
-  # Initialise positions for each plant
-  coords <- matrix(
-    runif(
-      n = population_size * 2,
-      min = -range_limit,
-      max = range_limit
-    ),
-    ncol=2
-  )
+
+  # Initially, the seed bank and current generation are the same, but will change in the loop.
+  seed_rain <- seed_bank <- pop
   # Take a transect through generation 1.
   tx <- take_transect(
-    coords,
+    pop$coords,
     n_sample_points = n_sample_points,
     sample_spacing = sample_spacing
     )
-
-  samples[[1]] <- geno[tx]
+  # Get genotypes along the transect by indexing pop$geno with tx
+  # If tx contains only NAs this returns a huge vector of NAs, causing a crash
+  # This hack gets around that.
+  if(all(is.na(tx))) {
+    samples[[1]] <- tx
+  }  else {
+    samples[[1]] <- pop$geno[tx]
+  }
+  # samples[[1]] <- pop$geno[tx]
 
   # Loop through subsequent generations
   for(g in 2:n_generations){
     # Sample plants to reproduce at random
-    ix <- sample(1:population_size, replace = T)
-    # Update the genotypes
-    geno <- geno[ix]
-
-    # Choose plants at random to receive outcrossed pollen.
-    cross01 <- rbinom(n = population_size, 1, outcrossing_rate)
-    cross01 <- as.logical(cross01)
-    # Give these plants a new unique genotype by appending generation number and
-    # and integer from 1 to the number of outcrossers.
-    geno[cross01] <- paste(geno[cross01], "_", g-1, ".", 1:sum(cross01), sep = "")
-
-    # Peturb positions
-    coords <- shift_positions(
-      coords[ix,],
+    pop <- update_population(
+      seed_rain = seed_rain,
+      seed_bank = seed_bank,
       mean_dispersal_distance = mean_dispersal_distance,
-      range_limit = range_limit
+      outcrossing_rate = outcrossing_rate,
+      dormancy = dormancy,
+      generation = g,
+      box_limit = box_limit
     )
+    # The previous generation now becomes a seed bank
+    seed_bank <- seed_rain
+    seed_rain <- pop
+
     # Take a transect of the new generation
     tx <- take_transect(
-      coords,
+      pop$coords,
       n_sample_points = n_sample_points,
       sample_spacing = sample_spacing
     )
-    samples[[g]] <- geno[tx]
+    if(all(is.na(tx))) {
+      samples[[g]] <- tx
+    }  else {
+      samples[[g]] <- pop$geno[tx]
+    }
+    # samples[[g]] <- pop$geno[tx]
   }
   return(samples)
 }

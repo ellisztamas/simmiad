@@ -9,22 +9,22 @@
 #' @param mean_dispersal_distance Float giving the average perturbation
 #' distance. The reciprocal of this value is used as a rate for the exponential
 #' distribution.
-#' @param range_limit Float giving the diameter of the torus.
+#' @param box_limit Float >1 giving half the circumference of the torus.
 #'
 #' @return A matrix matching the shape of the input `coords`, but with values
 #' shifted by some exponential distance.
 #' @export
-shift_positions <- function(coords, mean_dispersal_distance, range_limit){
+shift_positions <- function(coords, mean_dispersal_distance, box_limit){
   if(!is.matrix(coords)){
     stop("`coords` should be a matrix.")
   }
   if(ncol(coords) != 2){
     stop("`coords` should have two columns." )
   }
-  if(any(coords>range_limit)){
+  if(any(coords>box_limit)){
     stop("One or more values in `coords` is beyond the range limit.")
   }
-  if(mean_dispersal_distance > range_limit){
+  if(mean_dispersal_distance > box_limit){
     stop("`mean_dispersal_distance` must be less than the range limit.")
   }
   population_size <- nrow(coords)
@@ -53,8 +53,8 @@ shift_positions <- function(coords, mean_dispersal_distance, range_limit){
   # Ensure dispersal is on a torus.
   # When dispersal is beyond the edge of the population, reflect it back to the
   # other side of the range
-  ix <- abs(new_coords) > range_limit
-  dev <- new_coords[ix] - (sign(new_coords[ix]) * range_limit)
+  ix <- abs(new_coords) > box_limit
+  dev <- new_coords[ix] - (sign(new_coords[ix]) * box_limit)
   new_coords[ix] <- -new_coords[ix] + 2*dev
 
   return(new_coords)

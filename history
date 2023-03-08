@@ -1,0 +1,182 @@
+# Branch history for simmiad package
+
+## 0.1.0_rel_grid-sims
+
+An R package for simulating a population of wild Emmer wheat to ask whether the amount of spatial clustering of unique genotypes can be explained by purely neutral forces.
+
+This simulates a population on an evenly-spaced grid of sampling points through time:
+
+* Sampling points are populated at random with a set of unqiue starting genotypes.
+* In the next generation, each sampling point is filled by one seed from the same or a different sampling point from a previous generation. Whichever genotype was at the donor sampling point now occupies the focal sampling point. I assume seed dispersal distances are exponentially distributed with some mean value that is used as an input parameter.
+* To allow for a seed bank, each seed can be drawn from any previous generation. The generation is drawn from a poisson distribution.
+* Each seed has some probability of having been the product of an outcrossing event. If so, it is assigned a new unique genotype.
+
+## 1.0.0_feat_continuous-space
+
+August 2020. Substantial rewrite of the simulations to allow plants to disperse
+in continuous space. This is done on a torus to remove edge effects. I had to
+remove the seed dormancy parameter.
+
+## 1.1.0_feat_count-identical
+
+10th September 2020. Changed transect_clustering to return the number of pairs
+of identical and non-identical genotypes in the transect.
+
+## 1.2_feat_covar-identity-distance
+
+22.9.2020. Update `transect_clustering` to calculate the correlation between
+pairwise identity and distance.
+
+I am not happy with the current measure of spatial clustering
+(dividing mean pairwise distance between non-identical pairs by mean pairwise
+distance between identical pairs) because it does not account for the absolute
+number of identical pairs, so it blows up if there is a small number of identical
+pairs.
+
+Other measures I have found seem to be designed for continuous variables and do
+but treat distance as discrete (nearest neighbour or not) (for example, Moran's I,
+spatial entropy). In this case the outcome is discrete (identical or not) but
+the distance is continuous.
+
+The best idea I can come up with is to model spatial
+clustering as the (Pearson; using ranks gives ties) correlation between pairwise
+identity and distance.
+This is not quite as neat as proper spatial autocorrelation stats, because these
+return 1 for perfect clustering and -1 for perfect dispersion. The correlation
+coeficient becomes negative for clustering but doesn't get much above zero for
+perfect dispersion.
+
+## 1.3_feat_compare-all-years
+
+22.9.2020 Compare temporal stability between the last year and all previous
+years.
+
+It is not clear exactly what comparison to make for temporal stability. I would
+also like to check how temporal stability changes over time. One way to do both
+is to compare the final generation n with generation {n-1, n-2, ... , (n-g)+1}
+for a total of g replicates.
+
+Update: in fact it makes more sense to include this in a more general update of
+simmiad(), so I will leave this.
+
+## 1.4_feat_set-population-size
+
+23.9.2020. Replace population_size argument with how much bigger the population
+should be than the transect.
+
+Currently there are arguments for population size and density, and area is
+determined to be size/density. However, since transect length is fixed it can
+happen that if population size is small, the width of the torus is less than
+the length of the transect. Even if that is not the case, it means that the
+distance from edge of the torus to the ends of the transect varies with
+population size and density.
+
+To fix this, remove the argument for population size and instead say that the
+width of the torus will be 1.5 times the length of the transect, and define
+population size as density * width^2. Return population size in the output. This
+should affect `sim_population()` and `simmiad()`.
+
+## 1.5_feat_sample-with-1-metre
+
+23.9.2020.
+take_trasect() takes the closest plant to each sampling point. Add a check that
+a plant should only be sampled if it is within 1m of the sampling point, and
+return NA if not.
+
+## 1.6_feat_identity_at_different_distances
+
+23.9.2020 Added `distance_identities` to calculates the probability of observing
+identical genotypes at different distances along a transect.
+
+This originally aimed to address how what we can say about transect A-West, but
+is informative more generally. For observed and simulated transects calculate
+the probability of observing identical genotypes at sampling points at different
+distance classes. You can then plot this as a decaying curve so you can make
+statements like "we don't see identical genotypes more than x metres apart".
+This can be compared with simulations, which I expect will be much flatter and
+lower. This might prove to be a more robust measure of spatial differentiation
+than a single number for spatial clustering, but I will calculate both for now.
+
+You can also calculate the probability of observing identical genotypes in
+corresponding sampling points 20m away in transect A-West, which I expect will
+be higher than you'd get for 20m along either transect or at 20m in simulated
+transects.
+
+There is an obvious caveat that estimates for lower distance classes will be
+better because there are more comparisons that can be made.
+
+For observed transects, you probably need to average over all sampling years,
+because at higher distances things will collapse into a small number of zeroes
+and ones.
+For simulated transects, estimate this for each year, and return a matrix with
+a row for each replicate.
+For the A/A-West comparison calculate curves for each transect in 20, plus a
+mean for the average between-transect comparison at 20m.
+
+## 1.7_feat_output_as_folders
+
+24.9.2020 Save a folder of summary stats instead of a single file. `simmiad()`
+outputs a list, and `write_simmiad()` saves to disk.
+
+For a single call to `simmiad()` with n_generations=g and nsims=r I would like
+the function to create a folder of output with several files:
+
+* **parameters**: Table of input parameters to save me having to muck about
+extracting these from file names.
+* **spatial**: r x g table of spatial clustering stats for every replicate
+through time
+* **temporal**: r x g table of temporal stability stats for every replicate
+comparing the final year to all previous
+* **n_genotypes**: r x g table counting the number of unique genotypes in the
+transect for every replicate.
+* **transect_matches**: r x g table counting the number of pairs of identical
+genotypes in each transect.
+* **distance_curves**: matrix giving probabilities of observing identical
+genotypes at increasing distances, with a row for each replicate.
+
+## 1.7.4
+28.09.2020
+Subset generations to average over for the call to distance_stability() in
+simmiad() with the argument stability_years.
+
+## 1.8.0
+28.09.2020
+Remove dependency on dplyr and magittr.
+I changed the calls to `summarise` and `group_by` in `simmiad()` to use base R
+functions and removed pipes.
+
+Also changed the processing of the output of `distance_clustering` in `simmiad`
+to rmeove NaNs caused by sampling points not having any sampled plant nearby.
+
+Add a 'read-simmiad' function to get means and CIs. Loop over folders and pull
+out data for a single *parameter*.
+
+## 1.11.3 Population structure via MV normal
+
+7th March 2023
+
+I want to allow simulations to start with a structure that reflects the observed
+genetic structure at Ammiad and see how long this is maintained. This is tricky
+because we only know something about the structure in 1 dimension (transects
+innit), but that somehow needs translating to 2 dimensions.
+
+Currently initialise_population can simulate a panmictic population
+(`method='uniform'`), or simulates seeds dispersing from distinct mothers by
+exponential dispersal (renamed to `method=clusters').
+
+Here I appended initialise_population to taken argument "mvnorm". This simulates
+uniformly distributed coordinates for indiduals, as well as uniformly-
+distributed centroid positions for genotypes. Individuals are assigned a
+genotype in proportion to their distance to each genotype centroid based on
+multivariate-normal probabilities. The variance covariance matrix for this is
+set as `sqrt(habitat_size/n_starting_genotypes) / 3 so that the tail of each
+genotype just about touches those of its neighbours, on average. That isn't
+a super strong basis.
+
+Edited distance_identitites to handle genotypes as a vector properly, plus tests
+to check it worked.
+
+Also edited write_simmiad to use read.table instead of read.csv, because the
+latter does not like files with no header.
+
+

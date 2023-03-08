@@ -4,7 +4,7 @@
 \alias{shift_positions}
 \title{Shift a matrix of x- and y-coordinates in random directions}
 \usage{
-shift_positions(coords, mean_dispersal_distance, range_limit)
+shift_positions(coords, mean_dispersal_distance, box_limit)
 }
 \arguments{
 \item{coords}{Matrix with a row for each individual and two rows.}
@@ -13,7 +13,7 @@ shift_positions(coords, mean_dispersal_distance, range_limit)
 distance. The reciprocal of this value is used as a rate for the exponential
 distribution.}
 
-\item{range_limit}{Float giving the diameter of the torus.}
+\item{box_limit}{Float >1 giving half the circumference of the torus.}
 }
 \value{
 A matrix matching the shape of the input \code{coords}, but with values

@@ -5,7 +5,6 @@
 \title{Simulate replicate populations}
 \usage{
 simmiad(
-  population_size,
   mean_dispersal_distance,
   outcrossing_rate,
   n_generations,
@@ -13,12 +12,15 @@ simmiad(
   density = 3,
   n_sample_points = 30,
   sample_spacing = 5,
-  nsims
+  range_limit = 1.5,
+  nsims,
+  progress = TRUE,
+  dormancy,
+  how_far_back = n_generations,
+  stability_years = n_generations:(n_generations/2)
 )
 }
 \arguments{
-\item{population_size}{Int >0. Number of individuls in the population.}
-
 \item{mean_dispersal_distance}{Float >0. Mean seed dispersal distance. The
 reciprocal of this is used as the rate parameter to draw from the exponential
 distribution.}
@@ -37,16 +39,47 @@ Defaults to 50}
 
 \item{sample_spacing}{Distance between sampling points.}
 
+\item{range_limit}{Float >1 defining how much wider than the transect the
+width of the habitat should be. This, along with plant density, determines
+how many plants will be simulated. Defaults to 1.5.}
+
 \item{nsims}{Int >0. Number of replicate populations to simulate.}
+
+\item{progress}{If TRUE, a progress bar is printed.}
+
+\item{dormancy}{Float between 0 and 1. Probability that a seedling is drawn
+from the seed bank. Seedlings are drawn from the prior generation with
+probability 1-dormancy.}
+
+\item{how_far_back}{Integer number of generations to sample with a transect}
+
+\item{stability_years}{Vector of integers indexing which generations to average
+over when calculating distance_identities(). Defaults to the last 50\% of
+generations.}
 }
 \value{
-Nothing will be printed on screeen, but two files are saved to disk:
+A list of seven dataframes.
 \enumerate{
-\item A CSV file giving genotype distances between identical and
-non-identical plants, and the output of transect_stability for each pair of
-sampling years.
-\item A log file giving simulation details.
+\item \strong{parameters} A data.frame giving input parameters.
+\item \strong{clustering} The covariance between distance along the transect and the
+frequency of identical genotypes.
+\item \strong{matching_pairs}: The number of pairs of identical genotypes in the
+transect.
+\item \strong{count_NA}: The number of empty sampling points.
+\item \strong{n_genotypes}: The number of unique genotypes sampled in the transect
+(note that this will be different from what you gave as \code{distance_identity},
+because the latter reflects genotypes in \emph{the whole population}, not just in
+the transect).
+\item \strong{stability}: How often individual sampling points are occupied by the
+same genotype in the final generations and 1, 2, ..., n generations back.
+\item \strong{distance_identity}: Probabilities of finding identical genotypes in
+pairs of sampling points at all possible distances between transects. For
+example, if there are five evenly spaced sampling points as in the example
+above, there are four possible distances between sampling points. Rows
+indicate replicate simulations.
 }
+
+For 2-6, rows indicate replicate simulations and columns generations.
 }
 \description{
 \code{simmiad} Simulates multiple replicate populations under a set of input
@@ -61,12 +94,12 @@ For each simulation, \code{simmiad} draws a horizontal transect and saves
 two kinds of summary information about this transect to disk. First,
 in the final generation of each population, a single transect is taken through
 a random row of the grid, and the degree of clustering estimated using
-\code{transect_cluster}. This summarises the mean distance between pairs of
+\code{transect_cluster}. This summarises the number and mean distance between pairs of
 identical genotypes and between pairs of non-identical genotypes.
 Second, it estimates the spatial stability of the populations by calculating
 how often a sampling point is occupied by idnetical genotypes at different
-time points. This is done by comparing the final generation to each of the
-twelve previous generations.
+time points. This is done by comparing the final generation to 1, 2, 4, 6 and
+twelve years prior to that.
 }
 \seealso{
 \code{sim_population}, \code{transect_cluster}, \code{transect_stability}

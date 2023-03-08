@@ -5,19 +5,18 @@
 \title{Simulate a population}
 \usage{
 sim_population(
-  population_size,
   mean_dispersal_distance,
   outcrossing_rate,
   n_generations,
   n_starting_genotypes,
   density,
   n_sample_points,
-  sample_spacing
+  sample_spacing,
+  dormancy,
+  range_limit = 1.5
 )
 }
 \arguments{
-\item{population_size}{Int >0. Number of individuls in the population.}
-
 \item{mean_dispersal_distance}{Float >0. Mean seed dispersal distance. The
 reciprocal of this is used as the rate parameter to draw from the exponential
 distribution.}
@@ -35,6 +34,14 @@ Defaults to 50}
 \item{n_sample_points}{Number of points to sample along the transect.}
 
 \item{sample_spacing}{Distance between sampling points.}
+
+\item{dormancy}{Float between 0 and 1. Probability that a seedling is drawn
+from the seed bank. Seedlings are drawn from the prior generation with
+probability 1-dormancy.}
+
+\item{range_limit}{Float >1 defining how much wider than the transect the
+width of the habitat should be. This, along with plant density, determines
+how many plants will be simulated. Defaults to 1.5.}
 }
 \value{
 A list of genotypes recorded at each sampling point in each
@@ -49,8 +56,8 @@ for each generation.
 space following exponentially distributed seed dispersal distances.
 \enumerate{
 \item Individuals are drawn from a set of starting genotypes and randomly
-distributed in a grid. Individuals are labelled by their genotype as 'g'
-followed by an integer label.
+distributed in a square habitat Individuals are labelled by their genotype
+as 'g' followed by an integer label.
 \item Individuals are chosen at random to found the next generation. They
 move seed dispersal to new location, with distances drawn from an exponential
 distribution. The population exists on a torus to eliminat edge effects;
@@ -66,12 +73,11 @@ sampling point is recorded.
 
 A seed bank is not currently implemented.
 
-Plants exist within a box whose size is determined by the population size and
-plant density (more plants at lower density = larger box). \code{sim_population}
-will throw and error if the length of the transect
-(\code{(n_sample_points-1) * sample_spacing}) is longer than the width of the box.
-In this case, you can either make the population larger and less dense, or
-choose fewer, closer sampling points.
+Plants exist within a box centred around zero with a transect going through
+zero. The width of the box is defined to be 1.5-fold larger than the length
+of the transect (but this can be changed with the argument \code{range_limit}).
+Total population size is then the density of plants multiplied by the squared
+width of the box.
 }
 \author{
 Tom Ellis
