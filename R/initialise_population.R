@@ -7,9 +7,6 @@ library(mvtnorm)
 #'
 #'
 #'
-#' @param mean_dispersal_distance Float >0. Mean seed dispersal distance. The
-#' reciprocal of this is used as the rate parameter to draw from the exponential
-#' distribution if `method="clusters`.
 #' @param n_starting_genotypes Int >0. Number of initial genotypes to start with.
 #' Defaults to 50
 #' @param box_limit Float >1 giving half the circumference of the torus.
@@ -18,7 +15,7 @@ library(mvtnorm)
 #' @param method Character string indicating the initial population structure to
 #' be simulated. Passing "uniform" simulated a panmictic population. "clusters"
 #' simulates clusters of identical individuals that disperse from distinct
-#' mothers via exponential dispersal set by `mean_dispersal_distance`. This is
+#' mothers via exponential dispersal set by \code{mean_dispersal_distance}. This is
 #' likely to generate very disperate clumps. Passing "mvnorm" simulates
 #' uniformly distributed coordinates for indiduals, as well as centroid
 #' positions for genotypes. Individuals are assigned a genotype in proportion to
@@ -26,22 +23,31 @@ library(mvtnorm)
 #' probabilities. The variance covariance matrix for this is set as
 #' \code{sqrt(habitat_size/n_starting_genotypes) / 3} such that the tail of each
 #' genotype just about touches those of its neighbours, on average.
+#' @param mixing Float >0. Parameter controlling the degree of spatial
+#' clustering of genotypes. Smaller values indicate more structure populations.
+#' If \code{method='mvnorm'} this is a scaler multiplier for the variance of the
+#' multivariate normal probability density.
+#' If \code{method="clusters`} this is the reciprocal of the rate parameter to draw
+#' dispersal distances from the exponential distribution.
 #'
 #' @return A list with two elements: `geno`, a vector of genotype labels;
 #' `coords`, a 2D matrix of coordinate positions.
 #'
 #' @export
 initialise_population <- function(
-  mean_dispersal_distance = NULL,
-  n_starting_genotypes,
-  population_size,
-  box_limit,
-  method = "uniform"
+    n_starting_genotypes,
+    population_size,
+    box_limit,
+    method = "uniform",
+    mixing = NULL
 ) {
-  stopifnot(mean_dispersal_distance > 0 )
-  stopifnot(n_starting_genotypes > 0 )
-  stopifnot(population_size > 0 )
-  stopifnot(box_limit >= 1 )
+  stopifnot(
+    n_starting_genotypes > 0,
+    population_size > 0,
+    box_limit >= 1
+  )
+  if( !is.null(mixing) ) stopifnot(mixing > 0)
+
 
   if(method == "uniform"){
     # Start with genotypes well mixed throughout the habitat
@@ -61,6 +67,9 @@ initialise_population <- function(
     return(pop)
 
   } else if( method == "clusters" ){
+    if( is.null(mixing) ){
+      stop("If `method` is not 'uniform', please supply a value for `mixing`.")
+    }
     # Initialise the population with genotypes in normally-distributed clumps
     pop <- list(
       # One label for each genotype
@@ -85,16 +94,19 @@ initialise_population <- function(
     # Disperse from the mother
     pop$coords <- shift_positions(
       pop$coords[ix,],
-      mean_dispersal_distance = mean_dispersal_distance,
+      mean_dispersal_distance = mixing,
       box_limit = box_limit
     )
 
     return(pop)
 
   } else if (method == "mvnorm") {
+
     #' Simulate coordinates uniformly, but assign each to different genotypes
     #' based on distances to genotype-mean positions
-
+    if( is.null(mixing) ){
+      stop("If `method` is not 'uniform', please supply a value for `mixing`.")
+    }
     # Coordinates of individuals
     ind_coords = matrix(
       runif(n = population_size*2, min = -box_limit, max = box_limit),
@@ -109,7 +121,7 @@ initialise_population <- function(
     # Overall area of the torus
     habitat_size <- (2*box_limit)^2
     # Variance-covariance matrix for the MV normal
-    var_cov_diagonal <- sqrt(habitat_size/n_starting_genotypes) / 3 # each genotype overlaps its neighbour by one SD on average
+    var_cov_diagonal <- sqrt(habitat_size/n_starting_genotypes) * mixing
     sigma <- matrix(c(
       var_cov_diagonal,0,
       0,var_cov_diagonal),

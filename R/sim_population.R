@@ -62,7 +62,8 @@ sim_population <- function(
   sample_spacing,
   dormancy,
   range_limit = 1.5,
-  method = 'uniform'
+  method = 'uniform',
+  mixing = mean_dispersal_distance
 ){
   stopifnot(range_limit > 1)
   stopifnot(density > 0)
@@ -79,11 +80,11 @@ sim_population <- function(
 
   # Initialise the population with randomly dispersed genotypes
   pop <- initialise_population(
-    mean_dispersal_distance = mean_dispersal_distance,
     n_starting_genotypes = n_starting_genotypes,
     population_size = round(population_size),
     box_limit = box_limit,
-    method=method
+    method=method,
+    mixing = mixing
   )
 
   # Initially, the seed bank and current generation are the same, but will change in the loop.

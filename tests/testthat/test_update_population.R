@@ -1,12 +1,10 @@
 ip <- initialise_population(
-  mean_dispersal_distance = 1,
   n_starting_genotypes = 10,
   population_size = 30,
   box_limit = 20
 )
 
-test_that(
-  "update_population gives expected output", {
+test_that("update_population gives expected output", {
   pop <- update_population(
     seed_rain = ip,
     seed_bank = ip,

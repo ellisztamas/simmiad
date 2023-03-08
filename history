@@ -197,3 +197,15 @@ Added mvtnorm to DESCRIPTION via 'Imports' instaed of 'Suggests'
 Specified call to multivariate normal function in initialise_population as
 `mvtnorm::dmvnorm(...)`
 
+## 1.11.7 Added 'mixing' parameter
+
+When simulating sturctured populations with initialise_population I need to be
+able to change the scale of structure. If method='clusters' this is set via
+mean_dispersal_distance. If method='mvnorm' this was hard coded to
+`sqrt(habitat_size/n_starting_genotypes) * 3`.
+
+For both instances of `method` I added parameter `mixing` to control this
+behaviour. This replaces `mean_dispersal_distance` and the 3 in the snippet
+above.
+
+Updated sim_populatrion and simmiad accordingly.

@@ -30,7 +30,8 @@ test_that("simmiad() gives the expected output when `methods='mvnorm'`.", {
     nsims = 3,
     dormancy = 0.3,
     progress = FALSE,
-    method = 'mvnorm'
+    method = 'mvnorm',
+    mixing = 3
   )
 
   expect_true(class(rs) == "list")

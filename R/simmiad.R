@@ -66,7 +66,8 @@ simmiad <- function(
   dormancy,
   how_far_back = n_generations,
   stability_years = n_generations:(n_generations/2),
-  method = "uniform"
+  method = "uniform",
+  mixing = NULL
 ){
   t0 <- proc.time()[3] # record the starting time.
 
@@ -89,7 +90,7 @@ simmiad <- function(
   cat(
     "\nSimulations of wild Emmer wheat begun on",
     format(Sys.time(), "%a %b %d %X %Y"),
-    "using simmiad,", as.character(packageVersion('simmiad')),
+    "using simmiad", as.character(packageVersion('simmiad')),
     ".\n"
   )
 
@@ -115,7 +116,8 @@ simmiad <- function(
       n_sample_points = n_sample_points,
       sample_spacing = sample_spacing,
       dormancy = dormancy,
-      method = method
+      method = method,
+      mixing = mixing
     )
 
     # Empty matrices to store simulation output

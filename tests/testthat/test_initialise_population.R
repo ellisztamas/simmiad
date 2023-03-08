@@ -1,6 +1,5 @@
 test_that("initialise_population returns correct output for uniform genotypes", {
   uniform <- initialise_population(
-    mean_dispersal_distance = 1,
     n_starting_genotypes = 10,
     population_size = 30,
     box_limit = 200,
@@ -14,11 +13,11 @@ test_that("initialise_population returns correct output for uniform genotypes", 
 
 test_that("initialise_population returns correct output for founding genotypes", {
   founders <- initialise_population(
-    mean_dispersal_distance = 1,
     n_starting_genotypes = 10,
     population_size = 30,
     box_limit = 200,
-    method = "clusters"
+    method = "clusters",
+    mixing = 1
   )
   expect_true(is.list(founders))
   expect_true(length(founders$geno) == 30)
@@ -31,7 +30,8 @@ test_that("initialise_population returns correct output for 'mvnorm'.", {
     n_starting_genotypes = 10,
     population_size = 30,
     box_limit = 200,
-    method = "mvnorm"
+    method = "mvnorm",
+    mixing = 1
   )
   expect_true(is.list(multiv))
   expect_true(length(multiv$geno) == 30)
@@ -39,10 +39,28 @@ test_that("initialise_population returns correct output for 'mvnorm'.", {
   expect_true(ncol(multiv$coords) == 2)
 })
 
+test_that("initialise_population throws an error is `mixing` is required but not given.", {
+  expect_error(
+    initialise_population(
+      n_starting_genotypes = 10, population_size = 30,box_limit = 200,
+      method = "clusters",
+      mixing = NULL
+    )
+  )
+
+  expect_error(
+    initialise_population(
+      n_starting_genotypes = 10, population_size = 30,box_limit = 200,
+      method = "mvnorm",
+      mixing = NULL
+    )
+  )
+
+})
+
 test_that("initialise_population throws an error if the method is garbage.", {
   expect_error(
     initialise_population(
-      mean_dispersal_distance = 1,
       n_starting_genotypes = 10,
       population_size = 30,
       box_limit = 200,
