@@ -3,9 +3,10 @@
 #' Take a transect of equally spaced sampling points through a population
 #' of plants with spatial coordinates, and pick the plant closest to each point.
 #'
-#' @param coords Matrix with a row for each individual and two rows.
-#' @param n_sample_points Number of points to sample along the transect
-#' @param sample_spacing Distance between sampling points
+#' @param coords Matrix with a row for each individual and a column each for x
+#' and y position.
+#' @param n_sample_points Number of points to sample along the transect.
+#' @param sample_spacing Distance between sampling points.
 #'
 #' @return A vector of integers giving the row positions of plants to be sampled.
 #' If no plants are within 1m of the sampling point, returns NA.

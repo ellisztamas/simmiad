@@ -5,27 +5,60 @@
 \title{Initialise population}
 \usage{
 initialise_population(
-  mean_dispersal_distance,
   n_starting_genotypes,
   population_size,
   box_limit,
-  method = "uniform"
+  pop_structure = "uniform",
+  mixing = NULL,
+  sample_spacing = 5
 )
 }
 \arguments{
-\item{mean_dispersal_distance}{Float >0. Mean seed dispersal distance. The
-reciprocal of this is used as the rate parameter to draw from the exponential
-distribution.}
-
 \item{n_starting_genotypes}{Int >0. Number of initial genotypes to start with.
 Defaults to 50}
 
-\item{population_size}{Integer > 1.}
+\item{population_size}{Integer > 1. Calculated by \code{sim_population} based
+on the length of the transect and plant density.}
 
-\item{box_limit}{Float >1 giving half the circumference of the torus.
-\code{sim_population} based on the length of the transect and plant density.}
+\item{box_limit}{Float >1 giving half the circumference of the torus. Ignored
+if \code{pop_structure} is a vector.}
+
+\item{pop_structure}{Character string indicating the initial population
+structure to be simulated. Passing "uniform" simulated a panmictic population.
+"clusters" simulates clusters of identical individuals that disperse from
+distinct mothers via exponential dispersal set by \code{mean_dispersal_distance}.
+This is likely to generate very disperate clumps. Passing "mvnorm" simulates
+uniformly distributed coordinates for indiduals, as well as centroid
+positions for genotypes. Individuals are assigned a genotype in proportion to
+their distance to each genotype centroid based on multivariate-normal
+probabilities. The variance covariance matrix for this is set as
+\code{sqrt(habitat_size/n_starting_genotypes) / 3} such that the tail of each
+genotype just about touches those of its neighbours, on average.
+If \code{pop_structure='hardcoded'} and a vector of genotypes is passed to
+\code{n_starting_genotypes}, for example
+observed genotypes from along all real-world transects, this simulates
+bands of identical genotypes by copying the vector over an evenly-
+spaced grid (giving horizontal but not vertical structure). There is one
+round of dispersal from this initial generation via exponential dispersal
+(controlled by \code{mixing}) and to get the population to the correct
+population density.}
+
+\item{mixing}{Float >0. Parameter controlling the degree of spatial
+clustering of genotypes. Smaller values indicate more structure populations.
+If \code{pop_structure='mvnorm'} this is a scaler multiplier for the variance
+of the multivariate normal probability density.
+If \code{pop_structure="clusters`} or \code{pop_structure='hardcoded'} this is
+the reciprocal of the rate parameter to draw dispersal distances from the
+exponential distribution.}
+
+\item{sample_spacing}{Positive integer giving the distance between sampling
+points if \code{pop_structure='hardcoded'}}
+}
+\value{
+A list with two elements: \code{geno}, a vector of genotype labels;
+\code{coords}, a 2D matrix of coordinate positions.
 }
 \description{
-Set up an initial population where each genotype starts from a single
-spot and disperses from there.
+This creates a population of individuals as a 2D matrix of coordinates in a
+torus and a list of genotypes.
 }

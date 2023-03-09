@@ -66,8 +66,8 @@ simmiad <- function(
   dormancy,
   how_far_back = n_generations,
   stability_years = n_generations:(n_generations/2),
-  method = "uniform",
-  mixing = NULL
+  pop_structure = "uniform",
+  mixing = mean_dispersal_distance
 ){
   t0 <- proc.time()[3] # record the starting time.
 
@@ -116,7 +116,7 @@ simmiad <- function(
       n_sample_points = n_sample_points,
       sample_spacing = sample_spacing,
       dormancy = dormancy,
-      method = method,
+      pop_structure = pop_structure,
       mixing = mixing
     )
 
@@ -165,12 +165,12 @@ simmiad <- function(
   t1 <- proc.time()[3] # record the end time.
   cat("\nSimulations completed", format(Sys.time(), "%a %b %d %X %Y"), "after", round((t1-t0)/60, 2), "minutes.\n\n\n")
 
-  # Create a lebible table of parameters to export later.
+  # Create a table of parameters to export later.
   params <- parameter_table(
     mean_dispersal_distance = mean_dispersal_distance,
     outcrossing_rate = outcrossing_rate,
     n_generations = n_generations,
-    n_starting_genotypes = n_starting_genotypes,
+    n_starting_genotypes = ifelse(pop_structure=="hardcoded", length(n_starting_genotypes), n_starting_genotypes),
     nsims = nsims,
     density = density,
     dormancy = dormancy,

@@ -209,3 +209,18 @@ behaviour. This replaces `mean_dispersal_distance` and the 3 in the snippet
 above.
 
 Updated sim_populatrion and simmiad accordingly.
+
+## 1.12.0 Simulations from a specified vector
+
+Added support for simulating simulations from a known vector (for example, the
+real structure of transects at Ammiad, concatenated into one vector).
+
+If `pop_structure='hardcoded'` and a vector of genotypes is passed to
+`n_starting_genotypes`, for example observed genotypes from along all real-
+world transects, this simulates bands of identical genotypes by copying the
+vector over an evenly-spaced grid (giving horizontal but not vertical structure).
+There is one round of dispersal from this initial generation via exponential
+dispersal (controlled by `mixing`) and to get the population to the correct
+population density.
+
+I renamed argument `method` to `pop_structure`.

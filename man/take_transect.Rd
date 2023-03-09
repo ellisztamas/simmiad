@@ -7,11 +7,12 @@
 take_transect(coords, n_sample_points, sample_spacing)
 }
 \arguments{
-\item{coords}{Matrix with a row for each individual and two rows.}
+\item{coords}{Matrix with a row for each individual and a column each for x
+and y position.}
 
-\item{n_sample_points}{Number of points to sample along the transect}
+\item{n_sample_points}{Number of points to sample along the transect.}
 
-\item{sample_spacing}{Distance between sampling points}
+\item{sample_spacing}{Distance between sampling points.}
 }
 \value{
 A vector of integers giving the row positions of plants to be sampled.
@@ -20,14 +21,6 @@ If no plants are within 1m of the sampling point, returns NA.
 \description{
 Take a transect of equally spaced sampling points through a population
 of plants with spatial coordinates, and pick the plant closest to each point.
-}
-\details{
-#' Plants exist within a box whose size is determined by the population size and
-plant density (more plants at lower density = larger box). \code{sim_population}
-will throw and error if the length of the transect
-(\code{(n_sample_points-1) * sample_spacing}) is longer than the width of the box.
-In this case, you can either make the population larger and less dense, or
-choose fewer, closer sampling points.
 }
 \author{
 Tom Ellis

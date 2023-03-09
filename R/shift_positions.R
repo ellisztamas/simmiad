@@ -24,9 +24,6 @@ shift_positions <- function(coords, mean_dispersal_distance, box_limit){
   if(any(coords>box_limit)){
     stop("One or more values in `coords` is beyond the range limit.")
   }
-  if(mean_dispersal_distance > box_limit){
-    stop("`mean_dispersal_distance` must be less than the range limit.")
-  }
   population_size <- nrow(coords)
   # Draw a total dispersal distance for each individual
   d <- rexp(
