@@ -44,12 +44,27 @@ Defaults to 50}
 \item{range_limit}{Float >1 defining how much wider than the transect the
 width of the habitat should be. This, along with plant density, determines
 how many plants will be simulated. Defaults to 1.5. Ignored if
-\code{pop_structure="hardcoded"}
+\code{pop_structure="hardcoded"}}
 
-#' @param pop_structure Character string indicating the initial population
+\item{nsims}{Int >0. Number of replicate populations to simulate.}
+
+\item{progress}{If TRUE, a progress bar is printed.}
+
+\item{dormancy}{Float between 0 and 1. Probability that a seedling is drawn
+from the seed bank. Seedlings are drawn from the prior generation with
+probability 1-dormancy.}
+
+\item{how_far_back}{Integer number of generations to sample with a transect}
+
+\item{stability_years}{Vector of integers indexing which generations to average
+over when calculating distance_identities(). Defaults to the last 50\% of
+generations.}
+
+\item{pop_structure}{Character string indicating the initial population
 structure to be simulated. Passing "uniform" simulated a panmictic population.
-"clusters" simulates clusters of identical individuals that disperse from
-distinct mothers via exponential dispersal set by \code{mean_dispersal_distance}.
+'clusters' simulates clusters of identical individuals that disperse from
+distinct mothers via exponential dispersal set by
+\code{mean_dispersal_distance}.
 This is likely to generate very disperate clumps. Passing "mvnorm" simulates
 uniformly distributed coordinates for indiduals, as well as centroid
 positions for genotypes. Individuals are assigned a genotype in proportion to
@@ -66,25 +81,11 @@ round of dispersal from this initial generation via exponential dispersal
 (controlled by \code{mixing}) and to get the population to the correct
 population density.}
 
-\item{nsims}{Int >0. Number of replicate populations to simulate.}
-
-\item{progress}{If TRUE, a progress bar is printed.}
-
-\item{dormancy}{Float between 0 and 1. Probability that a seedling is drawn
-from the seed bank. Seedlings are drawn from the prior generation with
-probability 1-dormancy.}
-
-\item{how_far_back}{Integer number of generations to sample with a transect}
-
-\item{stability_years}{Vector of integers indexing which generations to average
-over when calculating distance_identities(). Defaults to the last 50\% of
-generations.}
-
 \item{mixing}{Float >0. Parameter controlling the degree of spatial
 clustering of genotypes. Smaller values indicate more structure populations.
 If \code{pop_structure='mvnorm'} this is a scaler multiplier for the variance
 of the multivariate normal probability density.
-If \code{pop_structure="clusters`} or \code{pop_structure='hardcoded'} this is
+If \code{pop_structure="clusters"} or \code{pop_structure='hardcoded'} this is
 the reciprocal of the rate parameter to draw dispersal distances from the
 exponential distribution.}
 }

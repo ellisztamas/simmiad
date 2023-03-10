@@ -36,9 +36,10 @@ library(mvtnorm)
 #' clustering of genotypes. Smaller values indicate more structure populations.
 #' If \code{pop_structure='mvnorm'} this is a scaler multiplier for the variance
 #' of the multivariate normal probability density.
-#' If \code{pop_structure="clusters`} or \code{pop_structure='hardcoded'} this is
+#' If \code{pop_structure="clusters"} or \code{pop_structure='hardcoded'} this is
 #' the reciprocal of the rate parameter to draw dispersal distances from the
 #' exponential distribution.
+#'
 #' @param sample_spacing Positive integer giving the distance between sampling
 #' points if \code{pop_structure='hardcoded'}
 #'

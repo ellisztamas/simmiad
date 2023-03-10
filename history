@@ -224,3 +224,16 @@ dispersal (controlled by `mixing`) and to get the population to the correct
 population density.
 
 I renamed argument `method` to `pop_structure`.
+
+## 1.12.1 Fixed docs; mvtnorm to Suggests
+
+I (hopefully) fixed a bug in the doc strings that meant the package couldn't
+build.
+
+Changed the dependency on mvtnorm from 'Depends' to 'Suggests', since this was
+not playing nicely with different versions of R, and I am unlikely to use it
+anyway.
+
+Consider removing the extra methods for simulating structured populations if
+using a real vector works.
+

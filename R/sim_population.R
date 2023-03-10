@@ -48,7 +48,7 @@
 #' how many plants will be simulated. Defaults to 1.5. Ignored if
 #' \code{pop_structure="hardcoded"}
 #'
-#'#' @param pop_structure Character string indicating the initial population
+#' @param pop_structure Character string indicating the initial population
 #' structure to be simulated. Passing "uniform" simulated a panmictic population.
 #' "clusters" simulates clusters of identical individuals that disperse from
 #' distinct mothers via exponential dispersal set by \code{mean_dispersal_distance}.
@@ -67,12 +67,31 @@
 #' round of dispersal from this initial generation via exponential dispersal
 #' (controlled by \code{mixing}) and to get the population to the correct
 #' population density.
-#'
+#' @param pop_structure Character string indicating the initial population
+#' structure to be simulated. Passing "uniform" simulated a panmictic population.
+#' 'clusters' simulates clusters of identical individuals that disperse from
+#' distinct mothers via exponential dispersal set by
+#' \code{mean_dispersal_distance}.
+#' This is likely to generate very disperate clumps. Passing "mvnorm" simulates
+#' uniformly distributed coordinates for indiduals, as well as centroid
+#' positions for genotypes. Individuals are assigned a genotype in proportion to
+#' their distance to each genotype centroid based on multivariate-normal
+#' probabilities. The variance covariance matrix for this is set as
+#' \code{sqrt(habitat_size/n_starting_genotypes) / 3} such that the tail of each
+#' genotype just about touches those of its neighbours, on average.
+#' If \code{pop_structure='hardcoded'} and a vector of genotypes is passed to
+#' \code{n_starting_genotypes}, for example
+#' observed genotypes from along all real-world transects, this simulates
+#' bands of identical genotypes by copying the vector over an evenly-
+#' spaced grid (giving horizontal but not vertical structure). There is one
+#' round of dispersal from this initial generation via exponential dispersal
+#' (controlled by \code{mixing}) and to get the population to the correct
+#' population density.
 #' @param mixing Float >0. Parameter controlling the degree of spatial
 #' clustering of genotypes. Smaller values indicate more structure populations.
 #' If \code{pop_structure='mvnorm'} this is a scaler multiplier for the variance
 #' of the multivariate normal probability density.
-#' If \code{pop_structure="clusters`} or \code{pop_structure='hardcoded'} this is
+#' If \code{pop_structure="clusters"} or \code{pop_structure='hardcoded'} this is
 #' the reciprocal of the rate parameter to draw dispersal distances from the
 #' exponential distribution.
 #'
