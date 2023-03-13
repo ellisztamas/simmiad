@@ -1,4 +1,4 @@
-# Branch history for simmiad package
+# Git history for simmiad package
 
 ## 0.1.0_rel_grid-sims
 
@@ -242,3 +242,8 @@ using a real vector works.
 Removed RENV files, because they were causing more problems than they solved.
 
 Exported summarise_simmiad. I don't know why I removed this to be honest.
+
+## 1.12.3 Added test for write_simmiad
+
+Added a test that makes a test folder at inst/test_write_simiad and check that
+the correct files are created, and that they are non-zero size.
