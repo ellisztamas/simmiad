@@ -12,6 +12,7 @@
 #' @return This returns a list giving means and CIs for the final generation, plus
 #' means through time across generations.
 #' @author Tom Ellis
+#' @export
 summarise_simmiad <- function(base_folder, parameter){
   folders <- list.dirs(base_folder)
 

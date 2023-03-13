@@ -237,3 +237,8 @@ anyway.
 Consider removing the extra methods for simulating structured populations if
 using a real vector works.
 
+## 1.12.2 Removed RENV
+
+Removed RENV files, because they were causing more problems than they solved.
+
+Exported summarise_simmiad. I don't know why I removed this to be honest.
