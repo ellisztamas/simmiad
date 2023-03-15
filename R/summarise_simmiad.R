@@ -19,14 +19,18 @@ summarise_simmiad <- function(base_folder, parameter){
   over_reps    <- vector('list', length(folders))
   through_time <- vector('list', length(folders))
 
-  for(f in 2:length(folders)){
+  for(f in 2:length(folders)){ # start from 2 because element 1 is the parent folder
     # Open the parameter file
-    p <-  read.csv(paste(folders[f], "/parameters.csv", sep="")) %>%
+    p <-  read.csv(
+      paste(folders[f], "/parameters.csv", sep=""),
+      header = FALSE,
+      col.names = c('parameter', 'value')
+    ) %>%
       filter(parameter %in% c(
         'mean_dispersal_distance', 'outcrossing_rate', 'n_generations', 'n_starting_genotypes', 'density', 'dormancy'
       ))
     # Open the data file
-    df <- read.csv(paste(folders[f], "/", parameter, sep=""))
+    df <- read.csv(paste(folders[f], "/", parameter, sep=""), header=FALSE)
 
     # Get the mean and CIs for the final generation.
     final_generation <- df[, ncol(df)]

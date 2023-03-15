@@ -247,3 +247,8 @@ Exported summarise_simmiad. I don't know why I removed this to be honest.
 
 Added a test that makes a test folder at inst/test_write_simiad and check that
 the correct files are created, and that they are non-zero size.
+
+## 1.12.4 Fixed header handling in summarise simmiad
+
+I previously updated write_simmiad to export via write.table without headers.
+Updated summarise_simmiad to reflect this.
