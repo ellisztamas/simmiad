@@ -252,3 +252,12 @@ the correct files are created, and that they are non-zero size.
 
 I previously updated write_simmiad to export via write.table without headers.
 Updated summarise_simmiad to reflect this.
+
+## 1.13.0 Added di_by_year
+
+To look at the sturctured simulations I need to be able to track the changes
+in clustering through time. I run distance_identities on the population for each
+year separately, and save the value for the closest distance class only. This
+returns a matrix with a row for each simulation replicate and a column for each
+generation.
+

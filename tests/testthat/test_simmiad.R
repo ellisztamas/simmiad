@@ -13,7 +13,7 @@ test_that("simmiad() gives the expected output", {
   )
 
   expect_true(class(rs) == "list")
-  expect_length(rs, 7)
+  expect_length(rs, 8)
   expect_true(ncol(rs$clustering) == 10)
   expect_true(nrow(rs$clustering) == 3)
 })
@@ -35,7 +35,7 @@ test_that("simmiad() gives the expected output when `pop_structure='mvnorm'`.", 
   )
 
   expect_true(class(rs) == "list")
-  expect_length(rs, 7)
+  expect_length(rs, 8)
   expect_true(ncol(rs$clustering) == 10)
   expect_true(nrow(rs$clustering) == 3)
 })
@@ -57,7 +57,7 @@ test_that("simmiad() gives the expected output when `pop_structure='mvnorm'`.", 
   )
 
   expect_true(class(rs) == "list")
-  expect_length(rs, 7)
+  expect_length(rs, 8)
   expect_true(ncol(rs$clustering) == 10)
   expect_true(nrow(rs$clustering) == 3)
 })
@@ -97,7 +97,7 @@ test_that("simmiad() gives the expected output when `pop_structure='hardcoded'`.
   )
 
   expect_true(class(rs) == "list")
-  expect_length(rs, 7)
+  expect_length(rs, 8)
   expect_true(ncol(rs$clustering) == 2)
   expect_true(nrow(rs$clustering) == 3)
   expect_equal(

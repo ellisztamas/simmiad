@@ -20,8 +20,9 @@ test_that(
     write_simmiad(rs, outdir)
 
     # Check the correct files are created.
-    expected_files <- c("clustering.csv", "count_NAs.csv", "distance_identity.csv", "matching_pairs.csv",
-                        "n_genotypes.csv", "parameters.csv", "stability.csv")
+    expected_files <- c(
+      "clustering.csv", "count_NAs.csv", "di_by_year.csv", "distance_identity.csv",
+      "matching_pairs.csv", "n_genotypes.csv", "parameters.csv", "stability.csv")
     expect_true(
       all( list.files(outdir) == expected_files )
     )

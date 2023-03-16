@@ -45,8 +45,11 @@
 #' example, if there are five evenly spaced sampling points as in the example
 #' above, there are four possible distances between sampling points. Rows
 #' indicate replicate simulations.
+#' 8. **di_by_year** The probability of finding identical genotypes in pairs
+#' of sampling points across generations. Only values for adjacent sampling
+#' points are shown.
 #'
-#' For 2-6, rows indicate replicate simulations and columns generations.
+#' For 2-6 and 8, rows indicate replicate simulations and columns generations.
 #'
 #'@author Tom Ellis
 #'@seealso `sim_population`, `transect_cluster`, `transect_stability`
@@ -91,7 +94,7 @@ simmiad <- function(
     "\nSimulations of wild Emmer wheat begun on",
     format(Sys.time(), "%a %b %d %X %Y"),
     "using simmiad", as.character(packageVersion('simmiad')),
-    ".\n"
+    "\n"
   )
 
   # Empty structures to store data
@@ -101,6 +104,7 @@ simmiad <- function(
   n_genotypes    <- matrix(NA, nrow = nsims, ncol = n_generations)
   stability      <- matrix(NA, nrow = nsims, ncol = n_generations)
   distance_identity <- matrix(NA, nrow=nsims, ncol=n_sample_points-1)
+  di_by_year     <-matrix(NA, nrow = nsims, ncol = n_generations)
 
   if(progress) pb <- txtProgressBar(min = 2, max = nsims, style = 3)
   for(i in 1:nsims){
@@ -120,7 +124,6 @@ simmiad <- function(
       mixing = mixing
     )
 
-    # Empty matrices to store simulation output
     # Spatial clustering
     sample_positions <- (1:n_sample_points) * sample_spacing
     spatial <- sapply(
@@ -145,9 +148,17 @@ simmiad <- function(
       positions = sample_positions
     )
     di <- split(di, di$distances)
-    distance_identity[i,] <- sapply(di, function(i){
-      sum(i$matches * i$n, na.rm = T) / sum(i$n)
+    distance_identity[i,] <- sapply(di, function(x){
+      sum(x$matches * x$n, na.rm = T) / sum(x$n)
     })
+    # Calculate the probability that sampling points within the closest distance
+    # classes are occupied by the same DGG.
+    di_all_years <- lapply(sm, distance_identities, sample_positions) # distance identity for each year separately
+    # Get the average for the smallest distance class
+    di_by_year[i,] <- sapply(di_all_years, function(x) {
+      j <- x[x$distances == min(x$distances), ]
+      sum(j$matches * j$n, na.rm = T) / sum(j$n)
+      })
 
     # Temporal stability
     temporal <- numeric(how_far_back)
@@ -187,7 +198,8 @@ simmiad <- function(
     count_NAs = count_NAs,
     n_genotypes = n_genotypes,
     stability = stability,
-    distance_identity = distance_identity
+    distance_identity = distance_identity,
+    di_by_year = di_by_year
   )
 
   return(output)
