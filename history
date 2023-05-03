@@ -261,3 +261,8 @@ year separately, and save the value for the closest distance class only. This
 returns a matrix with a row for each simulation replicate and a column for each
 generation.
 
+## 1.14.0 Stability measured from the start
+
+Previously we assessed temporal stability by comparing the final generation to
+N generations in the passed. I changed this to compare the *first* generation to
+the subsequent N generations.

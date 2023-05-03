@@ -16,7 +16,7 @@ parameter_table <- function(
   n_sample_points,
   sample_spacing,
   range_limit,
-  how_far_back,
+  stability_years,
   dormancy,
   habitat_width = (n_sample_points * sample_spacing * range_limit),
   population_size = density * habitat_width^2
@@ -35,7 +35,7 @@ parameter_table <- function(
       'range_limit',
       'habitat_width',
       'population_size',
-      'how_far_back',
+      'stability_years',
       'npairs'
     ),
     value = c(
@@ -51,7 +51,7 @@ parameter_table <- function(
       range_limit,
       habitat_width,
       population_size,
-      how_far_back,
+      stability_years,
       (n_sample_points * (n_sample_points-1))/2
     )
   )

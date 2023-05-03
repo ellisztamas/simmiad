@@ -53,9 +53,9 @@ test_that("initialise_population returns correct output for a specfic structure.
   n_sample_points=30
   sample_spacing=5
   real_transect_length <- length(pop_structure)
-  range_limit = 1 + 1/(real_transect_length-1) # Make sure this is one. Add a warning
+  # range_limit = 1 + 1/(real_transect_length-1) # Make sure this is one. Add a warning
   density<- 4
-  box_limit <- ( (real_transect_length-1) * sample_spacing * range_limit )/2
+  box_limit <- ( real_transect_length * sample_spacing ) / 2
   # Given a density of plants per sq. metre and a size of the box, calculate
   # how many individuals you need
   population_size <- density * (2*box_limit)^2
