@@ -266,3 +266,15 @@ generation.
 Previously we assessed temporal stability by comparing the final generation to
 N generations in the passed. I changed this to compare the *first* generation to
 the subsequent N generations.
+
+## 1.14.1 Fixed which years to sample
+
+Updated simmiad.R to require an integer list of which generations should be
+'sampled' to reflect real data collection (for example only the last 36
+generations). Spatial clustering is calculated over those years, and temporal
+stability is calculated for each year by comparing to the first year in the
+range. This is controlled by the argument `years_to_study` which replaces
+arguments `stability_years` and `clustering_years`. `di_by_year` is still
+calculated for each year in the series.
+
+Updated parameter_table to reflect this.
