@@ -16,6 +16,9 @@ test_that("simmiad() gives the expected output", {
   expect_length(rs, 8)
   expect_true(ncol(rs$clustering) == 10)
   expect_true(nrow(rs$clustering) == 3)
+  expect_true(
+    all( rs$stability[,1] == 1 ) # The first column should all be one, because there is no change
+  )
 })
 
 test_that("simmiad() gives the expected output when `pop_structure='mvnorm'`.", {

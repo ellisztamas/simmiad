@@ -7,24 +7,25 @@
 #'estimate the degree of clustering in each, and save results to disk. See the
 #'help file `?sim_population` for details of individual population simulations.
 #'
-#'For each simulation, `simmiad` draws a horizontal transect and saves
-#'two kinds of summary information about this transect to disk. First,
-#'in the final generation of each population, a single transect is taken through
-#'a random row of the grid, and the degree of clustering estimated using
-#'`transect_cluster`. This summarises the number and mean distance between pairs of
-#'identical genotypes and between pairs of non-identical genotypes.
-#'Second, it estimates the spatial stability of the populations by calculating
-#'how often a sampling point is occupied by idnetical genotypes at different
-#'time points. This is done by comparing the final generation to 1, 2, 4, 6 and
-#'twelve years prior to that.
+#'For each simulation, `simmiad` draws a horizontal transect at each generation
+#'across the whole time series. For a subset of those generations it calculates
+#'three kinds of summary information about this transect to disk for a subset.
+#'First it estimates the degree of clustering estimated using
+#'`transect_cluster`, and averages over points between years.
+#'This summarises the number and mean distance between pairs of identical
+#'genotypes and between pairs of non-identical genotypes.
+#'Second, it estimates the temporal stability of the populations by calculating
+#'how often a sampling point is occupied by identical genotypes at different
+#'at the start of the samplinh period, and at subsequent time points.
+#'Third, it calculates the probability that *adjacent* sampling points only are
+#'occupied by identical genotypes for each year separately.
 #'
 #'@inheritParams sim_population
 #'@param nsims Int >0. Number of replicate populations to simulate.
 #'@param progress If TRUE, a progress bar is printed.
-#'@param stability_years Integer number of generations to sample with a transect
-#'@param clustering_years Vector of integers indexing which generations to average
-#'over when calculating distance_identities(). Defaults to the last 50% of
-#'generations.
+#'@param years_to_sample Vector of integers indexing which generations to sample
+#'the transect to calculate spatial structure and temporal stability. Defaults
+#'to the last 36 generations of the simulation
 #'
 #'@return A list of seven dataframes.
 #'
@@ -67,26 +68,28 @@ simmiad <- function(
   nsims,
   progress = TRUE,
   dormancy,
-  stability_years = n_generations,
-  clustering_years = n_generations:(n_generations/2),
+  years_to_sample = 1 : n_generations,
   pop_structure = "uniform",
   mixing = mean_dispersal_distance
 ){
   t0 <- proc.time()[3] # record the starting time.
 
-  if(stability_years > n_generations){
-    stability_years <- n_generations
-    warning(strwrap(
-      "The number of generations over which to calculate temporal stability
-      given by `stability_years`) is greater than the total number of generations.
-      This will be set to the maximum number of generations.")
+  if(
+    any(years_to_sample > n_generations) | any(years_to_sample < 1)
+    ){
+    print(years_to_sample)
+    stop(strwrap(
+      "`years_to_sample` should be a vector of integers indexing over which
+      generations spatial stability and atemporal stability should be calculated.
+      One or more values are beyond the range of the number of generations
+      specified by `n_generations`.")
     )
   }
-  if(!is.integer(clustering_years)){
-    stop("clustering_years should be a vector of integers")
+  if(!is.integer(years_to_sample)){
+    stop("years_to_sample should be a vector of integers")
   }
-  if(any(table(clustering_years) > 1)){
-    stop("There are replicate entries in clustering_years")
+  if(any(table(years_to_sample) > 1)){
+    stop("There are replicate entries in years_to_sample")
   }
 
   # Print message about sims
@@ -102,7 +105,7 @@ simmiad <- function(
   matching_pairs <- matrix(NA, nrow = nsims, ncol = n_generations)
   count_NAs      <- matrix(NA, nrow = nsims, ncol = n_generations)
   n_genotypes    <- matrix(NA, nrow = nsims, ncol = n_generations)
-  stability      <- matrix(NA, nrow = nsims, ncol = stability_years)
+  stability      <- matrix(NA, nrow = nsims, ncol = length(years_to_sample))
   distance_identity <- matrix(NA, nrow=nsims, ncol=n_sample_points-1)
   di_by_year     <-matrix(NA, nrow = nsims, ncol = n_generations)
 
@@ -144,7 +147,7 @@ simmiad <- function(
     # Probabilities of finding identical genotypes in pairs of sampling points
     # at different distances, averaged over years
     di <- distance_identities(
-      genotypes = sm[clustering_years],
+      genotypes = sm[years_to_sample],
       positions = sample_positions
     )
     di <- split(di, di$distances)
@@ -161,8 +164,8 @@ simmiad <- function(
       })
 
     # Temporal stability
-    temporal <- rep(NA, stability_years)
-    for (g in 1:(stability_years)){
+    temporal <- rep(NA, length(years_to_sample))
+    for (g in years_to_sample){
       temporal[g] <- transect_stability(
         x = sm[[1]],
         y = sm[[g]]
@@ -188,7 +191,7 @@ simmiad <- function(
     n_sample_points = n_sample_points,
     sample_spacing = sample_spacing,
     range_limit = range_limit,
-    stability_years = stability_years
+    years_to_sample = length(years_to_sample)
   )
 
   output <- list(
