@@ -278,3 +278,10 @@ arguments `stability_years` and `clustering_years`. `di_by_year` is still
 calculated for each year in the series.
 
 Updated parameter_table to reflect this.
+
+## 1.14.2 Matching pairs within demes
+
+I altered transect_clustering to calculate the how often sampling points within
+a certain distance contain DGGs of the same genotype. This distance is set to
+30 metres.
+

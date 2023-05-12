@@ -134,7 +134,9 @@ simmiad <- function(
       function(x) {
         transect_clustering(
           genotypes = x,
-          positions = sample_positions)
+          positions = sample_positions,
+          deme_size = max(sample_positions)/5
+          )
       })
     # Covariance between distance and identity
     clustering[i,] <- spatial['covar',]
