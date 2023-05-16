@@ -10,7 +10,8 @@ initialise_population(
   box_limit,
   pop_structure = "uniform",
   mixing = NULL,
-  sample_spacing = 5
+  sample_spacing = 5,
+  habitat_labels = NULL
 )
 }
 \arguments{
@@ -53,6 +54,10 @@ exponential distribution.}
 
 \item{sample_spacing}{Positive integer giving the distance between sampling
 points if \code{pop_structure='hardcoded'}}
+
+\item{habitat_labels}{Optional vector of habitat labels when
+\verb{pop_structure = 'hard-coded}, with an element for each sample given in
+\code{n_starting_genotypes}.}
 }
 \value{
 A list with two elements: \code{geno}, a vector of genotype labels;

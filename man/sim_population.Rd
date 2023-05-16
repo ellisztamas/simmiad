@@ -15,7 +15,8 @@ sim_population(
   dormancy,
   range_limit = 1.5,
   pop_structure = "uniform",
-  mixing = mean_dispersal_distance
+  mixing = mean_dispersal_distance,
+  habitat_labels = NULL
 )
 }
 \arguments{
@@ -73,7 +74,10 @@ If \code{pop_structure='mvnorm'} this is a scaler multiplier for the variance
 of the multivariate normal probability density.
 If \code{pop_structure="clusters"} or \code{pop_structure='hardcoded'} this is
 the reciprocal of the rate parameter to draw dispersal distances from the
-exponential distribution.}
+exponential distribution.
+#' @habitat_labels Optional vector of habitat labels when
+\verb{pop_structure = 'hard-coded}, with an element for each sample given in
+\code{n_starting_genotypes}.}
 }
 \value{
 A list of genotypes recorded at each sampling point in each

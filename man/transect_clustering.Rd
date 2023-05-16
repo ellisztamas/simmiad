@@ -4,7 +4,7 @@
 \alias{transect_clustering}
 \title{Estimate spatial clustering}
 \usage{
-transect_clustering(genotypes, positions)
+transect_clustering(genotypes, positions, deme_size = 30)
 }
 \arguments{
 \item{genotypes}{Vector of genotype labels}

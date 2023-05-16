@@ -14,7 +14,7 @@ parameter_table(
   n_sample_points,
   sample_spacing,
   range_limit,
-  how_far_back,
+  years_to_sample,
   dormancy,
   habitat_width = (n_sample_points * sample_spacing * range_limit),
   population_size = density * habitat_width^2
@@ -46,7 +46,9 @@ width of the habitat should be. This, along with plant density, determines
 how many plants will be simulated. Defaults to 1.5. Ignored if
 \code{pop_structure="hardcoded"}}
 
-\item{how_far_back}{Integer number of generations to sample with a transect}
+\item{years_to_sample}{Vector of integers indexing which generations to sample
+the transect to calculate spatial structure and temporal stability. Defaults
+to the last 36 generations of the simulation}
 
 \item{dormancy}{Float between 0 and 1. Probability that a seedling is drawn
 from the seed bank. Seedlings are drawn from the prior generation with

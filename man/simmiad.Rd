@@ -16,10 +16,10 @@ simmiad(
   nsims,
   progress = TRUE,
   dormancy,
-  how_far_back = n_generations,
-  stability_years = n_generations:(n_generations/2),
+  years_to_sample = 1:n_generations,
   pop_structure = "uniform",
-  mixing = mean_dispersal_distance
+  mixing = mean_dispersal_distance,
+  habitat_labels = NULL
 )
 }
 \arguments{
@@ -54,11 +54,9 @@ how many plants will be simulated. Defaults to 1.5. Ignored if
 from the seed bank. Seedlings are drawn from the prior generation with
 probability 1-dormancy.}
 
-\item{how_far_back}{Integer number of generations to sample with a transect}
-
-\item{stability_years}{Vector of integers indexing which generations to average
-over when calculating distance_identities(). Defaults to the last 50\% of
-generations.}
+\item{years_to_sample}{Vector of integers indexing which generations to sample
+the transect to calculate spatial structure and temporal stability. Defaults
+to the last 36 generations of the simulation}
 
 \item{pop_structure}{Character string indicating the initial population
 structure to be simulated. Passing "uniform" simulated a panmictic population.
@@ -87,7 +85,10 @@ If \code{pop_structure='mvnorm'} this is a scaler multiplier for the variance
 of the multivariate normal probability density.
 If \code{pop_structure="clusters"} or \code{pop_structure='hardcoded'} this is
 the reciprocal of the rate parameter to draw dispersal distances from the
-exponential distribution.}
+exponential distribution.
+#' @habitat_labels Optional vector of habitat labels when
+\verb{pop_structure = 'hard-coded}, with an element for each sample given in
+\code{n_starting_genotypes}.}
 }
 \value{
 A list of seven dataframes.
@@ -109,9 +110,12 @@ pairs of sampling points at all possible distances between transects. For
 example, if there are five evenly spaced sampling points as in the example
 above, there are four possible distances between sampling points. Rows
 indicate replicate simulations.
+\item \strong{di_by_year} The probability of finding identical genotypes in pairs
+of sampling points across generations. Only values for adjacent sampling
+points are shown.
 }
 
-For 2-6, rows indicate replicate simulations and columns generations.
+For 2-6 and 8, rows indicate replicate simulations and columns generations.
 }
 \description{
 \code{simmiad} Simulates multiple replicate populations under a set of input
@@ -122,16 +126,18 @@ parameters, and outputs a summary of the clustering among genotypes.
 estimate the degree of clustering in each, and save results to disk. See the
 help file \code{?sim_population} for details of individual population simulations.
 
-For each simulation, \code{simmiad} draws a horizontal transect and saves
-two kinds of summary information about this transect to disk. First,
-in the final generation of each population, a single transect is taken through
-a random row of the grid, and the degree of clustering estimated using
-\code{transect_cluster}. This summarises the number and mean distance between pairs of
-identical genotypes and between pairs of non-identical genotypes.
-Second, it estimates the spatial stability of the populations by calculating
-how often a sampling point is occupied by idnetical genotypes at different
-time points. This is done by comparing the final generation to 1, 2, 4, 6 and
-twelve years prior to that.
+For each simulation, \code{simmiad} draws a horizontal transect at each generation
+across the whole time series. For a subset of those generations it calculates
+three kinds of summary information about this transect to disk for a subset.
+First it estimates the degree of clustering estimated using
+\code{transect_cluster}, and averages over points between years.
+This summarises the number and mean distance between pairs of identical
+genotypes and between pairs of non-identical genotypes.
+Second, it estimates the temporal stability of the populations by calculating
+how often a sampling point is occupied by identical genotypes at different
+at the start of the samplinh period, and at subsequent time points.
+Third, it calculates the probability that \emph{adjacent} sampling points only are
+occupied by identical genotypes for each year separately.
 }
 \seealso{
 \code{sim_population}, \code{transect_cluster}, \code{transect_stability}

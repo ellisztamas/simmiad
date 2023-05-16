@@ -43,7 +43,7 @@ library(mvtnorm)
 #' @param sample_spacing Positive integer giving the distance between sampling
 #' points if \code{pop_structure='hardcoded'}
 #'
-#' @habitat_labels Optional vector of habitat labels when
+#' @param habitat_labels Optional vector of habitat labels when
 #' `pop_structure = 'hard-coded`, with an element for each sample given in
 #' `n_starting_genotypes`.
 #'
