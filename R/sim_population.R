@@ -94,6 +94,9 @@
 #' If \code{pop_structure="clusters"} or \code{pop_structure='hardcoded'} this is
 #' the reciprocal of the rate parameter to draw dispersal distances from the
 #' exponential distribution.
+#' #' @habitat_labels Optional vector of habitat labels when
+#' `pop_structure = 'hard-coded`, with an element for each sample given in
+#' `n_starting_genotypes`.
 #'
 #' @return A list of genotypes recorded at each sampling point in each
 #' generation.
@@ -111,7 +114,8 @@ sim_population <- function(
   dormancy,
   range_limit = 1.5,
   pop_structure = 'uniform',
-  mixing = mean_dispersal_distance
+  mixing = mean_dispersal_distance,
+  habitat_labels = NULL
 ){
   stopifnot(range_limit > 1)
   stopifnot(density > 0)
@@ -136,8 +140,19 @@ sim_population <- function(
     population_size = population_size,
     box_limit = box_limit,
     pop_structure=pop_structure,
-    mixing = mixing
+    mixing = mixing,
+    habitat_labels = habitat_labels
   )
+  # If they exist, save habitat_labels for later
+  if("habitat_labels" %in% names(attributes(pop)) ){
+    rotated_habitat_labels <- attributes(pop)$habitat_labels
+    # Take the n_sampling_points in the centre of the vector of habitat labels
+    # If n_sampling_points is odd, round down
+    ix <- floor(
+      (length(rotated_habitat_labels) - n_sample_points) / 2 # index where to start counting
+    )
+    trimmed_habitat_labels <- rotated_habitat_labels[(ix+1) : (ix+n_sample_points)]
+  }
 
   # Initially, the seed bank and current generation are the same, but will change in the loop.
   seed_rain <- seed_bank <- pop
@@ -171,7 +186,6 @@ sim_population <- function(
     # The previous generation now becomes a seed bank
     seed_bank <- seed_rain
     seed_rain <- pop
-
     # Take a transect of the new generation
     tx <- take_transect(
       pop$coords,
@@ -183,7 +197,11 @@ sim_population <- function(
     }  else {
       samples[[g]] <- pop$geno[tx]
     }
-    # samples[[g]] <- pop$geno[tx]
   }
+  # Include habitat labels, if given
+  if( exists('trimmed_habitat_labels') ){
+    attr(samples, 'habitat_labels') <- trimmed_habitat_labels
+  }
+
   return(samples)
 }

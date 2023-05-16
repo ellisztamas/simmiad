@@ -70,7 +70,8 @@ simmiad <- function(
   dormancy,
   years_to_sample = 1 : n_generations,
   pop_structure = "uniform",
-  mixing = mean_dispersal_distance
+  mixing = mean_dispersal_distance,
+  habitat_labels = NULL
 ){
   t0 <- proc.time()[3] # record the starting time.
 
@@ -108,7 +109,11 @@ simmiad <- function(
   stability      <- matrix(NA, nrow = nsims, ncol = length(years_to_sample))
   distance_identity <- matrix(NA, nrow=nsims, ncol=n_sample_points-1)
   di_by_year     <-matrix(NA, nrow = nsims, ncol = n_generations)
+  if( !is.null(habitat_labels)){
+    clustering_by_habitat <- matrix(NA, nrow = nsims, ncol = n_generations)
+  } else clustering_by_habitat <- NULL
 
+  # Simulate generations one at a time
   if(progress) pb <- txtProgressBar(min = 2, max = nsims, style = 3)
   for(i in 1:nsims){
     if(progress) setTxtProgressBar(pb, i)
@@ -124,7 +129,8 @@ simmiad <- function(
       sample_spacing = sample_spacing,
       dormancy = dormancy,
       pop_structure = pop_structure,
-      mixing = mixing
+      mixing = mixing,
+      habitat_labels = habitat_labels
     )
 
     # Spatial clustering
@@ -164,6 +170,10 @@ simmiad <- function(
       j <- x[x$distances == min(x$distances), ]
       sum(j$matches * j$n, na.rm = T) / sum(j$n)
       })
+    # Calculate the probability that plants in the same habitat are identical.
+    if("habitat_labels" %in% names(attributes(sm))){
+      clustering_by_habitat[i,] <- sapply(sm, habitat_clustering, attributes(sm)$habitat_labels)
+    }
 
     # Temporal stability
     temporal <- rep(NA, length(years_to_sample))
@@ -206,6 +216,9 @@ simmiad <- function(
     distance_identity = distance_identity,
     di_by_year = di_by_year
   )
+  if( !is.null(clustering_by_habitat) ){
+    output$clustering_by_habitat = clustering_by_habitat
+  }
 
   return(output)
 }
