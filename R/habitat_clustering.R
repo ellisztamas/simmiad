@@ -9,6 +9,7 @@
 #' @return Proportion of pairs of individuals in the same habitat that are
 #' identical.
 #' @author Tom Ellis
+#' @export
 habitat_clustering <- function(genotype, habitat){
   if(length(genotype) != length(habitat)){
     stop("`genotype` and `habitat` are different lengths.")
