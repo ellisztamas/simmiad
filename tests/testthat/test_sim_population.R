@@ -7,6 +7,17 @@ range_limit <- 1.5
 n_sample_points = 5
 sample_spacing = 5
 
+pop_structure <- c( "G18", "G18", "G1", "G1", "G2", "G3", "G4", "G5", "G3", "G3", "G3", "G3",
+                    "G6", "G7", "G8", "G3", "G3", "G9", "G3", "G10", "G11", "G12","G13", "G13",
+                    "G13", "G13", "G11", "G11", "G14", "G15", "G13", "G16", NA, "G17", "G11",
+                    "G17", "G17", "G19", "G19", "G20", "G20", "G20", "G20", "G17", "G17", "G20",
+                    "G20", NA, "G13", "G13", "G21", "G17", "G22", "G11", "G17", "G23", "G22",
+                    "G22", "G22", "G17", "G22", "G19", "G24", "G19", "G25", "G19", "G20", "G26",
+                    "G22", "G25", "G27", "G28", "G28", "G28", "G28", "G29", "G30", "G30", "G30",
+                    "G31", "G25", "G25", "G20", "G25", "G25", NA, "G20", "G25", NA, "G32", "G32",
+                    NA, "G20", "G33", "G25", NA, "G25", "G19", "G34", "G25", NA, "G19")
+habitat_labels <- rep(LETTERS[1:10], rmultinom(1, 102, rep(1/10, 10)))
+
 test_that("sim_population returns a list of the right length", {
   sm <- sim_population(
     mean_dispersal_distance = mean_dispersal_distance,
@@ -63,15 +74,7 @@ test_that(
   "sim_population returns sensible data for `pop_structure='hardcoded'.",
   {
     set.seed(3)
-    pop_structure <- c( "G18", "G18", "G1", "G1", "G2", "G3", "G4", "G5", "G3", "G3", "G3", "G3",
-                        "G6", "G7", "G8", "G3", "G3", "G9", "G3", "G10", "G11", "G12","G13", "G13",
-                        "G13", "G13", "G11", "G11", "G14", "G15", "G13", "G16", NA, "G17", "G11",
-                        "G17", "G17", "G19", "G19", "G20", "G20", "G20", "G20", "G17", "G17", "G20",
-                        "G20", NA, "G13", "G13", "G21", "G17", "G22", "G11", "G17", "G23", "G22",
-                        "G22", "G22", "G17", "G22", "G19", "G24", "G19", "G25", "G19", "G20", "G26",
-                        "G22", "G25", "G27", "G28", "G28", "G28", "G28", "G29", "G30", "G30", "G30",
-                        "G31", "G25", "G25", "G20", "G25", "G25", NA, "G20", "G25", NA, "G32", "G32",
-                        NA, "G20", "G33", "G25", NA, "G25", "G19", "G34", "G25", NA, "G19")
+
     mixing = 1
     n_sample_points=30
     sample_spacing=5
@@ -100,4 +103,37 @@ test_that(
     expect_gt(
       length(  unique(na.exclude(sm[[1]])) ),
       1)
+  })
+
+test_that(
+  "sim_population returns sensible data with habitat labels.",
+  {
+    set.seed(3)
+
+    mixing = 1
+    n_sample_points=30
+    sample_spacing=5
+    real_transect_length <- length(pop_structure)
+    range_limit = 1 + 1/(real_transect_length-1) # Make sure this is one. Add a warning
+    density<- 4
+
+    sm <- sim_population(
+      mean_dispersal_distance = mixing,
+      outcrossing_rate = 0.04,
+      n_generations = 2,
+      n_starting_genotypes = pop_structure,
+      density = density,
+      n_sample_points = n_sample_points,
+      sample_spacing = sample_spacing,
+      range_limit = range_limit,
+      dormancy = 0.3,
+      pop_structure = "hardcoded",
+      habitat_labels = habitat_labels
+    )
+    expect_true(
+      length(sm[[1]]) == length(attributes(sm)$habitat_labels)
+    )
+    expect_equal(
+      length(attributes(sm)$habitat_labels), n_sample_points
+    )
   })

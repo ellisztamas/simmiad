@@ -278,3 +278,28 @@ arguments `stability_years` and `clustering_years`. `di_by_year` is still
 calculated for each year in the series.
 
 Updated parameter_table to reflect this.
+
+## 1.14.2 Matching pairs within demes
+
+I altered transect_clustering to calculate the how often sampling points within
+a certain distance contain DGGs of the same genotype. This distance is set to
+30 metres.
+
+## 1.15.0 Habitat labels in hard-coded simulations
+
+Added microhabitat labels to simulations when `pop_structure="hard-coded"`.
+The user supplies a vector of habitat labels of the same length as the vector
+of hard-coded genotypes, and simmiad returns probabilities that pairs of plants
+in the same habitat are identical.
+
+- Allow initialise_populations to take a vector of habitat labels, permute them
+  in the same way as the genotype labels, trim to where the transect should be
+  and return the permuted vector. This is added as an attribute to the output.
+- Have sim_population return a list of sm through time, and a single vector
+  giving the habitat labels, again as an attribute
+- Add function habitat_clustering from the ammiad repo to calculate the
+  probability that pairs of sampling points within the same habitat are occupied
+  by the same DGG. This goes from zero to one.
+- `simmiad` runs habitat_clustering on each vector in sm and saves to a matrix
+  with a row for each simulation and a column for each year.
+- Write the output

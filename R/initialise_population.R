@@ -43,6 +43,10 @@ library(mvtnorm)
 #' @param sample_spacing Positive integer giving the distance between sampling
 #' points if \code{pop_structure='hardcoded'}
 #'
+#' @habitat_labels Optional vector of habitat labels when
+#' `pop_structure = 'hard-coded`, with an element for each sample given in
+#' `n_starting_genotypes`.
+#'
 #' @return A list with two elements: `geno`, a vector of genotype labels;
 #' `coords`, a 2D matrix of coordinate positions.
 #'
@@ -54,7 +58,8 @@ initialise_population <- function(
     box_limit,
     pop_structure = "uniform",
     mixing = NULL,
-    sample_spacing = 5
+    sample_spacing = 5,
+    habitat_labels = NULL
 ) {
   stopifnot(
     population_size > 0,
@@ -168,6 +173,9 @@ initialise_population <- function(
     if( length(n_starting_genotypes) == 1){
       stop("If `pop_structure='hardcoded'` provide a vector of genotypes via `n_starting_genotypes`.")
     }
+    if( !is.null(habitat_labels) & (length(habitat_labels) != length(n_starting_genotypes)) ){
+      stop("If `habitat_labels` is given it should be the same length as the vector of genotypes.")
+    }
     real_transect_length <- length(n_starting_genotypes)
 
     # Holder for population details.
@@ -179,7 +187,8 @@ initialise_population <- function(
     rotate_vector <- function(x, n){
       c(tail(x, n), head(x, -n))
     }
-    pop$geno <- rotate_vector(x = n_starting_genotypes, n = sample(1:real_transect_length, 1))
+    positions_to_move <- sample(1:real_transect_length, 1)
+    pop$geno <- rotate_vector(x = n_starting_genotypes, n = positions_to_move)
     pop$geno <- rep(pop$geno, real_transect_length)
     # Matrix of x and y positions for each plant.
     # Plants in generation zero are arranged on an evenly spaced grid.
@@ -211,6 +220,13 @@ initialise_population <- function(
       mean_dispersal_distance = mixing,
       box_limit = box_limit
     )
+
+    # Add habitat labels
+    if( !is.null(habitat_labels) ){
+      # Rotate the vector of habitat labels
+      attr(pop, 'habitat_labels') <- rotate_vector(x = habitat_labels, n = positions_to_move)
+    }
+
     return(pop)
 
   } else {

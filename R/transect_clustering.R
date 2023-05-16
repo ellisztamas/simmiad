@@ -17,7 +17,7 @@
 #'
 #' @author Tom Ellis
 #' @export
-transect_clustering <- function(genotypes, positions){
+transect_clustering <- function(genotypes, positions, deme_size = 30){
   if(all(is.na(genotypes))){
     out <- c(
       n_matches = NA,      # number of matching genotypes
@@ -36,11 +36,16 @@ transect_clustering <- function(genotypes, positions){
   # Distances between all unqiue pairs of sampling points.
   dist_pairs <- combn(positions, 2)
   dist_pairs <- abs(dist_pairs[1,] - dist_pairs[2,])
+  # Probability that nearby pairs of plants are identical
+  nearby_plants_identical <- mean(
+    (dist_pairs < deme_size) * geno_ix
+    )
 
   # Return the distances between identical and non-identical genotypes
   c(
     n_matches = length(dist_pairs[ geno_ix]),      # number of matching genotypes
     n_diff    = length(dist_pairs),                # Number of non-identical pairs of genotypes
-    covar     = suppressWarnings(cor(geno_ix, dist_pairs, use='p'))
+    covar     = nearby_plants_identical
+    # covar     = suppressWarnings(cor(geno_ix, dist_pairs, use='p'))
   )
 }
