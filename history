@@ -303,3 +303,15 @@ in the same habitat are identical.
 - `simmiad` runs habitat_clustering on each vector in sm and saves to a matrix
   with a row for each simulation and a column for each year.
 - Write the output
+
+## 1.15.1 Alter habitat_clustering statistics
+
+I don't think habitat_clustering is measuring the right thing.
+
+Changed from
+
+What is the probability that plants with identical genotypes are in the same habitat?
+
+to
+
+What is the probability that plants in the same habitat have the same genotype?

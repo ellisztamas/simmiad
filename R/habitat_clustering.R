@@ -23,5 +23,5 @@ habitat_clustering <- function(genotype, habitat){
   # Check whether genotype and habitat match.
   both_match <- genotype_match * habitat_match
 
-  sum(both_match, na.rm = TRUE) / sum(habitat_match, na.rm = TRUE)
+  sum(both_match, na.rm = TRUE) / sum(genotype_match, na.rm = TRUE)
 }
