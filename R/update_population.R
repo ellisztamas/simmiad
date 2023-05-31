@@ -29,7 +29,8 @@ update_population <- function(
   outcrossing_rate,
   dormancy,
   generation,
-  box_limit
+  box_limit,
+  selection_gradient
   ){
   stopifnot(is.list(seed_rain) & is.list(seed_bank))
   stopifnot(is.vector(seed_rain$geno) & is.vector(seed_bank$geno))
@@ -41,19 +42,25 @@ update_population <- function(
   stopifnot(dormancy >= 0 & dormancy <= 1)
   stopifnot(generation == round(generation))
   stopifnot(generation > 0)
+
+  # Relative fitness of each genotype
+  seed_rain$fitness <- relative_fitness(seed_rain, selection_gradient)
+  seed_bank$fitness <- relative_fitness(seed_bank, selection_gradient)
+
   # Data.frame containing indexes of plants from seed_rain and seed_bank,
   # with a vector of probabilities of being chosen
   ix <- rbind(
     data.frame(
       i = 1:length(seed_rain$geno),
-      p = 1-dormancy
+      p = (1-dormancy ) * seed_rain$fitness
     ),
     data.frame(
       i = (length(seed_bank$geno) + 1) : (2*length(seed_bank$geno)),
-      p = dormancy
+      p = dormancy * seed_bank$fitness
     )
   )
   ix$p <- ix$p / sum(ix$p) # normalise probabilties to sum to one.
+
   # Draw indices for genotypes to found the next generation.
   ix <- sample(
     x = ix$i,
@@ -65,7 +72,8 @@ update_population <- function(
   # Create a new population
   pop <- list(
     geno   = c(seed_rain$geno, seed_bank$geno)[ix],
-    coords = do.call(rbind, list(seed_rain$coords, seed_bank$coords))[ix,]
+    coords = do.call(rbind, list(seed_rain$coords, seed_bank$coords))[ix,],
+    phenotype = c(seed_rain$phenotype, seed_bank$phenotype)[ix]
   )
 
   # Choose plants at random to receive outcrossed pollen.

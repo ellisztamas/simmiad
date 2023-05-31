@@ -71,7 +71,8 @@ simmiad <- function(
   years_to_sample = 1 : n_generations,
   pop_structure = "uniform",
   mixing = mean_dispersal_distance,
-  habitat_labels = NULL
+  habitat_labels = NULL,
+  selection_gradient = 0
 ){
   t0 <- proc.time()[3] # record the starting time.
 
@@ -130,7 +131,8 @@ simmiad <- function(
       dormancy = dormancy,
       pop_structure = pop_structure,
       mixing = mixing,
-      habitat_labels = habitat_labels
+      habitat_labels = habitat_labels,
+      selection_gradient = selection_gradient
     )
 
     # Spatial clustering

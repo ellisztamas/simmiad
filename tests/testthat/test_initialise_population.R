@@ -72,6 +72,8 @@ test_that("initialise_population returns correct output for a specfic structure.
     habitat_labels = habitat_labels
   )
 
+
+
   # Visualise the population. I don't know how to make this a formal test.
   # ix <- sample(1:nrow(ip$coords), 5000, replace = FALSE)
   # plot(ip$coords[ix,1], ip$coords[ix,2], col = substr(ip$geno[ix],2,5))

@@ -115,7 +115,8 @@ sim_population <- function(
   range_limit = 1.5,
   pop_structure = 'uniform',
   mixing = mean_dispersal_distance,
-  habitat_labels = NULL
+  habitat_labels = NULL,
+  selection_gradient = 0
 ){
   stopifnot(range_limit > 1)
   stopifnot(density > 0)
@@ -167,7 +168,7 @@ sim_population <- function(
   # This hack gets around that.
   if(all(is.na(tx))) {
     samples[[1]] <- tx
-  }  else {
+  } else {
     samples[[1]] <- pop$geno[tx]
   }
 
@@ -181,7 +182,8 @@ sim_population <- function(
       outcrossing_rate = outcrossing_rate,
       dormancy = dormancy,
       generation = g,
-      box_limit = box_limit
+      box_limit = box_limit,
+      selection_gradient = selection_gradient
     )
     # The previous generation now becomes a seed bank
     seed_bank <- seed_rain

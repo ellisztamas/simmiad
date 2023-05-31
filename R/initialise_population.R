@@ -59,8 +59,7 @@ initialise_population <- function(
     pop_structure = "uniform",
     mixing = NULL,
     sample_spacing = 5,
-    habitat_labels = NULL
-) {
+    habitat_labels = NULL) {
   stopifnot(
     population_size > 0,
     box_limit >= 1
@@ -82,7 +81,6 @@ initialise_population <- function(
         ncol=2
       )
     )
-    return(pop)
 
   } else if( pop_structure == "clusters" ){
     if( is.null(mixing) ){
@@ -115,8 +113,6 @@ initialise_population <- function(
       mean_dispersal_distance = mixing,
       box_limit = box_limit
     )
-
-    return(pop)
 
   } else if (pop_structure == "mvnorm") {
 
@@ -165,7 +161,6 @@ initialise_population <- function(
       geno = paste0("g", geno),
       coords = ind_coords
     )
-    return(pop)
 
   } else if( pop_structure == "hardcoded") {
     # Start with a vector genotypes giving a known structure, and simulate
@@ -226,10 +221,13 @@ initialise_population <- function(
       # Rotate the vector of habitat labels
       attr(pop, 'habitat_labels') <- rotate_vector(x = habitat_labels, n = positions_to_move)
     }
-
-    return(pop)
-
   } else {
     stop("`pop_structure` should be one of 'uniform', 'clusters' or 'mvnorm'.")
   }
+
+  unique_geno <- na.exclude(unique(pop$geno))
+  z <- rnorm(length(unique_geno))
+  pop$phenotype <- z[match(pop$geno, unique_geno)]
+
+  return(pop)
 }

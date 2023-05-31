@@ -19,7 +19,8 @@ parameter_table <- function(
   years_to_sample,
   dormancy,
   habitat_width = (n_sample_points * sample_spacing * range_limit),
-  population_size = density * habitat_width^2
+  population_size = density * habitat_width^2,
+  selection_gradient
 ){
   data.frame(
     parameter = c(
@@ -36,7 +37,8 @@ parameter_table <- function(
       'habitat_width',
       'population_size',
       'years_to_sample',
-      'npairs'
+      'npairs',
+      'selection'
     ),
     value = c(
       mean_dispersal_distance,
@@ -52,7 +54,8 @@ parameter_table <- function(
       habitat_width,
       population_size,
       years_to_sample,
-      (n_sample_points * (n_sample_points-1))/2
+      (n_sample_points * (n_sample_points-1))/2,
+      selection_gradient
     )
   )
 }

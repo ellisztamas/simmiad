@@ -315,3 +315,34 @@ What is the probability that plants with identical genotypes are in the same hab
 to
 
 What is the probability that plants in the same habitat have the same genotype?
+
+## 1.16.0 Directional selection
+
+We want to include directional selection to assess how strong changes in
+genotype frequecy would need to be to be detectable. We are envisaging some kind
+of directional selection caused by rising temperatures or something, that cause
+particular genotypes to increase in frequency. However, we don't have any actual
+fitness measurements, so the idea is to generate random variates and select on
+those.
+
+General approach:
+- Assign each genotype with a phenotype value drawn from a standard normal.
+- Generate absolute fitness values based on a selection gradient.
+- Divide by the population mean, and select individuals to breed
+- Repeat over 40 generations
+- Track number of sampled genotypes?
+
+To do this:
+
+- initialise_population generates a vector of phenotypes for each genotypes.
+- Added function `relative_fitness` to calculate fitness values given a gradient
+  from phenotypes.
+  If `selection_gradient` is zero this returns one, otherwise.
+  Otherwise, fitness is calculated as a logistic function of the
+  underlying phenotype, reflecting something like probability of survival.
+- update_population multiplies sampling probabilities from seed bank and seed
+  rain by relative fitness values. Add indexing of phenotype values when
+  sampling the next generation. Phenotypes do not change when outcrossing occurs
+  because I can't think of an obvious way to implement that.
+- sim_population and simmiad() takes argument `selection_gradient` which is
+  passed to the functions inside them.
