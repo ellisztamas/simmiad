@@ -16,7 +16,8 @@ sim_population(
   range_limit = 1.5,
   pop_structure = "uniform",
   mixing = mean_dispersal_distance,
-  habitat_labels = NULL
+  habitat_labels = NULL,
+  selection_gradient = 0
 )
 }
 \arguments{

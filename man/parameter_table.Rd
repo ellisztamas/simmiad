@@ -17,7 +17,8 @@ parameter_table(
   years_to_sample,
   dormancy,
   habitat_width = (n_sample_points * sample_spacing * range_limit),
-  population_size = density * habitat_width^2
+  population_size = density * habitat_width^2,
+  selection_gradient
 )
 }
 \arguments{

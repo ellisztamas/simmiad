@@ -11,7 +11,8 @@ update_population(
   outcrossing_rate,
   dormancy,
   generation,
-  box_limit
+  box_limit,
+  selection_gradient
 )
 }
 \arguments{

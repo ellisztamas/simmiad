@@ -14,3 +14,18 @@ RoxygenNote: 7.2.3
 Roxygen: list(markdown = TRUE)
 Suggests:
   mvtnorm
+Collate: 
+    'distance_identities.R'
+    'habitat_clustering.R'
+    'initialise_population.R'
+    'parameter_table.R'
+    'relative_fitness.R'
+    'shift_positions.R'
+    'sim_population.R'
+    'simmiad.R'
+    'summarise_simmiad.R'
+    'take_transect.R'
+    'transect_clustering.R'
+    'transect_stability.R'
+    'update_population.R'
+    'write_simmiad.R'
