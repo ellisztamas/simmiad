@@ -205,7 +205,8 @@ simmiad <- function(
     n_sample_points = n_sample_points,
     sample_spacing = sample_spacing,
     range_limit = range_limit,
-    years_to_sample = length(years_to_sample)
+    years_to_sample = length(years_to_sample),
+    selection_gradient = selection_gradient
   )
 
   output <- list(

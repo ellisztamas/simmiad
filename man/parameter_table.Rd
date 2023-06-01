@@ -59,6 +59,9 @@ probability 1-dormancy.}
 
 \item{population_size}{Number of individual plants in the population,
 derived from the habitat size and population density}
+
+\item{selection_gradient}{Float giving strength of directional selection.
+For no selection, give a zero (the default).}
 }
 \value{
 A data.frame giving parameter names and values

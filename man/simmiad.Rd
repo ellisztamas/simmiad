@@ -90,6 +90,9 @@ exponential distribution.
 #' @habitat_labels Optional vector of habitat labels when
 \verb{pop_structure = 'hard-coded}, with an element for each sample given in
 \code{n_starting_genotypes}.}
+
+\item{selection_gradient}{Float giving strength of directional selection.
+For no selection, give a zero (the default).}
 }
 \value{
 A list of seven dataframes.

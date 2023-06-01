@@ -346,3 +346,15 @@ To do this:
   because I can't think of an obvious way to implement that.
 - sim_population and simmiad() takes argument `selection_gradient` which is
   passed to the functions inside them.
+
+## 1.16.1
+
+Commit of relative_fitness.
+
+Updated documentation
+
+## 1.16.2 Fixed selection in parameter_table
+
+Fixed a bug in simmiad that wasn't passing the selection gradient to paramter_table.
+
+Updated documentation to describe the selection gradient scheme.

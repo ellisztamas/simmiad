@@ -79,6 +79,9 @@ exponential distribution.
 #' @habitat_labels Optional vector of habitat labels when
 \verb{pop_structure = 'hard-coded}, with an element for each sample given in
 \code{n_starting_genotypes}.}
+
+\item{selection_gradient}{Float giving strength of directional selection.
+For no selection, give a zero (the default).}
 }
 \value{
 A list of genotypes recorded at each sampling point in each
@@ -108,13 +111,17 @@ sampling points at equally spaced intervals. The plant closest to each
 sampling point is recorded.
 }
 
-A seed bank is not currently implemented.
-
 Plants exist within a box centred around zero with a transect going through
 zero. The width of the box is defined to be 1.5-fold larger than the length
 of the transect (but this can be changed with the argument \code{range_limit}).
 Total population size is then the density of plants multiplied by the squared
 width of the box.
+
+Genotypes are automatically assigned a phenotype drawn from a standard normal
+distribution which can be used to simulate directional selection if
+\code{selection_gradient} is more or less than zero. The fitness function is a
+logistic function of minus the product of the phenotype and the selection
+gradient, and therefore reflects selection on a something like survival.
 }
 \author{
 Tom Ellis
