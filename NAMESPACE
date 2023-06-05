@@ -2,7 +2,6 @@
 
 export(distance_identities)
 export(habitat_clustering)
-export(initialise_population)
 export(shift_positions)
 export(sim_population)
 export(simmiad)

@@ -17,7 +17,7 @@ sim_population(
   pop_structure = "uniform",
   mixing = mean_dispersal_distance,
   habitat_labels = NULL,
-  selection_gradient = 0
+  var_w = 0
 )
 }
 \arguments{
@@ -80,8 +80,8 @@ exponential distribution.
 \verb{pop_structure = 'hard-coded}, with an element for each sample given in
 \code{n_starting_genotypes}.}
 
-\item{selection_gradient}{Float giving strength of directional selection.
-For no selection, give a zero (the default).}
+\item{var_w}{Additive variance for (log) fitness. Defaults to zero (no
+selection).}
 }
 \value{
 A list of genotypes recorded at each sampling point in each
@@ -117,11 +117,12 @@ of the transect (but this can be changed with the argument \code{range_limit}).
 Total population size is then the density of plants multiplied by the squared
 width of the box.
 
-Genotypes are automatically assigned a phenotype drawn from a standard normal
-distribution which can be used to simulate directional selection if
-\code{selection_gradient} is more or less than zero. The fitness function is a
-logistic function of minus the product of the phenotype and the selection
-gradient, and therefore reflects selection on a something like survival.
+Selection can be simulated by modelling fitness as log-normally distributed.
+Genotypes are automatically assigned a log fitness values drawn from a normal
+distribution with mean zero and variance \code{var_w}. Following
+Morrisey and Bonnet (2019; J. Heredity 110:396–402) absolute fitness is then
+the exponent of these values, which is then divided by the mean to get
+relative fitness. Seeds ar drawn in proportion to relative fitness.
 }
 \author{
 Tom Ellis

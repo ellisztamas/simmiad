@@ -20,6 +20,13 @@
 #'Third, it calculates the probability that *adjacent* sampling points only are
 #'occupied by identical genotypes for each year separately.
 #'
+#' Selection can be simulated by modelling fitness as log-normally distributed.
+#' Genotypes are automatically assigned a log fitness values drawn from a normal
+#' distribution with mean zero and variance `var_w`. Following
+#' Morrisey and Bonnet (2019; J. Heredity 110:396–402) absolute fitness is then
+#' the exponent of these values, which is then divided by the mean to get
+#' relative fitness. Seeds ar drawn in proportion to relative fitness.
+#'
 #'@inheritParams sim_population
 #'@param nsims Int >0. Number of replicate populations to simulate.
 #'@param progress If TRUE, a progress bar is printed.
@@ -72,7 +79,7 @@ simmiad <- function(
   pop_structure = "uniform",
   mixing = mean_dispersal_distance,
   habitat_labels = NULL,
-  selection_gradient = 0
+  var_w = 0
 ){
   t0 <- proc.time()[3] # record the starting time.
 
@@ -95,10 +102,10 @@ simmiad <- function(
   }
 
   # Print message about sims
-  cat(
-    "\nSimulations of wild Emmer wheat begun on",
+  message(
+    "\nSimulations of wild Emmer wheat begun on ",
     format(Sys.time(), "%a %b %d %X %Y"),
-    "using simmiad", as.character(packageVersion('simmiad')),
+    " using simmiad ", as.character(packageVersion('simmiad')),
     "\n"
   )
 
@@ -132,8 +139,8 @@ simmiad <- function(
       pop_structure = pop_structure,
       mixing = mixing,
       habitat_labels = habitat_labels,
-      selection_gradient = selection_gradient
-    )
+      var_w = var_w
+      )
 
     # Spatial clustering
     sample_positions <- (1:n_sample_points) * sample_spacing
@@ -191,7 +198,7 @@ simmiad <- function(
   if(progress) close(pb)
 
   t1 <- proc.time()[3] # record the end time.
-  cat("\nSimulations completed", format(Sys.time(), "%a %b %d %X %Y"), "after", round((t1-t0)/60, 2), "minutes.\n\n\n")
+  message("\nSimulations completed ", format(Sys.time(), "%a %b %d %X %Y"), " after ", round((t1-t0)/60, 2), " minutes.\n\n\n")
 
   # Create a table of parameters to export later.
   params <- parameter_table(
@@ -206,7 +213,7 @@ simmiad <- function(
     sample_spacing = sample_spacing,
     range_limit = range_limit,
     years_to_sample = length(years_to_sample),
-    selection_gradient = selection_gradient
+    var_w = var_w
   )
 
   output <- list(

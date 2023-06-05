@@ -16,7 +16,7 @@ test_that(
       nsims = 3,
       dormancy = 0.3,
       progress = FALSE,
-      selection_gradient = 0.5
+      var_w = 1
     )
     write_simmiad(rs, outdir)
 

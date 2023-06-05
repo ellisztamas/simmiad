@@ -18,7 +18,7 @@ parameter_table(
   dormancy,
   habitat_width = (n_sample_points * sample_spacing * range_limit),
   population_size = density * habitat_width^2,
-  selection_gradient
+  var_w
 )
 }
 \arguments{
@@ -60,8 +60,8 @@ probability 1-dormancy.}
 \item{population_size}{Number of individual plants in the population,
 derived from the habitat size and population density}
 
-\item{selection_gradient}{Float giving strength of directional selection.
-For no selection, give a zero (the default).}
+\item{var_w}{Additive variance for (log) fitness. Defaults to zero (no
+selection).}
 }
 \value{
 A data.frame giving parameter names and values

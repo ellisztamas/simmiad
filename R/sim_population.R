@@ -27,11 +27,12 @@
 #' Total population size is then the density of plants multiplied by the squared
 #' width of the box.
 #'
-#' Genotypes are automatically assigned a phenotype drawn from a standard normal
-#' distribution which can be used to simulate directional selection if
-#' `selection_gradient` is more or less than zero. The fitness function is a
-#' logistic function of minus the product of the phenotype and the selection
-#' gradient, and therefore reflects selection on a something like survival.
+#' Selection can be simulated by modelling fitness as log-normally distributed.
+#' Genotypes are automatically assigned a log fitness values drawn from a normal
+#' distribution with mean zero and variance `var_w`. Following
+#' Morrisey and Bonnet (2019; J. Heredity 110:396–402) absolute fitness is then
+#' the exponent of these values, which is then divided by the mean to get
+#' relative fitness. Seeds ar drawn in proportion to relative fitness.
 #'
 #' @param mean_dispersal_distance Float >0. Mean seed dispersal distance. The
 #' reciprocal of this is used as the rate parameter to draw from the exponential
@@ -102,8 +103,8 @@
 #' `pop_structure = 'hard-coded`, with an element for each sample given in
 #' `n_starting_genotypes`.
 #'
-#' @param selection_gradient Float giving strength of directional selection.
-#' For no selection, give a zero (the default).
+#' @param var_w Additive variance for (log) fitness. Defaults to zero (no
+#' selection).
 #'
 #' @return A list of genotypes recorded at each sampling point in each
 #' generation.
@@ -123,7 +124,7 @@ sim_population <- function(
   pop_structure = 'uniform',
   mixing = mean_dispersal_distance,
   habitat_labels = NULL,
-  selection_gradient = 0
+  var_w = 0
 ){
   stopifnot(range_limit > 1)
   stopifnot(density > 0)
@@ -149,7 +150,8 @@ sim_population <- function(
     box_limit = box_limit,
     pop_structure=pop_structure,
     mixing = mixing,
-    habitat_labels = habitat_labels
+    habitat_labels = habitat_labels,
+    var_w = var_w
   )
   # If they exist, save habitat_labels for later
   if("habitat_labels" %in% names(attributes(pop)) ){
@@ -189,9 +191,8 @@ sim_population <- function(
       outcrossing_rate = outcrossing_rate,
       dormancy = dormancy,
       generation = g,
-      box_limit = box_limit,
-      selection_gradient = selection_gradient
-    )
+      box_limit = box_limit
+      )
     # The previous generation now becomes a seed bank
     seed_bank <- seed_rain
     seed_rain <- pop

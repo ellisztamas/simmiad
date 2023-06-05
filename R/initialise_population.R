@@ -46,11 +46,11 @@ library(mvtnorm)
 #' @param habitat_labels Optional vector of habitat labels when
 #' `pop_structure = 'hard-coded`, with an element for each sample given in
 #' `n_starting_genotypes`.
+#' @param var_w Additive variance for (log) fitness. Defaults to zero (no
+#' selection).
 #'
 #' @return A list with two elements: `geno`, a vector of genotype labels;
 #' `coords`, a 2D matrix of coordinate positions.
-#'
-#' @export
 #'
 initialise_population <- function(
     n_starting_genotypes,
@@ -59,7 +59,10 @@ initialise_population <- function(
     pop_structure = "uniform",
     mixing = NULL,
     sample_spacing = 5,
-    habitat_labels = NULL) {
+    habitat_labels = NULL,
+    var_w = 0
+    ) {
+
   stopifnot(
     population_size > 0,
     box_limit >= 1
@@ -226,7 +229,7 @@ initialise_population <- function(
   }
 
   unique_geno <- na.exclude(unique(pop$geno))
-  z <- rnorm(length(unique_geno))
+  z <- rnorm(length(unique_geno), mean = 0, sd = var_w)
   pop$phenotype <- z[match(pop$geno, unique_geno)]
 
   return(pop)

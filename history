@@ -358,3 +358,17 @@ Updated documentation
 Fixed a bug in simmiad that wasn't passing the selection gradient to paramter_table.
 
 Updated documentation to describe the selection gradient scheme.
+
+## 1.16.3 Variance in fitness
+
+5th June 2023
+
+The implementation in v1.16.0 isn't appropriate because the selection gradient
+is on the logit scale, with the logistic transformation happening *before*
+dividing by mean fitness. In this way, this really reflectin selection correctly.
+
+Following Morrissey & Bonnet (2019; J. Heredity 110:396–402) I changed this so
+that initialise_population generates log fitness values with mean zero and
+variance var_w. This is exponentiated to give absolute fitness, before correcting
+by mean fitness. In this way the strength of selection is controlled by var_w.
+

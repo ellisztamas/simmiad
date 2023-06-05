@@ -11,7 +11,8 @@ initialise_population(
   pop_structure = "uniform",
   mixing = NULL,
   sample_spacing = 5,
-  habitat_labels = NULL
+  habitat_labels = NULL,
+  var_w = 0
 )
 }
 \arguments{
@@ -58,6 +59,9 @@ points if \code{pop_structure='hardcoded'}}
 \item{habitat_labels}{Optional vector of habitat labels when
 \verb{pop_structure = 'hard-coded}, with an element for each sample given in
 \code{n_starting_genotypes}.}
+
+\item{var_w}{Additive variance for (log) fitness. Defaults to zero (no
+selection).}
 }
 \value{
 A list with two elements: \code{geno}, a vector of genotype labels;

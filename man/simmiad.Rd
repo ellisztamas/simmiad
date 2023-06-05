@@ -20,7 +20,7 @@ simmiad(
   pop_structure = "uniform",
   mixing = mean_dispersal_distance,
   habitat_labels = NULL,
-  selection_gradient = 0
+  var_w = 0
 )
 }
 \arguments{
@@ -91,8 +91,8 @@ exponential distribution.
 \verb{pop_structure = 'hard-coded}, with an element for each sample given in
 \code{n_starting_genotypes}.}
 
-\item{selection_gradient}{Float giving strength of directional selection.
-For no selection, give a zero (the default).}
+\item{var_w}{Additive variance for (log) fitness. Defaults to zero (no
+selection).}
 }
 \value{
 A list of seven dataframes.
@@ -142,6 +142,13 @@ how often a sampling point is occupied by identical genotypes at different
 at the start of the samplinh period, and at subsequent time points.
 Third, it calculates the probability that \emph{adjacent} sampling points only are
 occupied by identical genotypes for each year separately.
+
+Selection can be simulated by modelling fitness as log-normally distributed.
+Genotypes are automatically assigned a log fitness values drawn from a normal
+distribution with mean zero and variance \code{var_w}. Following
+Morrisey and Bonnet (2019; J. Heredity 110:396–402) absolute fitness is then
+the exponent of these values, which is then divided by the mean to get
+relative fitness. Seeds ar drawn in proportion to relative fitness.
 }
 \seealso{
 \code{sim_population}, \code{transect_cluster}, \code{transect_stability}
