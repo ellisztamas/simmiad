@@ -372,3 +372,12 @@ that initialise_population generates log fitness values with mean zero and
 variance var_w. This is exponentiated to give absolute fitness, before correcting
 by mean fitness. In this way the strength of selection is controlled by var_w.
 
+## 1.16.4 Update phenotypes for outcrossed plants
+
+6th June 2023
+in update_population a subset of plants are randomly assigned to be outcrossed
+and receive a new genotype. I updated the function to also assign a new
+phenotype value. This is drawn from a normal distribution with a mean equal to
+the mean of the current population and a sd equal to half the sd of the current
+population (under the infinitesimal half the variance segregates between familes
+and half within).

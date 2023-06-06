@@ -82,6 +82,11 @@ update_population <- function(
   # Give these plants a new unique genotype by appending generation number and
   # and integer from 1 to the number of outcrossers.
   pop$geno[cross01] <- paste(pop$geno[cross01], "_", generation-1, ".", 1:sum(cross01), sep = "")
+  pop$phenotype[cross01] <- rnorm(
+    n    = sum(cross01),
+    mean = mean(pop$phenotype, na.rm=TRUE),
+    sd   = sd(pop$phenotype, na.rm=TRUE) / 2
+    )
 
   # Peturb positions
   pop$coords <- shift_positions(
