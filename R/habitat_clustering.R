@@ -3,6 +3,16 @@
 #' Calculates how many pairs of plants of the same genotype are also in the
 #' same microhabitat.
 #'
+#' This calculates Fst as
+#'
+#' \deqn{
+#' \frac{f_0-\bar{f}}{1-\bar{f}}
+#' }
+#'
+#' where \eqn{f_0} is the probability that two individuals in the same habitat
+#' are identical and \eqn{f \bar{f}} is the probability that two individuals
+#' from the total population are identical.
+#'
 #' @param genotype Vector of genotype labels.
 #' @param habitat Vector of habitat labels of the same length as `genotype`.
 #'
@@ -20,8 +30,9 @@ habitat_clustering <- function(genotype, habitat){
   # For all pairs of plants, check whether habitats are the same
   habitat_match <- combn(habitat, 2)
   habitat_match <- habitat_match[1,] == habitat_match[2,]
-  # Check whether genotype and habitat match.
-  both_match <- genotype_match * habitat_match
+  # F statistics
+  f_zero <- mean( genotype_match[ habitat_match ], na.rm = TRUE)
+  f_bar  <- mean( genotype_match,                 na.rm = TRUE)
 
-  sum(both_match, na.rm = TRUE) / sum(genotype_match, na.rm = TRUE)
+  (f_zero - f_bar) / (1 - f_bar)
 }

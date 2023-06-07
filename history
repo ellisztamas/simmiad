@@ -381,3 +381,11 @@ phenotype value. This is drawn from a normal distribution with a mean equal to
 the mean of the current population and a sd equal to half the sd of the current
 population (under the infinitesimal half the variance segregates between familes
 and half within).
+
+## 1.16.5 Habitat clustering as Fst
+
+7th June 2023
+
+Changed the way habitat_clustering works to reflect the traditional measure of
+Fst in the hope that this is less sensitive to small sample sizes when the
+population gets very diverse.
