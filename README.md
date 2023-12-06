@@ -32,7 +32,7 @@ devtools::install_github("ellisztamas/simmiad")
 ```
 ## Dependencies
 
-`simmiad` uses base R functions only.
+In most cases, `simmiad` uses base R functions only. One experimental feature uses `mvtnorm` to generate samples from a multivariate normal distribution, but this is probably not needed.
 
 ## How simulations work
 
@@ -40,7 +40,7 @@ devtools::install_github("ellisztamas/simmiad")
 
 * This simulates a population of plants at a given density in a square habitat, which is twice as wide/long as the transect
 * Population size is determined as the number of plants needed to fill the habitat given its area and population density.
-* Plants are initially distributed at random throughout the habitat and assigned one of a set of unique genotypes.
+* Supply a one-dimensional vector of genotypes. This is copied up and down to create bands of identical genotypes perpendicular to the direction in which transects are samples.
 
 ### Simulating through time:
 
