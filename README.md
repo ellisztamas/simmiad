@@ -38,8 +38,8 @@ devtools::install_github("ellisztamas/simmiad")
 
 ### Initial generation:
 
-* This simulates a population of plants at a given density on a torus (i.e. there are no edges). The radius of the torus is 50% longer than the length of the transect
-* Population size is determined as the number of plants needed to fill the torus given its area and population density.
+* This simulates a population of plants at a given density in a square habitat, which is twice as wide/long as the transect
+* Population size is determined as the number of plants needed to fill the habitat given its area and population density.
 * Plants are initially distributed at random throughout the habitat and assigned one of a set of unique genotypes.
 
 ### Simulating through time:

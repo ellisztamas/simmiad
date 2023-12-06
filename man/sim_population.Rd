@@ -88,7 +88,7 @@ A list of genotypes recorded at each sampling point in each
 generation.
 }
 \description{
-Simulate a single population through time on a torus, and sample a transect
+Simulate a single population through time and sample a transect
 for each generation.
 }
 \details{
@@ -100,9 +100,9 @@ distributed in a square habitat Individuals are labelled by their genotype
 as 'g' followed by an integer label.
 \item Individuals are chosen at random to found the next generation. They
 move seed dispersal to new location, with distances drawn from an exponential
-distribution. The population exists on a torus to eliminat edge effects;
-if dispersal takes a plant of the edge of the range it moves to the other
-side of the range.
+distribution. The population exists in a square habitat; any dispersal beyond
+the boundaries of the population is reflected back the same distance into the
+habitat.
 \item A subset of the new generation are chosen to have been germinated from
 outcrossed seed. If so, they are given a new unique label by appending their
 current genotype label by the generation number plus a unique integer.

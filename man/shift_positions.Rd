@@ -13,7 +13,7 @@ shift_positions(coords, mean_dispersal_distance, box_limit)
 distance. The reciprocal of this value is used as a rate for the exponential
 distribution.}
 
-\item{box_limit}{Float >1 giving half the circumference of the torus.}
+\item{box_limit}{Float >1 giving half the width of the habitat.}
 }
 \value{
 A matrix matching the shape of the input \code{coords}, but with values
@@ -21,7 +21,14 @@ shifted by some exponential distance.
 }
 \description{
 \code{shift_positions} peturbs the positions of a matrix of positions by
-distances drawn from an exponential distribution. Dispersal is simulated on
-a torus, so that if positions are peturbed beyond a pre-defined range limit
-they are reflected to the other side of the population.
+distances drawn from an exponential distribution. Dispersal is simulated in a
+square habitat of width \code{box_limit} centred on x=y=0.
+}
+\details{
+Dispersal is in a box.
+If the simulated dispersal distance takes a seed beyond the boundary of the
+habitat it will be reflected back into the habitat.
+Note that if dispersal distances are much larger than the habitat size then
+it could be that the reflected distance goes beyond the \emph{other} limit of the
+population.
 }

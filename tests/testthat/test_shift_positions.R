@@ -17,6 +17,26 @@ test_that("shift_positions gives expected output", {
   expect_true(ncol(sf) == 2)
 })
 
+test_that("Dispersal distances beyond the boundaries are reflected back", {
+  #' Simulate dispersal, but set the box_limit to sth smaller than for the
+  #' original data, so that some points fall outside it.
+  smaller_boxlimit <- 90
+  new_coords <- shift_positions(
+    coords,
+    mean_dispersal_distance = 1,
+    box_limit = smaller_boxlimit
+  )
+  #' New points should have the same sign as the original points,
+  #' unless they are close to zero
+  expect_true(all(
+    sign(new_coords) == sign(coords)
+  ))
+  #' The new coordinate positions should be within the boxlimit
+  expect_true(all(
+    abs(new_coords) < smaller_boxlimit
+  ))
+})
+
 pos_diff <- function(a,b){
   sqrt(
     ((a[,1] - b[,1])^2) + ((a[,2] - b[,2])^2)
@@ -75,4 +95,4 @@ test_that(
       mean(pos_diff(coords, coords_new)), offset, tolerance = 0.01
     )
   }
-  )
+)

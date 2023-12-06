@@ -19,6 +19,17 @@ identical.
 Calculates how many pairs of plants of the same genotype are also in the
 same microhabitat.
 }
+\details{
+This calculates Fst as
+
+\deqn{
+\frac{f_0-\bar{f}}{1-\bar{f}}
+}
+
+where \eqn{f_0} is the probability that two individuals in the same habitat
+are identical and \eqn{f \bar{f}} is the probability that two individuals
+from the total population are identical.
+}
 \author{
 Tom Ellis
 }

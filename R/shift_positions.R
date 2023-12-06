@@ -1,15 +1,21 @@
 #' Shift a matrix of x- and y-coordinates in random directions
 #'
 #' `shift_positions` peturbs the positions of a matrix of positions by
-#' distances drawn from an exponential distribution. Dispersal is simulated on
-#' a torus, so that if positions are peturbed beyond a pre-defined range limit
-#' they are reflected to the other side of the population.
+#' distances drawn from an exponential distribution. Dispersal is simulated in a
+#' square habitat of width `box_limit` centred on x=y=0.
+#'
+#' Dispersal is in a box.
+#' If the simulated dispersal distance takes a seed beyond the boundary of the
+#' habitat it will be reflected back into the habitat.
+#' Note that if dispersal distances are much larger than the habitat size then
+#' it could be that the reflected distance goes beyond the *other* limit of the
+#' population.
 #'
 #' @param coords Matrix with a row for each individual and two rows.
 #' @param mean_dispersal_distance Float giving the average perturbation
 #' distance. The reciprocal of this value is used as a rate for the exponential
 #' distribution.
-#' @param box_limit Float >1 giving half the circumference of the torus.
+#' @param box_limit Float >1 giving half the width of the habitat.
 #'
 #' @return A matrix matching the shape of the input `coords`, but with values
 #' shifted by some exponential distance.
@@ -47,12 +53,15 @@ shift_positions <- function(coords, mean_dispersal_distance, box_limit){
   # Apply peturbations to the current positions
   new_coords <- coords + shift_positions
 
-  # Ensure dispersal is on a torus.
-  # When dispersal is beyond the edge of the population, reflect it back to the
-  # other side of the range
+  # Constrain dispersal to be within the habitat.
+  # If distances are beyond the limit of the habitat, reflect them back the same distance.
   ix <- abs(new_coords) > box_limit
-  dev <- new_coords[ix] - (sign(new_coords[ix]) * box_limit)
-  new_coords[ix] <- -new_coords[ix] + 2*dev
+  # Plus/negative box_limit, depending on which direction the coordinate goes
+  boundary <- sign(new_coords[ix]) * box_limit
+  # Deviation of observed coordinates from the boundary
+  dev <- new_coords[ix] - boundary
+  # Reflect coordinates back across the boundary.
+  new_coords[ix] <- boundary - dev
 
   return(new_coords)
 }
